@@ -27,6 +27,29 @@ export default class PackDir {
   metaFilled: boolean;
   normalizedFiles: Array<string> = [];
   correctedPathFiles: Array<CorrectedFile> = [];
+  excludedFiles: Array<string> = [
+    'iconperks_artefacthunter.png',
+    'iconperks_laststanding.png',
+    'iconperks_toughrunner.png',
+    'iconperks_underperform.png',
+    'missing.png',
+    'toth_temp.png',
+    'iconperks_temp1.png',
+    'iconperks_temp2.png',
+    'xhair.png',
+    'iconfavors_temp1.png',
+    'iconfavors_temp2.png',
+    'iconitems_trapple.png',
+    'iconitems_temp1.png',
+    'missing.png',
+    'iconitemaddon_temp1.png',
+    'iconaddon_gum.png',
+    'iconaddon_inhaler.png',
+    'iconpowers_temp1.png',
+    'iconpowers_axe.png',
+    'iconpowers_stalker3a.png',
+    'iconpowers_detention.png',
+  ]
 
   constructor(dir: string) {
     this.dir = dir;
@@ -54,9 +77,18 @@ export default class PackDir {
   }
 
   getNormalizedFilePath(fileName: string): string | undefined {
-    const foundPath = expectedFiles.find((file: {normalized: string, actual: string}) => {
+    let foundPath = expectedFiles.find((file: {normalized: string, actual: string}) => {
       return path.basename(file.normalized) === path.basename(fileName);
     });
+    if(!foundPath) {
+      log.info(`Could not find file ${fileName}`);
+    }
+
+    if(foundPath && this.excludedFiles.includes(path.basename(foundPath.normalized))) {
+      foundPath = undefined;
+      log.info(`File ${fileName} excluded`);
+    }
+
     return foundPath?.actual;
   }
 
@@ -108,18 +140,6 @@ export default class PackDir {
     });
   }
 
-
-  async getUnexpectedFiles() {
-    const actualExpectedFiles = expectedFiles.map(file => file.actual);
-    const unexpectedFiles = (await this.correctedPathFiles).filter((file: CorrectedFile) => {
-      return !actualExpectedFiles.includes(file.newPath);
-    });
-
-    log.info('Unexpected Files', unexpectedFiles);
-
-    return unexpectedFiles;
-  }
-
   async validate() {
     const perksDirExists = await this.hasPerks();
     const portraitsDirExists = await this.hasPortraits();
@@ -143,11 +163,9 @@ export default class PackDir {
       };
     }
 
-    const unexpectedFiles = await this.getUnexpectedFiles();
-
     return {
       isValid: true,
-      skipFiles: unexpectedFiles
+      skipFiles: []
     };
   }
 
@@ -158,7 +176,8 @@ export default class PackDir {
     const dirs: Array<string> = [];
 
     correctedPaths.forEach((file: string) => {
-      const dir = file.match(/([^\/]*)\/*$/)?.[1];
+      const filename = '/' + path.basename(file);
+      const dir = file.split(filename)[0].split('/').pop()?.toLowerCase();
       if(dir && !dirs.includes(dir)) {
         dirs.push(dir);
       }

@@ -16,6 +16,7 @@ import getLanguageStatus from './StatusEffects';
 import getLanguageStoreTabs from './StoreTabs';
 
 function getDefaultLanguage(filePath: string) {
+  log.info(`Getting default language for ${filePath}`);
   return filePath;
 }
 

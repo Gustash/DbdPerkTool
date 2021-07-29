@@ -32,31 +32,6 @@ export default class PerkPackArchive {
 	constructor(files, basePath) {
 		this.files = files;
 		this.basePath = basePath;
-
-		// There are a few old perk remnants lying around that aren't actually in the game
-		this.excludedFiles = [
-			'pack/perks/iconperks_artefacthunter.png',
-			'pack/perks/iconperks_laststanding.png',
-			'pack/perks/iconperks_toughrunner.png',
-			'pack/perks/iconperks_underperform.png',
-			'pack/perks/missing.png',
-			'pack/perks/toth_temp.png',
-			'pack/perks/iconperks_temp1.png',
-			'pack/perks/iconperks_temp2.png',
-			'pack/perks/xhair.png',
-			'pack/favors/iconfavors_temp1.png',
-			'pack/favors/iconfavors_temp2.png',
-			'pack/items/iconitems_trapple.png',
-			'pack/items/iconitems_temp1.png',
-			'pack/itemaddons/missing.png',
-			'pack/itemaddons/iconitemaddon_temp1.png',
-			'pack/itemaddons/iconaddon_gum.png',
-			'pack/itemaddons/iconaddon_inhaler.png',
-			'pack/powers/iconpowers_temp1.png',
-			'pack/powers/iconpowers_axe.png',
-			'pack/powers/dlc2/iconpowers_stalker3a.png',
-			'pack/powers/iconpowers_detention.png',
-		];
 	}
 
 	async getFile(fileName) {
@@ -73,9 +48,12 @@ export default class PerkPackArchive {
 
 	async getTopLevelDirs() {
 		const dirs = new Set();
-		this.files.forEach((file) => {
-			const dir = file.newPath.split('/')[0];
-			dirs.add(dir.toLowerCase());
+		this.getAllIconFileNames().forEach((file) => {
+			const dir = file.newPath.split('/')[0].toLowerCase();
+			if(!dirs.has(dir)) {
+				logger.info(`Adding dir ${dir} to file ${JSON.stringify(file)}`);
+				dirs.add(dir);
+			}
 		});
 		return dirs;
 	}
@@ -140,25 +118,18 @@ export default class PerkPackArchive {
 			return true;
 		},
 	) {
-		const expectedNormalizedFiles = expectedFiles.map(file => file.normalized);
 		const currentArchive = this;
 		return this.files
 			.filter((file) => {
-				const pathOnly = file.originalPath;
-				const lowerPath = slash(pathOnly.toLowerCase());
-				return (
-					lowerPath.endsWith('.png') &&
-					expectedNormalizedFiles.includes(lowerPath) &&
-					!currentArchive.excludedFiles.includes(lowerPath) &&
-					filterFn(lowerPath)
-				);
+				const pathOnly = slash(file.newPath).toLowerCase();
+				return filterFn(pathOnly);
 			})
 	}
 
 	getIconList(type) {
 		return this.getAllIconFileNames((file) =>
 			file.startsWith(`${type}` + '/'),
-		);
+		).map(file => file.originalPath);
 	}
 
 	async getAvailableTypes() {
