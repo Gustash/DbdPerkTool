@@ -61,21 +61,20 @@ export default class PerkPackArchive {
 
 	async getFile(fileName) {
 		const rawFile = this.files.find((file) => {
-			return file.toLowerCase().endsWith(fileName.toLowerCase());
+			return file.newPath.toLowerCase().endsWith(fileName.toLowerCase());
 		});
 
 		if (!rawFile) {
 			throw Error(`Could not find file ${fileName}`);
 		}
 
-		return fs.promises.readFile(rawFile);
+		return fs.promises.readFile(rawFile.originalPath);
 	}
 
 	async getTopLevelDirs() {
 		const dirs = new Set();
 		this.files.forEach((file) => {
-			const fileName = file.split(this.basePath + '\\')[1];
-			const dir = fileName.split('\\')[0];
+			const dir = file.newPath.split('/')[0];
 			dirs.add(dir.toLowerCase());
 		});
 		return dirs;
@@ -83,7 +82,7 @@ export default class PerkPackArchive {
 	async getRandomIcons(type, count) {
 		const currentArchive = this;
 		const files = this.files.filter((file) => {
-			return file
+			return file.newPath
 				.toLowerCase()
 				.includes(`${type.toLowerCase()}` + '\\');
 		});
@@ -141,14 +140,15 @@ export default class PerkPackArchive {
 			return true;
 		},
 	) {
+		const expectedNormalizedFiles = expectedFiles.map(file => file.normalized);
 		const currentArchive = this;
 		return this.files
 			.filter((file) => {
-				const pathOnly = file.split(this.basePath + '\\')[1];
+				const pathOnly = file.originalPath;
 				const lowerPath = slash(pathOnly.toLowerCase());
 				return (
 					lowerPath.endsWith('.png') &&
-					expectedFiles.includes(lowerPath) &&
+					expectedNormalizedFiles.includes(lowerPath) &&
 					!currentArchive.excludedFiles.includes(lowerPath) &&
 					filterFn(lowerPath)
 				);

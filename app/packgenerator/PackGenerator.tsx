@@ -1,5 +1,5 @@
 import path from 'path';
-import PackDir from '../packdir/PackDir';
+import PackDir, { CorrectedFile } from '../packdir/PackDir';
 import archiver from 'archiver';
 import slugify from '@sindresorhus/slugify';
 import { promisify } from 'util';
@@ -41,25 +41,6 @@ export default class PackGenerator {
     this.packAuthor = packAuthor;
     this.packDescription = packDescription;
     this.skipFiles = skipFiles;
-  }
-
-  async getFiles(files: Array<string> = [], dir: string) {
-    const currentGen = this;
-    const contents = await readdirAsync(dir, { withFileTypes: true });
-
-    const fileNames = contents
-      .filter(item => item.isFile())
-      .map(item => path.resolve(dir, item.name));
-    files.push(...fileNames);
-    const dirs = contents.filter(item => item.isDirectory());
-
-    const dirPromises = dirs.map(targetDir =>
-      currentGen.getFiles(files, path.resolve(dir, targetDir.name))
-    );
-
-    await Promise.all(dirPromises);
-
-    return files;
   }
 
   async generate() {
@@ -106,14 +87,14 @@ export default class PackGenerator {
 
       log.info('Pack Meta: ' + JSON.stringify(packMeta));
 
-      const files = await currentGen.getFiles(undefined, this.packDir.dir);
+      const files = this.packDir.correctedPathFiles;
 
-      files.forEach(file => {
-        const pathInZip = slash(path.relative(currentGen.packDir.dir, file));
+      files.forEach((file: CorrectedFile) => {
+        const pathInZip = slash(file.newPath);
         if(currentGen.skipFiles.includes(pathInZip.toLowerCase())) {
           // log.warn(`Skipping ${pathInZip}`);
         } else {
-          archive.append(fs.createReadStream(file), { name: 'Pack/' + pathInZip });
+          archive.append(fs.createReadStream(file.originalPath), { name: 'Pack/' + pathInZip });
         }
       });
 

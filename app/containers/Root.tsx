@@ -96,11 +96,17 @@ const Root = ({ store, history }: Props) => {
     try {
       const dbdPath = await dbd.getInstallPath();
       log.info(`Detected DBD Path: ${dbdPath}`);
-      if (dbdPath && dbdPath.length > 0 && dbdPath.toLowerCase() !== settingsUtil.settings.dbdInstallPath.toLowerCase()) {
-        settingsUtil.settings.dbdInstallPath = detectedDbdPath;
+      if (!settingsUtil.settings.overrideInstallPath && dbdPath && dbdPath.length > 0 && dbdPath.toLowerCase() !== settingsUtil.settings.dbdInstallPath.toLowerCase()) {
+        log.info(`Setting DBD install path to ${dbdPath}`);
+        settingsUtil.settings.dbdInstallPath = dbdPath;
         await settingsUtil.save();
+        log.info('Saved dbd path');
+      } else {
+        log.info('Not saving DBD path');
       }
-    } catch (err) {}
+    } catch (err) {
+      log.error('Error saving DBD Path: ', err);
+    }
   };
 
   useEffect(() => {

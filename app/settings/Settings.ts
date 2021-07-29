@@ -16,7 +16,8 @@ type SettingSchema = {
   lastNotificationRead: string;
   uploadServer: any;
   deleteAfterUpload: boolean;
-  targetServerOverride: string;
+  overrideInstallPath: boolean;
+  targetServerOverride?: string;
 };
 
 class Settings {
@@ -39,13 +40,15 @@ class Settings {
       lastNotificationRead: '',
       writeToTxt: false,
       targetServer: 'https://dead-by-daylight-icon-toolbox.herokuapp.com',
-      uploadServer: null
+      uploadServer: null,
+      overrideInstallPath: false
     };
     this.settings = { ...this.defaultSettings };
   }
 
-  get(key: string) {
-    if (!this.settings[key]) {
+  get(key: keyof SettingSchema) {
+    if (this.settings[key] === undefined || this.settings[key] === null) {
+      log.info(`Returning default setting for key ${key}`)
       return this.defaultSettings[key];
     } else {
       return this.settings[key];
@@ -61,8 +64,7 @@ class Settings {
     } catch (e) {
       dbdPath = '';
     }
-    this.settings = { ...this.defaultSettings };
-    this.settings.dbdInstallPath = dbdPath;
+    this.settings = { ...this.defaultSettings, dbdInstallPath: dbdPath };
   }
 
   async read() {
@@ -77,6 +79,7 @@ class Settings {
   }
 
   async save() {
+    log.info('Saving settings: ', this.settings);
     return fs.writeFile(
       this.settingsPath,
       JSON.stringify(this.settings, null, 2)

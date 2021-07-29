@@ -16,10 +16,17 @@ type metaSchema = {
   hasAddons: boolean;
   hasFavors: boolean;
 };
+
+export type CorrectedFile = {
+  originalPath: string;
+  newPath: string;
+};
 export default class PackDir {
   dir: string;
   meta: metaSchema;
   metaFilled: boolean;
+  normalizedFiles: Array<string> = [];
+  correctedPathFiles: Array<CorrectedFile> = [];
 
   constructor(dir: string) {
     this.dir = dir;
@@ -36,6 +43,48 @@ export default class PackDir {
     this.metaFilled = false;
   }
 
+  async populateNormalizedFiles() {
+    if(this.normalizedFiles.length === 0) {
+      const userFilesRaw = await recursiveRead(this.dir);
+      this.normalizedFiles = userFilesRaw.map(file => {
+        return slash(path.relative(this.dir, file)).toLowerCase();
+      });
+      this.normalizedFiles.sort();
+    }
+  }
+
+  getNormalizedFilePath(fileName: string): string | undefined {
+    const foundPath = expectedFiles.find((file: {normalized: string, actual: string}) => {
+      return path.basename(file.normalized) === path.basename(fileName);
+    });
+    return foundPath?.actual;
+  }
+
+  async correctFilePaths() {
+    if(this.correctedPathFiles.length === 0) {
+      const normalizedFiles = await this.getNormalizedFiles();
+      normalizedFiles.forEach((file: string) => {
+          const fullPath = this.getNormalizedFilePath(file);
+          if(fullPath) {
+            this.correctedPathFiles.push({
+              originalPath: path.resolve(this.dir, file),
+              newPath: fullPath
+            });
+          }
+      });
+    }
+  }
+
+  async getCorrectedFilePaths(): Promise<Array<CorrectedFile>> {
+    await this.correctFilePaths();
+    return this.correctedPathFiles;
+  }
+
+  async getNormalizedFiles(): Promise<Array<string>> {
+    await this.populateNormalizedFiles();
+    return this.normalizedFiles;
+  }
+
   async dirExists(dir: string) {
     try {
       const stats = await fs.lstat(dir);
@@ -45,14 +94,25 @@ export default class PackDir {
     }
   }
 
-  async getUnexpectedFiles() {
-    const currentPackDir = this;
-    const userFilesRaw = await recursiveRead(this.dir);
-    const normalizedFiles = userFilesRaw.map(file => {
-      return slash(path.relative(currentPackDir.dir, file)).toLowerCase();
+  async hasPerks() {
+    const normalizedFiles = await this.getNormalizedFiles();
+    return normalizedFiles.some(file => {
+      return path.basename(file).startsWith('iconperks_');
     });
-    const unexpectedFiles = normalizedFiles.filter((file: string) => {
-      return !expectedFiles.includes(file);
+  }
+
+  async hasPortraits() {
+    const normalizedFiles = await this.getNormalizedFiles();
+    return normalizedFiles.some(file => {
+      return path.basename(file).includes('charselect_portrait');
+    });
+  }
+
+
+  async getUnexpectedFiles() {
+    const actualExpectedFiles = expectedFiles.map(file => file.actual);
+    const unexpectedFiles = (await this.correctedPathFiles).filter((file: CorrectedFile) => {
+      return !actualExpectedFiles.includes(file.newPath);
     });
 
     log.info('Unexpected Files', unexpectedFiles);
@@ -61,16 +121,11 @@ export default class PackDir {
   }
 
   async validate() {
-    const perksDirExists = await this.dirExists(
-      path.resolve(this.dir, 'Perks')
-    );
-    const portraitsDirExists = await this.dirExists(
-      path.resolve(this.dir, 'CharPortraits')
-    );
+    const perksDirExists = await this.hasPerks();
+    const portraitsDirExists = await this.hasPortraits();
     if (perksDirExists || portraitsDirExists) {
-      this.meta.latestChapter = await this.getLatestChapter(
-        perksDirExists ? 'Perks' : 'CharPortraits'
-      );
+      await this.correctFilePaths();
+      this.meta.latestChapter = await this.getLatestChapter();
       this.meta.hasPortraits = portraitsDirExists;
       this.meta.hasPerks = perksDirExists;
       this.meta.hasPowers = await this.hasPowers();
@@ -96,57 +151,73 @@ export default class PackDir {
     };
   }
 
-  async getLatestChapter(scanDir) {
-    const contents = await fs.readdir(path.resolve(this.dir, scanDir), {
-      withFileTypes: true
+  async getLatestChapter() {
+    const correctedPaths = (await this.getCorrectedFilePaths()).map(correctedPath => correctedPath.newPath);
+    
+
+    const dirs: Array<string> = [];
+
+    correctedPaths.forEach((file: string) => {
+      const dir = file.match(/([^\/]*)\/*$/)?.[1];
+      if(dir && !dirs.includes(dir)) {
+        dirs.push(dir);
+      }
     });
 
-    const dirs = contents
-      .filter(item => item.isDirectory())
-      .map(dirent => dirent.name);
-    if(dirs.includes('Eclipse')) {
+    if(dirs.includes('eclipse')) {
       return 'Chapter XX: Resident Evil';
-    } else if (dirs.includes('Comet')) {
+    } else if (dirs.includes('comet')) {
       return 'Chapter XIX: All-Kill';
-    } else if (dirs.includes('Aurora')) {
+    } else if (dirs.includes('aurora')) {
       return 'Chapter XVIII: A Binding of Kin';
-    } else if (dirs.includes('Yemen')) {
+    } else if (dirs.includes('yemen')) {
       return 'Chapter XVII: Descend Beyond';
-    } else if (dirs.includes('Wales')) {
+    } else if (dirs.includes('wales')) {
       return 'Chapter XVI: Silent Hill';
-    } else if (dirs.includes('Ukraine')) {
+    } else if (dirs.includes('ukraine')) {
       return 'Chapter XV: Chains of Hate';
-    } else if (dirs.includes('Sweden')) {
+    } else if (dirs.includes('sweden')) {
       return 'Chapter XIV: Cursed Legacy';
-    } else if (dirs.includes('Qatar')) {
+    } else if (dirs.includes('qatar')) {
       return 'Chapter XIII: Stranger Things';
     } else {
       return 'Unknown';
     }
   }
 
-  async hasPortraits() {
-    return this.dirExists(path.resolve(this.dir, 'CharPortraits'));
-  }
-
   async hasItems() {
-    return this.dirExists(path.resolve(this.dir, 'Items'));
+    const normalizedFiles = await this.getNormalizedFiles();
+    return normalizedFiles.some(file => {
+      return path.basename(file).startsWith('iconitems_');
+    });
   }
 
   async hasPowers() {
-    return this.dirExists(path.resolve(this.dir, 'Powers'));
+    const normalizedFiles = await this.getNormalizedFiles();
+    return normalizedFiles.some(file => {
+      return path.basename(file).startsWith('iconpowers');
+    });
   }
 
   async hasAddons() {
-    return this.dirExists(path.resolve(this.dir, 'ItemAddons'));
+    const normalizedFiles = await this.getNormalizedFiles();
+    return normalizedFiles.some(file => {
+      return path.basename(file).startsWith('iconaddon_');
+    });
   }
 
   async hasStatusEffects() {
-    return this.dirExists(path.resolve(this.dir, 'StatusEffects'));
+    const normalizedFiles = await this.getNormalizedFiles();
+    return normalizedFiles.some(file => {
+      return path.basename(file).startsWith('iconstatuseffects_');
+    });
   }
 
   async hasFavors() {
-    return this.dirExists(path.resolve(this.dir, 'Favors'));
+    const normalizedFiles = await this.getNormalizedFiles();
+    return normalizedFiles.some(file => {
+      return path.basename(file).startsWith('iconfavors_');
+    });
   }
 
   async getMeta() {

@@ -88,6 +88,7 @@ export default function Settings(props: MyProps) {
       <Form
         onSubmit={async e => {
           e.preventDefault();
+          log.info('Saving...');
           await doSave(installPath, autoUpdate, writePackToTxt, deleteZipAfterUpload);
           setUnsaved(false);
         }}
@@ -97,7 +98,10 @@ export default function Settings(props: MyProps) {
           label="Dead By Daylight Install Path"
           help={installPathHelp}
           value={installPath}
-          onChange={e => setInstallPath(e.target.value)}
+          onChange={e => {
+            settingsUtil.settings['overrideInstallPath'] = true;
+            setInstallPath(e.target.value)
+          }}
         />
         <Form.Group>
           <TooltipWrapper>

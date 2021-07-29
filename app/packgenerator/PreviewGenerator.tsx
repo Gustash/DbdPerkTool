@@ -4,10 +4,11 @@ import PackGallery from '../utils/PackGallery';
 import logger from 'electron-log';
 import imagemin from 'imagemin';
 import imageminPngquant from 'imagemin-pngquant';
+import { CorrectedFile } from '../packdir/PackDir';
 
 export class PreviewGenerator {
     private pack: any;
-    constructor(private archive: any, files: string[], basePath: string, private meta: PackCapabilities ) {
+    constructor(private archive: any, files: Array<CorrectedFile>, basePath: string, private meta: PackCapabilities ) {
         this.pack = new PerkPackArchive(files, basePath);
     }
 

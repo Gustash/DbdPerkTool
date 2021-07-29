@@ -35,18 +35,17 @@ export default class DeadByDaylight {
   }
 
   public async getInstallPath() {
-    logger.info('Trying generic locations');
-    let dbdPath = await this.tryTheUsualSuspects();
+    let dbdPath = await this.steamApp.getInstallPath();
 
     if (!dbdPath || dbdPath.trim().length === 0) {
-      logger.info('DBD not found in generic location. Checking registry');
-      dbdPath = await this.steamApp.getInstallPath();
+      logger.info('DBD not found in registry. Checking generic paths');
+      dbdPath = await this.tryTheUsualSuspects();
 
       if(dbdPath) {
-        logger.info('Found DBD path in registry: ' + dbdPath);
+        logger.info('Found DBD path in generic location: ' + dbdPath);
       }
     } else {
-      logger.info('DBD installation found in generic location: ' + dbdPath);
+      logger.info('DBD installation found in registry: ' + dbdPath);
     }
 
     return dbdPath?.toLowerCase();
