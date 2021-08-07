@@ -1,6 +1,7 @@
 import SteamApp from './SteamApp';
 import fs from 'fs-extra';
 import logger from 'electron-log';
+import path from 'path';
 
 const DEFAULT_DBD_DIRS = ['C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dead by Daylight', 'C:\\Program Files\\Steam\\steamapps\\common\\Dead by Daylight']
 
@@ -34,15 +35,28 @@ export default class DeadByDaylight {
     return '';
   }
 
+  async isValidDbdPath(dbdPath: string): Promise<boolean> {
+    if(!dbdPath || dbdPath.trim().length === 0) {
+      return false;
+    }
+
+    const dbdExePath = path.join(dbdPath, 'DeadByDaylight.exe');
+    return fs.promises.access(dbdExePath, fs.constants.F_OK)
+      .then(() => true)
+      .catch(() => false);
+  }
+
   public async getInstallPath() {
     let dbdPath = await this.steamApp.getInstallPath();
 
-    if (!dbdPath || dbdPath.trim().length === 0) {
+    if (!await this.isValidDbdPath(dbdPath)) {
       logger.info('DBD not found in registry. Checking generic paths');
       dbdPath = await this.tryTheUsualSuspects();
 
-      if(dbdPath) {
+      if (await this.isValidDbdPath(dbdPath)) {
         logger.info('Found DBD path in generic location: ' + dbdPath);
+      } else {
+        logger.info('DBD not found in generic location');
       }
     } else {
       logger.info('DBD installation found in registry: ' + dbdPath);

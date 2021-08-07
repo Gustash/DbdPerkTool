@@ -36,7 +36,7 @@ export default class PerkPackArchive {
 
 	async getFile(fileName) {
 		const rawFile = this.files.find((file) => {
-			return file.newPath.toLowerCase().endsWith(fileName.toLowerCase());
+			return path.basename(file.newPath.toLowerCase()).endsWith(path.basename(fileName.toLowerCase()));
 		});
 
 		if (!rawFile) {
@@ -59,11 +59,7 @@ export default class PerkPackArchive {
 	}
 	async getRandomIcons(type, count) {
 		const currentArchive = this;
-		const files = this.files.filter((file) => {
-			return file.newPath
-				.toLowerCase()
-				.includes(`${type.toLowerCase()}` + '\\');
-		});
+		const files = this.getIconList(type);
 		logger.debug(`Files: `, files);
 		shuffle(files);
 

@@ -17,6 +17,11 @@ type metaSchema = {
   hasFavors: boolean;
 };
 
+type ExpectedFile = {
+  normalized: string;
+  actual: string;
+};
+
 export type CorrectedFile = {
   originalPath: string;
   newPath: string;
@@ -76,10 +81,20 @@ export default class PackDir {
     }
   }
 
-  getNormalizedFilePath(fileName: string): string | undefined {
-    let foundPath = expectedFiles.find((file: {normalized: string, actual: string}) => {
+  getExpectedFileByFilename(fileName: string): ExpectedFile | undefined {
+    return expectedFiles.find((file: {normalized: string, actual: string}) => {
       return path.basename(file.normalized) === path.basename(fileName);
     });
+  }
+
+  getExpectedFileByFilePath(fileName: string): ExpectedFile | undefined {
+    return expectedFiles.find((file: {normalized: string, actual: string}) => {
+      return slash(fileName).toLowerCase().includes(slash(file.normalized).toLowerCase());
+    });
+  }
+
+  getNormalizedFilePath(fileName: string): string | undefined {
+    let foundPath = this.getExpectedFileByFilePath(fileName) ?? this.getExpectedFileByFilename(fileName);
     if(!foundPath) {
       log.info(`Could not find file ${fileName}`);
     }
