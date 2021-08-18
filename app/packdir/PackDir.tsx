@@ -198,7 +198,9 @@ export default class PackDir {
       }
     });
 
-    if(dirs.includes('eclipse')) {
+    if(dirs.includes('gemini')) {
+      return 'Chapter XXI: Hellraiser'
+    } else if(dirs.includes('eclipse')) {
       return 'Chapter XX: Resident Evil';
     } else if (dirs.includes('comet')) {
       return 'Chapter XIX: All-Kill';

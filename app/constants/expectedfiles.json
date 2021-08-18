@@ -96,6 +96,10 @@
     "actual": "CharPortraits/Finland/FS_charSelect_portrait.png"
   },
   {
+    "normalized": "charportraits/gemini/k25_charselect_portrait.png",
+    "actual": "CharPortraits/Gemini/K25_charSelect_portrait.png"
+  },
+  {
     "normalized": "charportraits/guam/gk_charselect_portrait.png",
     "actual": "CharPortraits/Guam/GK_charSelect_portrait.png"
   },
@@ -1180,8 +1184,16 @@
     "actual": "HelpLoading/Aurora/iconHelpLoading_twins.png"
   },
   {
+    "normalized": "helploading/comet/iconhelploading_trickster.png",
+    "actual": "HelpLoading/Comet/iconHelpLoading_trickster.png"
+  },
+  {
     "normalized": "helploading/eclipse/iconhelploading_t-virus.png",
     "actual": "HelpLoading/Eclipse/iconHelpLoading_T-virus.png"
+  },
+  {
+    "normalized": "helploading/gemini/iconhelploading_summonsofpain.png",
+    "actual": "HelpLoading/Gemini/iconHelpLoading_SummonsOfPain.png"
   },
   {
     "normalized": "helploading/iconhelploading_addons.png",
@@ -1230,6 +1242,10 @@
   {
     "normalized": "helploading/iconhelploading_hillbilly.png",
     "actual": "HelpLoading/iconHelpLoading_hillbilly.png"
+  },
+  {
+    "normalized": "helploading/iconhelploading_hook.png",
+    "actual": "HelpLoading/iconHelpLoading_hook.png"
   },
   {
     "normalized": "helploading/iconhelploading_huntress.png",
@@ -2114,6 +2130,86 @@
   {
     "normalized": "itemaddons/finland/iconaddon_workshopgrease.png",
     "actual": "ItemAddons/Finland/iconAddon_workshopGrease.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_bentnail.png",
+    "actual": "ItemAddons/Gemini/iconAddon_bentNail.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_burningcandle.png",
+    "actual": "ItemAddons/Gemini/iconAddon_burningCandle.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_chattererstooth.png",
+    "actual": "ItemAddons/Gemini/iconAddon_chatterersTooth.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_engineersfang.png",
+    "actual": "ItemAddons/Gemini/iconAddon_engineersFang.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_flickeringtelevision.png",
+    "actual": "ItemAddons/Gemini/iconAddon_flickeringTelevision.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_franksheart.png",
+    "actual": "ItemAddons/Gemini/iconAddon_franksHeart.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_greasyblacklens.png",
+    "actual": "ItemAddons/Gemini/iconAddon_greasyBlackLens.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_impalingwire.png",
+    "actual": "ItemAddons/Gemini/iconAddon_impalingWire.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_iridescentlamentconfiguration.png",
+    "actual": "ItemAddons/Gemini/iconAddon_iridescentLamentConfiguration.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_larrysblood.png",
+    "actual": "ItemAddons/Gemini/iconAddon_larrysBlood.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_larrysremains.png",
+    "actual": "ItemAddons/Gemini/iconAddon_larrysRemains.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_leatherstrip.png",
+    "actual": "ItemAddons/Gemini/iconAddon_leatherStrip.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_liquifiedgore.png",
+    "actual": "ItemAddons/Gemini/iconAddon_liquifiedGore.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_livelycrickets.png",
+    "actual": "ItemAddons/Gemini/iconAddon_livelyCrickets.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_originalpain.png",
+    "actual": "ItemAddons/Gemini/iconAddon_originalPain.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_skeweredrat.png",
+    "actual": "ItemAddons/Gemini/iconAddon_skeweredRat.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_sliceoffrank.png",
+    "actual": "ItemAddons/Gemini/iconAddon_sliceofFrank.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_spoiledmeal.png",
+    "actual": "ItemAddons/Gemini/iconAddon_spoiledMeal.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_torturepillar.png",
+    "actual": "ItemAddons/Gemini/iconAddon_torturePillar.png"
+  },
+  {
+    "normalized": "itemaddons/gemini/iconaddon_wrigglingmaggots.png",
+    "actual": "ItemAddons/Gemini/iconAddon_wrigglingMaggots.png"
   },
   {
     "normalized": "itemaddons/guam/iconaddon_bottleofchloroform.png",
@@ -3692,6 +3788,10 @@
     "actual": "items/Limited/iconItems_LimitedItemVaccine.png"
   },
   {
+    "normalized": "items/limited/iconitems_limitedlamentconfiguration.png",
+    "actual": "items/Limited/iconItems_LimitedLamentConfiguration.png"
+  },
+  {
     "normalized": "items/lunarevent/iconitems_toolboxlunar.png",
     "actual": "items/LunarEvent/iconItems_toolboxLunar.png"
   },
@@ -3978,6 +4078,18 @@
   {
     "normalized": "perks/finland/iconperks_tenacity.png",
     "actual": "Perks/Finland/iconPerks_tenacity.png"
+  },
+  {
+    "normalized": "perks/gemini/iconperks_deadlock.png",
+    "actual": "Perks/Gemini/iconPerks_Deadlock.png"
+  },
+  {
+    "normalized": "perks/gemini/iconperks_hexplaything.png",
+    "actual": "Perks/Gemini/iconPerks_HexPlaything.png"
+  },
+  {
+    "normalized": "perks/gemini/iconperks_scourgehookgiftofpain.png",
+    "actual": "Perks/Gemini/iconPerks_ScourgeHookGiftOfPain.png"
   },
   {
     "normalized": "perks/guam/iconperks_bamboozle.png",
@@ -4642,6 +4754,10 @@
   {
     "normalized": "powers/finland/iconpowers_reversebeartrap.png",
     "actual": "Powers/Finland/iconPowers_reverseBearTrap.png"
+  },
+  {
+    "normalized": "powers/gemini/iconpowers_summonsofpain.png",
+    "actual": "Powers/Gemini/iconPowers_summonsOfPain.png"
   },
   {
     "normalized": "powers/guam/iconpowers_gasbomb.png",

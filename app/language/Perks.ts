@@ -189,8 +189,22 @@ const languageMap: { [key: string]: string } = {
   "perks/eclipse/iconperks_hysteria.png": 'Killer / Hysteria',
   "perks/eclipse/iconperks_lethalpursuer.png": 'Killer / Lethal Pursuer',
   "perks/eclipse/iconperks_resurgence.png": 'Survivor / Resurgence',
-  "perks/eclipse/iconperks_rookiespirit.png": 'Survivor / Rookie Spirit'
-
+  "perks/eclipse/iconperks_rookiespirit.png": 'Survivor / Rookie Spirit',
+  'perks/gemini/iconperks_deadlock.png': 'Killer / Deadlock',
+  'perks/gemini/iconperks_hexplaything.png': 'Killer / Hex: Plaything',
+  'perks/gemini/iconperks_scourgehookgiftofpain.png': 'Killer / Scourge Hook: Gift of Pain',
+  'perks/nolicense/iconperks_bloodwarden.png': '[NO LICENSE] Blood Warden',
+  'perks/nolicense/iconperks_decisivestrike.png': '[NO LICENSE] Decisive Strike',
+  'perks/nolicense/iconperks_dyinglight.png': '[NO LICENSE] Dying Light',
+  'perks/nolicense/iconperks_fireup.png': '[NO LICENSE] Fire Up',
+  'perks/nolicense/iconperks_objectofobsession.png': '[NO LICENSE] Object of Obsession',
+  'perks/nolicense/iconperks_pharmacy.png': '[NO LICENSE] Pharmacy',
+  'perks/nolicense/iconperks_playwithyourfood.png': '[NO LICENSE] Play With Your Food',
+  'perks/nolicense/iconperks_rememberme.png': '[NO LICENSE] Remember Me',
+  'perks/nolicense/iconperks_savethebestforlast.png': '[NO LICENSE] Save The Best For Last',
+  'perks/nolicense/iconperks_solesurvivor.png': '[NO LICENSE] Sole Survivor',
+  'perks/nolicense/iconperks_vigil.png': '[NO LICENSE] Vigil',
+  'perks/nolicense/iconperks_wakeup.png': '[NO LICENSE] Wake Up',
 };
 
 export default function getLanguage(tag) {

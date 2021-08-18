@@ -29,7 +29,9 @@ const languageMap: { [key: string]: string } = {
   'items/lunarevent/iconitems_toolboxlunar.png': 'Lunar Toolbox',
   "items/limited/iconitems_flashbanggrenade.png": 'Flashbang Grenade',
   "items/limited/iconitems_limiteditemvaccine.png": 'Vaccine',
-  "items/anniversary/iconitems_toolbox_anniversary2021.png": "2021 Toolbox"
+  "items/anniversary/iconitems_toolbox_anniversary2021.png": "2021 Toolbox",
+  "items/iconitems_carriedbody.png": "Carried Body",
+  "items/limited/iconitems_limitedlamentconfiguration.png": "Limited Lament Configuration"
   
 };
 

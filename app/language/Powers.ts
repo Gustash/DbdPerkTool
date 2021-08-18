@@ -40,7 +40,7 @@ const languageMap: { [key: string]: string } = {
   "powers/eclipse/iconpowers_t-virus1.png": 'Nemesis / T-Virus 01',
   "powers/eclipse/iconpowers_t-virus2.png": 'Nemesis / T-Virus 02',
   "powers/eclipse/iconpowers_t-virus3.png": 'Nemesis / T-Virus 03',
-  "powers/eclipse/iconpowers_tyrantmutations.png": 'Nemesis / Tryant Mutations'
+  "powers/eclipse/iconpowers_tyrantmutations.png": 'Nemesis / Tryant Mutations',
 };
 
 export default function getLanguage(tag) {

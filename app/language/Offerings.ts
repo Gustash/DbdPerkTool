@@ -116,6 +116,23 @@ const languageMap: { [key: string]: string } = {
   'favors/wales/iconfavors_marysletter.png': "Mary's Letter",
   "favors/anniversary/iconsfavors_5thanniversary.png": "5th Anniversary",
   'favors/eclipse/iconsfavors_rpdbadge.png': 'RPD Badge',
+  'favors/anniversary/iconfavors_5thanniversary.png': "5th Anniversary",
+  'favors/xp/iconfavors_blacktea.png': "Black Tea",
+  'favors/xp/iconfavors_blankpostcard.png': "Blank Post",
+  'favors/xp/iconfavors_bloodstonechalice.png': "Blood Stone Chalice",
+  'favors/xp/iconfavors_bonedoll.png': "Bone Doll",
+  'favors/xp/iconfavors_burdocktea.png': "Burdock Tea",
+  'favors/xp/iconfavors_ceramicchalice.png': "Ceramic Chalice",
+  'favors/xp/iconfavors_claydoll.png': "Clay Doll",
+  'favors/xp/iconfavors_copperchalice.png': "Copper Chalice",
+  'favors/xp/iconfavors_crumpledpostcard.png': "Crumpled Postcard",
+  'favors/xp/iconfavors_fleshdoll.png': "Flesh Doll",
+  'favors/xp/iconfavors_lotusleaftea.png': "Lotus Leaf Tea",
+  'favors/xp/iconfavors_loverspostcard.png': "Lover's Postcard",
+  'favors/xp/iconfavors_milktea.png': "Milk Tea",
+  'favors/xp/iconfavors_stampedpostcard.png': "Stamped Postcard",
+  'favors/xp/iconfavors_thorndoll.png': "Thorn Doll",
+  'favors/xp/iconfavors_woodenchalice.png': "Wooden Chalice",
 };
 
 export default function getLanguage(tag: string) {

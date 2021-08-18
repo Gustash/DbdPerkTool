@@ -102,5 +102,7 @@ export default function getLanguage(portrait: String) {
       return 'Survivor / Jill Valentine';
     case "charportraits/eclipse/s27_charselect_portrait.png":
       return 'Survivor / Leon Kennedy';
+    case 'charportraits/gemini/k25_charselect_portrait.png':
+      return 'Killer / Pin Daddy';
   }
 }
