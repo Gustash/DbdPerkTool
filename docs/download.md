@@ -4,7 +4,7 @@ title: Download
 permalink: /download/
 ---
 ## Instructions
-Download the latest release [here](https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/Dead-By-Daylight-Icon-Toolbox-Latest.exe). If you have trouble with the .exe installer, try the .msi version [here](https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/Dead-By-Daylight-Icon-Toolbox-Latest.msi).
+Download the latest release [here](https://packs.dbdicontoolbox.com/Dead-By-Daylight-Icon-Toolbox-Latest.exe). If you have trouble with the .exe installer, try the .msi version [here](https://packs.dbdicontoolbox.com/Dead-By-Daylight-Icon-Toolbox-Latest.msi).
 
 ## Changelog
 You can see the latest release information [here](https://github.com/nrcrast/dbdperktool/releases/latest).
