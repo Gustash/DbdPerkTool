@@ -3,6 +3,11 @@ layout: help
 title: Help
 permalink: /help
 ---
+## Is this safe?
+Over 20 THOUSAND people use this tool (which is insane) and nobody has ever been banned for using custom icons. EAC simply does not care about the icons files. With that being said, there is always a small risk that they will decide to care in the future. In that case, you'll likely be warned. 
+
+It's also worth noting that on occasion when there's a DBD Update, EAC will give you a warning about your game files. This isn't related to the toolbox, it's been happening for years!
+
 ## I am getting an error asking me to set my install location via the Setting tab. What do I do?
 The tool needs to know where DBD is installed so that it can copy your custom icons to the correct place! This is usually auto-detected, but may not work properly depending on your specific machine setup. Here's how to set it manually:
 
@@ -33,8 +38,3 @@ They're gone, such is life. You can get that kind of content elsewhere.
 
 ## How can I install the default icons again? I don't want custom icons anymore!
 You can either click on Install Default Icons in the Toolbox and install that pack, or delete the DBD UI/Icons directory.
-
-## Is this safe?
-Over 20 THOUSAND people use this tool (which is insane) and nobody has ever been banned for using custom icons. EAC simply does not care about the icons files. With that being said, there is always a small risk that they will decide to care in the future. In that case, you'll likely be warned. 
-
-It's also worth noting that on occasion when there's a DBD Update, EAC will give you a warning about your game files. This isn't related to the toolbox, it's been happening for years!
