@@ -80,10 +80,15 @@ class Settings {
 
   async save() {
     log.info('Saving settings: ', this.settings);
-    return fs.writeFile(
-      this.settingsPath,
-      JSON.stringify(this.settings, null, 2)
-    );
+    try {
+      await fs.writeFile(
+        this.settingsPath,
+        JSON.stringify(this.settings, null, 2)
+      );
+      log.info('Settings saved');
+    } catch(e) {
+      log.error(`Error writing settings file: ${e}`);
+    }
   }
 }
 

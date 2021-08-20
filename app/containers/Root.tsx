@@ -21,6 +21,7 @@ import ConfirmationModal from '../components/ConfirmationModal';
 import UserContext from '../context/UserContext';
 import Notification from '../components/Notification';
 import axios from 'axios';
+import electron from 'electron';
 import api from '../api/Api';
 
 type Props = {
@@ -91,9 +92,9 @@ const Root = ({ store, history }: Props) => {
   };
 
   const checkDbdPath = async () => {
-    const dbd = new DeadByDaylight();
 
     try {
+      const dbd = new DeadByDaylight();
       const dbdPath = await dbd.getInstallPath();
       log.info(`Detected DBD Path: ${dbdPath}`);
       if (!settingsUtil.settings.overrideInstallPath && dbdPath && dbdPath.length > 0 && dbdPath.toLowerCase() !== settingsUtil.settings.dbdInstallPath.toLowerCase()) {
@@ -110,9 +111,13 @@ const Root = ({ store, history }: Props) => {
   };
 
   useEffect(() => {
+    log.info(`Starting Toolbox v${(
+      electron.app || electron.remote.app
+    ).getVersion()}`);
     checkDbdPath();
     popNotification();
   }, []);
+
 
   return (
     <Provider store={store}>

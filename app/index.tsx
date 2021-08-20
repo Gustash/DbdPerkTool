@@ -17,6 +17,8 @@ process.once('loaded', function() {
   global.setImmediate = _setImmediate;
 });
 
+process.traceProcessWarnings = true;
+
 const store = configureStore();
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
@@ -45,17 +47,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     showDialog: false,
   });
 
-  await settingsUtil.read();
-  await IconPack.cleanTemp();
-  const targetServer = settingsUtil.settings.targetServerOverride || await api.determineTargetServer();
-  if(targetServer === null) {
-    remote.dialog.showErrorBox("Error", "Unable to communicate with the DBD Toolbox Server!");
-  } else {
-    settingsUtil.settings.targetServer = targetServer;
-    await settingsUtil.save();
+  try {
+    await settingsUtil.read();
+    await IconPack.cleanTemp();
+    const targetServer = settingsUtil.settings.targetServerOverride || await api.determineTargetServer();
+    if(targetServer === null) {
+      remote.dialog.showErrorBox("Error", "Unable to communicate with the DBD Toolbox Server!");
+    } else {
+      settingsUtil.settings.targetServer = targetServer;
+      await settingsUtil.save();
+    }
+    await api.checkForPackChanges();
+    await api.initialize();
+  } catch(e) {
+    logger.error(`Error initializing Icon Toolbox: ${e}`);
   }
-  await api.checkForPackChanges();
-  await api.initialize();
+
+
 
   logger.info(`Target Server: ${settingsUtil.get('targetServer')}`);
 
