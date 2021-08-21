@@ -68,6 +68,7 @@ export default function PackDisplay(props: MyProps) {
   const [filters, setFilters] = useState([]);
   const [sortKey, setSortKey] = useState('Downloads');
   const [errorText, setErrorText] = useState('');
+  const [errorLink, setErrorLink] = useState('');
   const [showAuthorPage, setShowAuthorPage] = useState(false);
   const [currentAuthor, setCurrentAuthor] = useState('');
   const [viewMode, setViewMode] = useState('Normal');
@@ -189,8 +190,9 @@ export default function PackDisplay(props: MyProps) {
 
   const cards = fromPacksBuildCards({
     viewMode: viewMode,
-    onError: (msg: string) => {
+    onError: (msg: string, link ?: string) => {
       setErrorText(msg);
+      setErrorLink(link);
       setErrorModalShow(true);
     },
     onInstallComplete: (id: string) => {
@@ -284,6 +286,7 @@ export default function PackDisplay(props: MyProps) {
       )}
       <ErrorModal
         text={errorModalText}
+        link={errorLink}
         show={errorModalShow}
         onHide={() => setErrorModalShow(false)}
       />

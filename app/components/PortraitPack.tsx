@@ -23,6 +23,7 @@ import settingsUtils from '../settings/Settings';
 import api from '../api/Api';
 import UserContext from '../context/UserContext';
 import AdminControls from './IconPack/AdminControls';
+import { InstallPathNotFoundError } from '../models/IconPack';
 
 type MyProps = {
   id: string;
@@ -62,8 +63,12 @@ export default function PortraitPack(props: MyProps) {
 
       props.onInstallComplete(id);
     } catch (e) {
-      const errorMessage = e.message || JSON.stringify(e);
-      props.onError(`Error installing pack ${id}: ${errorMessage}`);
+      let errorMessage = e.message || JSON.stringify(e);
+      let link: string | undefined = undefined;
+      if(e.type === InstallPathNotFoundError.TYPE) {
+        link = 'https://dbdicontoolbox.com/help#i-am-getting-an-error-asking-me-to-set-my-install-location-via-the-setting-tab-what-do-i-do';
+      }
+      props.onError(`Error installing pack ${id}: ${errorMessage}`, link);
     }
   };
 

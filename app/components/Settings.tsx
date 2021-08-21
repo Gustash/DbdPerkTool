@@ -77,8 +77,7 @@ export default function Settings(props: MyProps) {
   }
 
   const installPathHelp = (<span>
-    <p>This is the path that DBD is installed in. To get this value, go to Steam, right click on DBD and go to properties. Click on Local Files and then click 'Browse...'.  This will open up Windows Explorer at the correct location. Copy the path of that location and paste into the text field here.
-    For more help. See <a href="https://discord.gg/rKFsr5syzY" onClick={openLink}>this channel</a> in the Toolbox Discord Server</p>
+    <p>This is the path that DBD is installed in. For a step-by-step guide, visit <a href="https://dbdicontoolbox.com/help#i-am-getting-an-error-asking-me-to-set-my-install-location-via-the-setting-tab-what-do-i-do" onClick={(e) => openLink(e)}>this guide on the DBD Icon Toolbox site!</a></p>
     </span>
   )
 

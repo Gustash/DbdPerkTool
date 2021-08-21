@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import log from 'electron-log';
-import IconPack from './IconPack';
+import {IconPack} from './IconPack';
 import settingsUtil from '../settings/Settings';
 
 export default class PortraitPack extends IconPack {

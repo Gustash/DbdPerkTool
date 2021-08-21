@@ -14,7 +14,15 @@ const { ipcRenderer } = electron;
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
-export default abstract class IconPack {
+export class InstallPathNotFoundError extends Error {
+  static TYPE = 'InstallPathNotFound';
+  public type = 'InstallPathNotFound';
+  constructor() {
+    super('DBD Installation not found. Please go to the Settings tab and set your DBD Installation Path.');
+  }
+}
+
+export abstract class IconPack {
   meta: PackMeta;
   static tempDir = path.resolve((electron.app || electron.remote.app).getPath('userData'), 'temp');
   constructor(meta: PackMeta) {
@@ -36,7 +44,7 @@ export default abstract class IconPack {
    * @param destPath the DBD UI/Icons directory
    * @param opts options. currently only used in PerkPack implementation
    */
-  abstract async copyFilesTo(
+  abstract copyFilesTo(
     sourcePath: string,
     destPath: string,
     opts: any
@@ -45,7 +53,7 @@ export default abstract class IconPack {
   /**
    * Persist the saved pack ID for the UI
    */
-  abstract async saveInstalledPackId(): Promise<any>;
+  abstract saveInstalledPackId(): Promise<any>;
 
   private async getZipUrl(): Promise<string> {
     const url = await axios.get(
@@ -130,9 +138,7 @@ export default abstract class IconPack {
     const dbdPath = settingsUtil.settings.dbdInstallPath;
 
     if (dbdPath === '') {
-      throw new Error(
-        'Dead By Daylight installation not found. Please set your installation location via the Settings tab.'
-      );
+      throw new InstallPathNotFoundError();
     }
 
     const dbdIconsPath = path.resolve(

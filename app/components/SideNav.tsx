@@ -256,7 +256,7 @@ export default function SideNav() {
           }}
         />
         <MenuEntry
-          text="About"
+          text="About / Help"
           image={MenuAbout}
           currentActive={activeTab}
           to={routes.HOME}

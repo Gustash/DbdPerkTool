@@ -4,7 +4,7 @@ import copy from 'recursive-copy';
 import readdir from 'recursive-readdir';
 import log from 'electron-log';
 import { PackMeta } from './PackMeta';
-import IconPack from './IconPack';
+import {IconPack} from './IconPack';
 import settingsUtil from '../settings/Settings';
 import slash from 'slash';
 import { promisify } from 'util';

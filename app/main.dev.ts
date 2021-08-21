@@ -18,7 +18,6 @@ import { EventEmitter } from 'events';
 import axios from 'axios';
 import fs from 'fs';
 import fetch from 'electron-fetch';
-import IconPack from '../app/models/IconPack';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 

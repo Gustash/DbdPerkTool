@@ -23,6 +23,7 @@ import settingsUtils from '../settings/Settings';
 import api from '../api/Api';
 import UserContext from '../context/UserContext';
 import AdminControls from './IconPack/AdminControls';
+import { InstallPathNotFoundError } from '../models/IconPack';
 
 type MyProps = {
   id: string;
@@ -30,7 +31,7 @@ type MyProps = {
   meta: any;
   onAuthorClick: any;
   setFilter: any;
-  onError: any;
+  onError: (message: string, link ?: string) => void;
   onInstallComplete: any;
   viewMode: string;
   onModifyComplete: any;
@@ -62,9 +63,13 @@ export default function PerkPack(props: MyProps) {
       }
 
       props.onInstallComplete(id);
-    } catch (e) {
-      const errorMessage = e.message || JSON.stringify(e);
-      props.onError(`Error installing pack ${id}: ${errorMessage}`);
+    } catch (e: any) {
+      let errorMessage = e.message || JSON.stringify(e);
+      let link: string | undefined = undefined;
+      if(e.type === InstallPathNotFoundError.TYPE) {
+        link = 'https://dbdicontoolbox.com/help#i-am-getting-an-error-asking-me-to-set-my-install-location-via-the-setting-tab-what-do-i-do';
+      }
+      props.onError(`Error installing pack ${id}: ${errorMessage}`, link);
     }
   };
 

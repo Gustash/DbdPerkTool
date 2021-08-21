@@ -9,7 +9,7 @@ import './app.global.css';
 import axios from 'axios';
 import logger from 'electron-log';
 import api from './api/Api';
-import IconPack from './models/IconPack';
+import {IconPack} from './models/IconPack';
 
 
 const _setImmediate = setImmediate;

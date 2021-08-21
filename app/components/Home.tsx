@@ -42,8 +42,17 @@ export default class Home extends Component<MyProps, MyState> {
         <iframe width="560" height="315" src="https://www.youtube.com/embed/PBIHgcy8SLI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
         <h3>Help</h3>
+        <p>Most common questions are answered    <a
+            href="#"
+            onClick={function(e) {
+              e.preventDefault();
+              shell.openExternal('https://dbdicontoolbox.com/help');
+            }}
+          >
+            here on the official help page!
+          </a></p>
         <p>
-          You can get help at the Dead By Daylight Icon Toolbox{' '}
+          For all other questions, you can get help at the Dead By Daylight Icon Toolbox{' '}
           <a
             href="#"
             onClick={function(e) {

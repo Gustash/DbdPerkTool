@@ -8,6 +8,9 @@ Over 20 THOUSAND people use this tool (which is insane) and nobody has ever been
 
 It's also worth noting that on occasion when there's a DBD Update, EAC will give you a warning about your game files. This isn't related to the toolbox, it's been happening for years!
 
+## I installed my game through Windows store, can I use this tool?
+Unfortunately, no. The only version of this game that allows you to change icons is the Steam version.
+
 ## I am getting an error asking me to set my install location via the Setting tab. What do I do?
 The tool needs to know where DBD is installed so that it can copy your custom icons to the correct place! This is usually auto-detected, but may not work properly depending on your specific machine setup. Here's how to set it manually:
 
