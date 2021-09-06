@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Form from 'react-bootstrap/Form';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import Toast from 'react-bootstrap/Toast';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useDebouncedCallback } from 'use-debounce';
 import log from 'electron-log';
@@ -81,6 +82,9 @@ export default function PackDisplayHeader(props: MyProps) {
   };
 
   const setSearchFilter = (text: string) => {
+    if(text.startsWith('dbdicontoolbox://')) {
+      text = text.split('dbdicontoolbox://')[1];
+    }
     setSearchText(text);
     debounceSearchCallback(text);
   };
@@ -129,33 +133,6 @@ export default function PackDisplayHeader(props: MyProps) {
           )}
         </DropdownButton>
       </DropdownButtonWrapper>
-      {/* <DropdownButtonWrapper>
-        <DropdownButton
-          variant="secondary"
-          id="viewModeDropDown"
-          title={
-            <span>
-              <i className="fas fa-eye"></i> View Mode ({viewModeText})
-            </span>
-          }
-        >
-          {['Normal', 'Compact'].map((viewMode: string) => {
-            return (
-              <NavDropdown.Item
-                key={`viewMode-${viewMode}`}
-                className="field-label-text"
-                href="#"
-                onClick={e => {
-                  e.preventDefault();
-                  setViewMode(viewMode);
-                }}
-              >
-                {viewMode}
-              </NavDropdown.Item>
-            );
-          })}
-        </DropdownButton>
-      </DropdownButtonWrapper> */}
       <DropdownButtonWrapper>
         <DropdownButton
           variant="secondary"
@@ -213,7 +190,7 @@ export default function PackDisplayHeader(props: MyProps) {
           marginLeft: 'auto'
         }}
         type="text"
-        placeholder="Search"
+        placeholder="Search/Link"
         className="mr-sm-2 dbd-input-field"
         onChange={e => {
           setSearchFilter(e.target.value);

@@ -95,7 +95,7 @@ async function signIn(onJwt) {
   authWindow.show();
   // 'will-navigate' is an event emitted when the window.location changes
   // newUrl should contain the tokens you need
-  authWindow.webContents.on('did-redirect-navigation', async function(
+  authWindow.webContents.on('did-redirect-navigation', async function (
     event,
     newUrl
   ) {
@@ -238,6 +238,18 @@ export default function SideNav() {
           text="Admin"
           currentActive={activeTab}
           to={routes.ADMIN}
+          image={MenuAdmin}
+          onClick={(target: string) => {
+            setActiveTab(target);
+          }}
+        />
+      )}
+
+      {signedIn && userContext.user.abilities.can('update', 'UnmoderatedPacks') && (
+        <MenuEntry
+          text="Approvals"
+          currentActive={activeTab}
+          to={routes.APPROVALS}
           image={MenuAdmin}
           onClick={(target: string) => {
             setActiveTab(target);

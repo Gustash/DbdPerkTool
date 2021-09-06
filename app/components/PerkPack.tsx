@@ -23,6 +23,7 @@ import settingsUtils from '../settings/Settings';
 import api from '../api/Api';
 import UserContext from '../context/UserContext';
 import AdminControls from './IconPack/AdminControls';
+import ApprovalControls from './IconPack/ApprovalControls';
 import { InstallPathNotFoundError } from '../models/IconPack';
 
 type MyProps = {
@@ -35,6 +36,7 @@ type MyProps = {
   onInstallComplete: any;
   viewMode: string;
   onModifyComplete: any;
+  approvalRequired: boolean;
 };
 
 
@@ -162,12 +164,17 @@ export default function PerkPack(props: MyProps) {
   const featured = props.meta.featured ? 'pack-featured' : '';
 
   let adminButtons = null;
+  let approvalButtons = null;
 
   if (
     userContext.user &&
     userContext.user.abilities.can('manage', subject('PerkPack', props.meta))
   ) {
     adminButtons = <AdminControls id={props.id} meta={props.meta} onModifyComplete={props.onModifyComplete} />;
+  }
+
+  if(userContext.user && userContext.user.abilities.can('update', 'UnmoderatedPacks') && !props.meta.approved) {
+    approvalButtons = <ApprovalControls id={props.id} meta={props.meta} onModifyComplete={props.onModifyComplete}/>;
   }
 
   return (
@@ -182,6 +189,7 @@ export default function PerkPack(props: MyProps) {
           />
         </Card.Body>
         <Title
+          isApproved={props.meta.approved}
           name={props.meta.name}
           isFeatured={props.meta.featured}
           id={props.id}
@@ -204,6 +212,7 @@ export default function PerkPack(props: MyProps) {
           Details
         </Button>
         {adminButtons}
+        {approvalButtons}
       </Card>
       <Details
         show={showDetails}

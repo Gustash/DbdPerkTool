@@ -1,5 +1,5 @@
 @import 'https://packs.dbdicontoolbox.com/resources/css/theme.css?v=1';
-/*@import 'app.theme.css';*/
+/* @import 'app.theme.css';  */
 
 body {
   background-color: black;
@@ -195,6 +195,22 @@ a {
 a:hover {
   color: var(--secondary-color);
   text-decoration: none;
+}
+
+.approve-button {
+  background-color: green;
+}
+
+.reject-button {
+  background-color: red;
+}
+
+.approve-button:hover {
+  background-color: black;
+}
+
+.reject-button:hover {
+  background-color: black;
 }
 
 .topnav-button {
@@ -465,6 +481,32 @@ a:hover {
   -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   background-color: var(--main-color);
+}
+
+.ribbon-unapproved {
+  font-size: 10px;
+  color: #fff;
+  text-transform: uppercase;
+  font-family: 'Montserrat Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: 0.05em;
+  line-height: 15px;
+  text-align: center;
+  /* text-shadow: 0 -1px 0 rgba(0, 0, 0, .4); */
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  position: relative;
+  padding: 7px 0;
+  padding-left: 16px;
+  right: -11px;
+  top: 10px;
+  width: 130px;
+  height: 28px;
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  background-color: red;
 }
 
 .vote-img-preview {

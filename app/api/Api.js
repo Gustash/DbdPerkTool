@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { AbilityBuilder, Ability } from '@casl/ability';
-import {remote} from 'electron';
+import { remote } from 'electron';
 import log from 'electron-log';
 import settingsUtil from '../settings/Settings.ts';
 import Jwt from './Jwt';
@@ -16,14 +16,20 @@ axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 function defineAbilitiesFor(user) {
   const { can, cannot, rules } = new AbilityBuilder();
 
-  if(user.role === 'Administrator') {
+  if (user.role === 'Administrator') {
     can('manage', 'all');
-  } else if (user.role === 'TrustedCreator') {
-    can('manage', 'PerkPack', {
-        author: { $regex: `^${(user.authorProfile || {}).name}[ |+|&]?` }
-    });
   }
 
+  if(user.role === 'Moderator') {
+    can('update', 'UnmoderatedPacks');
+  }
+
+  if(user.authorProfile && user.authorProfile.name) {
+    can('manage', 'PerkPack', {
+      author: { $regex: `^${(user.authorProfile || {}).name}[ |+|&]?` }
+    });
+  }
+  
   return new Ability(rules);
 }
 
@@ -66,7 +72,7 @@ class Api {
   }
 
   async connectAuthor(steamId, authorName) {
-    await this.executor.apis.default.connectProfile({}, {requestBody: {steamId, author: authorName}});
+    await this.executor.apis.default.connectProfile({}, { requestBody: { steamId, author: authorName } });
   }
 
   async updateFavorite(packId, newValue) {
@@ -82,7 +88,7 @@ class Api {
   }
 
   async getPacks(queryParams) {
-    if(this.isLoggedIn()) {
+    if (this.isLoggedIn()) {
       return this.executor.apis.default.getPacksSec(queryParams);
     } else {
       return this.executor.apis.default.getPacks(queryParams);
@@ -91,14 +97,14 @@ class Api {
 
   async determineTargetServer() {
     const servers = ['https://dead-by-daylight-icon-toolbox.herokuapp.com', 'http://app.dbdicontoolbox.com'];
-    for(let i = 0; i < servers.length; i++) {
+    for (let i = 0; i < servers.length; i++) {
       logger.info(`Attempting to communicate with server ${servers[i]}`)
       const server = servers[i];
       try {
         const lastUpdate = await axios.get(`${server}/lastUpdate`)
         logger.info(`Successfully communicated with server ${server}`)
         return server;
-      } catch(e) {
+      } catch (e) {
         logger.info(`Error communicating with server ${server}`)
       }
     }
@@ -117,7 +123,7 @@ class Api {
 
   async popNotification() {
     logger.debug('Popping notification');
-    return this.executor.apis.default.popNotification(settingsUtil.settings.lastNotificationRead ? {since: settingsUtil.settings.lastNotificationRead} : {});
+    return this.executor.apis.default.popNotification(settingsUtil.settings.lastNotificationRead ? { since: settingsUtil.settings.lastNotificationRead } : {});
   }
 
   async checkForPackChanges() {
@@ -136,10 +142,18 @@ class Api {
     return false;
   }
 
+  async approvePack(packId, all = false) {
+    if (all) {
+      return this.executor.apis.default.approvePack({}, { requestBody: { all: true } });
+    } else {
+      return this.executor.apis.default.approvePack({}, { requestBody: { id: packId } });
+    }
+  }
+
   async uploadZip(sourceFile, onProgress) {
     const fileDetails = fs.statSync(sourceFile);
 
-    if(fileDetails.size / 1000000.0 > 150) {
+    if (fileDetails.size / 1000000.0 > 150) {
       throw Error('File is too large. Must be less than 150MB!');
     }
 
@@ -158,9 +172,9 @@ class Api {
         const totalLength = progressEvent.lengthComputable
           ? progressEvent.total
           : progressEvent.target.getResponseHeader('content-length') ||
-            progressEvent.target.getResponseHeader(
-              'x-decompressed-content-length'
-            );
+          progressEvent.target.getResponseHeader(
+            'x-decompressed-content-length'
+          );
         console.log('onUploadProgress', totalLength);
         if (totalLength !== null) {
           onProgress(Math.round((progressEvent.loaded * 100) / totalLength));

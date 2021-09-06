@@ -33,6 +33,14 @@ justify-content: center;
 export default function MyProfile(props: MyProps) {
   const userContext = useContext(UserContext);
 
+  const refreshUser = async () => {
+    userContext.setUser(await api.getUser());
+  };
+
+  useEffect(() => {
+    refreshUser();
+  }, []);
+
   if (!userContext.user) {
     return <Redirect to={routes.PERKS} />;
   }

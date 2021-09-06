@@ -8,8 +8,8 @@ type MyProps = {
   text: string;
   to: string;
   currentActive: string;
-  image: string;
-  icon: string;
+  image?: string;
+  icon?: string;
   onClick: Function;
 };
 

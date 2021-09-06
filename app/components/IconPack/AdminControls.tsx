@@ -85,11 +85,16 @@ export default function AdminControls(props: MyProps) {
         setUpdatePercent(progress);
       });
       setSuccessText(
-        'Pack has been uploaded and currently is being processed. It may take up to 10 minutes for changes to be reflected in the Toolbox.'
+        'Pack has been uploaded and currently is being processed. It may take up to 10 minutes for changes to be reflected in the Toolbox. If you\'re not a trusted creator, your pack will not be visible until it is approved by a moderator.'
       );
       setShowSuccess(true);
     } catch (e) {
-      setErrorText(`Error generating or uploading Pack: ${e}`);
+      let message = 'Unknown error uploading pack';
+      if(e.response?.data) {
+        message = e.response.data;
+      }
+      log.error(e);
+      setErrorText(`Error generating or uploading Pack: ${message}`);
       setShowError(true);
     } finally {
       setUpdateInProgress(false);

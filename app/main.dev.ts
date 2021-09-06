@@ -18,6 +18,7 @@ import { EventEmitter } from 'events';
 import axios from 'axios';
 import fs from 'fs';
 import fetch from 'electron-fetch';
+const WIN32 = process.platform === 'win32';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -25,6 +26,11 @@ const gotTheLock = app.requestSingleInstanceLock();
 app.allowRendererProcessReuse = false;
 
 let mainWindow: BrowserWindow | null = null;
+
+let deeplinkingUrl;
+
+const protocolLauncherArg = '--protocol-launcher';
+const possibleProtocols = ['dbdicontoolbox'];
 
 export default class AppUpdater {
   constructor(win) {
@@ -37,7 +43,7 @@ export default class AppUpdater {
       autoUpdater.logger = log;
       autoUpdater.autoDownload = false;
       autoUpdater.checkForUpdates();
-      autoUpdater.on('checking-for-update', () => {});
+      autoUpdater.on('checking-for-update', () => { });
       autoUpdater.on('update-available', info => {
         ipcMain.on('update-available-resp', (event, doUpdate) => {
           if (doUpdate === true) {
@@ -46,8 +52,8 @@ export default class AppUpdater {
         });
         win.webContents.send('update-available', info);
       });
-      autoUpdater.on('update-not-available', info => {});
-      autoUpdater.on('error', err => {});
+      autoUpdater.on('update-not-available', info => { });
+      autoUpdater.on('error', err => { });
       autoUpdater.signals.progress(progressObj => {
         log.info('Progress: ', progressObj);
         win.webContents.send('update-progress', progressObj);
@@ -83,6 +89,123 @@ const installExtensions = async () => {
   ).catch(console.log);
 };
 
+/**
+ * Handle the url sent to this application
+ * @param url the incoming url argument
+ */
+function handleAppURL(url: string) {
+  log.info('Processing protocol url: ' + url);
+  let action = url.split('://', 2)[1];
+  if (action.endsWith('/')) {
+    action = action.slice(0, action.length - 1);
+  }
+  // This manual focus call _shouldn't_ be necessary, but is for Chrome on
+  // macOS. See https://github.com/desktop/desktop/issues/973.
+  log.info(`Sending action!\n${JSON.stringify(action, null, 4)}`);
+  if (mainWindow) {
+    mainWindow.focus();
+    mainWindow.show();
+    mainWindow.webContents.send('url-action', action);
+  }
+}
+
+
+/**
+ * Attempt to detect and handle any protocol handler arguments passed
+ * either via the command line directly to the current process or through
+ * IPC from a duplicate instance (see makeSingleInstance)
+ *
+ * @param args Essentially process.argv, i.e. the first element is the exec
+ *             path
+ */
+function handlePossibleProtocolLauncherArgs(args: ReadonlyArray<string>) {
+  // log.info(`Received possible protocol arguments: ${args.length}`);
+
+  if (WIN32) {
+    // Desktop registers its protocol handler callback on Windows as
+    // `[executable path] --protocol-launcher "%1"`. Note that extra command
+    // line arguments might be added by Chromium
+    // (https://electronjs.org/docs/api/app#event-second-instance).
+    // At launch Desktop checks for that exact scenario here before doing any
+    // processing. If there's more than one matching url argument because of a
+    // malformed or untrusted url then we bail out.
+    //
+    // During development, there might be more args.
+    // Strategy: look for the arg that is protocolLauncherArg,
+    // then use the next arg as the incoming URL
+
+    // Debugging:
+    // args.forEach((v, i) => log.info(`argv[${i}] ${v}`));
+
+    // find the argv index for protocolLauncherArg
+    const flagI: number = args.findIndex((v) => v === protocolLauncherArg);
+    if (flagI === -1) {
+      // log.error(`Ignoring unexpected launch arguments: ${args}`);
+      return;
+    }
+    // find the arg that starts with one of our desired protocols
+    const url: string | undefined = args.find((arg) => {
+      // eslint-disable-next-line no-plusplus
+      for (let index = 0; index < possibleProtocols.length; index++) {
+        const protocol = possibleProtocols[index];
+        if (protocol && arg.indexOf(protocol) === 0) {
+          return true;
+        }
+      }
+      return false;
+    });
+    if (url === undefined) {
+      log.error(
+        `No url in args even though flag was present! ${args.join('; ')}`
+      );
+      return;
+    }
+    handleAppURL(url);
+    // End of WIN32 case
+  } else if (args.length > 1) {
+    // Mac or linux case
+    handleAppURL(args[1]);
+  }
+}
+
+/**
+ * Wrapper around app.setAsDefaultProtocolClient that adds our
+ * custom prefix command line switches on Windows.
+ */
+function setAsDefaultProtocolClient(protocol: string | undefined) {
+  if (!protocol) {
+    return;
+  }
+  if (
+    WIN32 &&
+    (process.env.NODE_ENV === 'development' ||
+      process.env.DEBUG_PROD === 'true')
+  ) {
+    // Special handling on Windows while developing.
+    // See https://stackoverflow.com/a/53786254/64904
+    // remove so we can register each time as we run the app.
+    app.removeAsDefaultProtocolClient(protocol);
+    // Set the path of electron.exe and files
+    // The following works for Electron v11.
+    // Use the following console script to see the argv contents
+    // process.argv.forEach((v, i)=> log.info(`argv[${i}] ${v}`));
+    app.setAsDefaultProtocolClient(protocol, process.execPath, [
+      process.argv[1], // -r
+      path.resolve(process.argv[2]), // ./.erb/scripts/BabelRegister
+      path.resolve(process.argv[3]), // ./src/main.dev.ts
+      protocolLauncherArg,
+    ]);
+  } else if (WIN32) {
+    app.removeAsDefaultProtocolClient(protocol);
+    app.setAsDefaultProtocolClient(protocol, process.execPath, [
+      protocolLauncherArg,
+    ]);
+  } else {
+    app.removeAsDefaultProtocolClient(protocol);
+    app.setAsDefaultProtocolClient(protocol);
+  }
+}
+
 const createWindow = async () => {
   if (
     process.env.NODE_ENV === 'development' ||
@@ -98,11 +221,16 @@ const createWindow = async () => {
     webPreferences:
       process.env.NODE_ENV === 'development' || process.env.E2E_BUILD === 'true'
         ? {
-            nodeIntegration: true
-          }
+          nodeIntegration: true
+        }
         : {
-            preload: path.join(__dirname, 'dist/renderer.prod.js')
-          }
+          preload: path.join(__dirname, 'dist/renderer.prod.js')
+        }
+  });
+
+  app.on('open-url', function (event, url) {
+    event.preventDefault();
+    handleAppURL(url);
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
@@ -160,14 +288,21 @@ const createWindow = async () => {
 if (!gotTheLock) {
   app.quit();
 } else {
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
+  app.on('second-instance', (_event, args) => {
     // Someone tried to run a second instance, we should focus our window.
     if (mainWindow) {
       if (mainWindow.isMinimized()) {
         mainWindow.restore();
       }
+
+      if (!mainWindow.isVisible()) {
+        mainWindow.show();
+      }
+
       mainWindow.focus();
     }
+
+    handlePossibleProtocolLauncherArgs(args);
   });
 }
 
@@ -179,10 +314,11 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('ready', createWindow);
+app.on('ready', () => possibleProtocols.forEach((protocol) => setAsDefaultProtocolClient(protocol)));
 
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createWindow();
-});
+app
+  .whenReady()
+  .then(createWindow)
+  .catch((error) => {
+    log.error(`error creating window: ${error}`);
+  });

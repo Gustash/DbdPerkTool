@@ -1,10 +1,9 @@
 import React, { useState, useContext } from 'react';
-import Button from 'react-bootstrap/Button';
-import Spinner from 'react-bootstrap/Spinner';
 import Card from 'react-bootstrap/Card';
 import styled from 'styled-components';
 import api from '../../api/Api';
 import UserContext from '../../context/UserContext';
+import PackLink from './PackLink';
 
 const FavoriteWrapper = styled.div`
   position: absolute;
@@ -21,15 +20,20 @@ const FavoriteWrapper = styled.div`
 type MyProps = {
   name: string;
   id: string;
+  isApproved: boolean;
   isFeatured: boolean;
 };
-
 
 export default function Title(props: MyProps) {
   const userContext = useContext(UserContext);
   const isFavorite =
     userContext.user &&
     userContext.user.favorites.find(pack => pack.id === props.id);
+
+  const ribbonClass = !props.isApproved ? 'ribbon-unapproved' : 'ribbon';
+  const ribbonText = !props.isApproved ? 'UNAPPROVED' : 'Featured';
+  const hasRibbon = props.isFeatured || !props.isApproved;
+
   const favoriteStarClass = isFavorite
     ? 'fas fa-star fa-lg'
     : 'far fa-star fa-lg';
@@ -45,14 +49,15 @@ export default function Title(props: MyProps) {
         <i className={favoriteStarClass}></i>
       </FavoriteWrapper>
     ) : null;
-  if (props.isFeatured) {
+  if (hasRibbon) {
     return (
       <Card.Title>
         {favoriteStar}
         <div className="ribbon-wrapper">
-          <div className="ribbon">Featured</div>
+          <div className={ribbonClass}>{ribbonText}</div>
         </div>
-        {props.name}
+        {props.name}             
+        <PackLink id={props.id}></PackLink>
       </Card.Title>
     );
   } else {
@@ -60,6 +65,7 @@ export default function Title(props: MyProps) {
       <Card.Title>
         {favoriteStar}
         {props.name}
+        <PackLink id={props.id}></PackLink>
       </Card.Title>
     );
   }

@@ -18,16 +18,17 @@ import UserContext from '../context/UserContext';
 import api from '../api/Api';
 import PerkPack from './PerkPack';
 import PortraitPack from './PortraitPack';
+import { ipcRenderer } from 'electron';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
 type MyProps = {
-  installedPackSettingsKey: string;
   showHeaderBar?: boolean;
   paginate?: boolean;
   featured?: boolean;
   mine?: boolean;
   defaultOnly?: boolean;
+  unapprovedOnly?: boolean;
 };
 
 const DeckWrapper = styled.div`
@@ -80,6 +81,13 @@ export default function PackDisplay(props: MyProps) {
   const [packs, setPacks] = useState([]);
   const deckWrapperRef = React.createRef();
 
+  useEffect(() => { 
+    ipcRenderer.removeAllListeners('url-action');
+    ipcRenderer.on('url-action', (event, arg) => {
+      setSearchFilter(arg);
+    });
+  });
+
   const fromPacksBuildCards = (opts) => {
     const myPacks = packs.data;
     return myPacks.map(pack => {
@@ -96,6 +104,7 @@ export default function PackDisplay(props: MyProps) {
             onAuthorClick={(author: string) => {
               opts.onAuthorClick(author);
             }}
+            approvalRequired={!!props.unapprovedOnly}
             onModifyComplete={opts.onModifyComplete}
           />
         );
@@ -126,7 +135,7 @@ export default function PackDisplay(props: MyProps) {
       return;
     }
     const capabilities = filters.length > 0 ? filters.join('|') : null;
-    const params = {page: page + 1, limit: pageSize, capabilities};
+    const params = {page: page + 1, limit: pageSize, capabilities, unapproved: props.unapprovedOnly};
     
     if(searchFilter) {
       params.search = searchFilter;

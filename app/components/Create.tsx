@@ -104,15 +104,19 @@ export default function Create(props: MyProps) {
         setSaveProgress(progress);
       });
       setSuccessText(
-        `Your pack has been uploaded. Zip has also been generated at ${outputZip}`
+        `Your pack has been uploaded. If you're not a TrustedCreator, your pack will be visible once it's approved by a moderator. Zip has also been generated at ${outputZip}`
       );
       setSaving(false);
       setSuccessModalShow(true);
     } catch (e) {
       console.log(e);
       console.trace();
+      let message = 'Unknown error uploading pack';
+      if(e.response?.data) {
+        message = e.response.data;
+      }
       log.debug(`Error uploading pack: `, e.response);
-      setErrorText(`Error generating or uploading Pack: ${e}`);
+      setErrorText(`Error generating or uploading Pack: ${message}`);
       setSaving(false);
       setErrorModalShow(true);
     } finally {
