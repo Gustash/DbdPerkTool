@@ -1,8 +1,4 @@
-import React, { Component, useState, useContext } from 'react';
-import fs from 'fs-extra';
-import log from 'electron-log';
-import path from 'path';
-import { app, remote, shell } from 'electron';
+import React, { useState, useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
@@ -12,12 +8,8 @@ import ErrorModal from '../ErrorModal';
 import SuccessModal from '../SuccessModal';
 import api from '../../api/Api';
 import EditPackModal from './EditPackModal';
-import UpdatePackModal from './UpdatePackModal';
-import PackDir from '../../packdir/PackDir';
-import PackGenerator from '../../packgenerator/PackGenerator';
-import settingsUtil from '../../settings/Settings';
-import { promisify } from 'util';
-import rimraf from 'rimraf';
+import { Link } from 'react-router-dom';
+import routes from '../../constants/routes.json';
 
 type MyProps = {
   id: string;
@@ -40,73 +32,10 @@ export default function AdminControls(props: MyProps) {
   const [deleteInProgress, setDeleteInProgress] = useState(false);
   const [showError, setShowError] = useState(false);
   const [editInProgress, setEditInProgress] = useState(false);
-  const [showUpdatePack, setShowUpdatePack] = useState(false);
-  const [updateInProgress, setUpdateInProgress] = useState(false);
-  const [updatePercent, setUpdatePercent] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successText, setSuccessText] = useState('');
 
   const showAuthor: boolean = userContext?.user?.abilities?.can('manage', 'all');
-
-  const doPackUpload = async (packDir: string) => {
-    setUpdateInProgress(true);
-    const packDirModel = new PackDir(packDir);
-
-    const validationStatus = await packDirModel.validate();
-
-    if (validationStatus.isValid === false) {
-      setErrorText(validationStatus.failReason);
-      setShowError(true);
-      return;
-    }
-
-    log.debug('Pack Contents: ', await packDirModel.getMeta());
-
-    setUpdatePercent(0);
-
-    const generator = new PackGenerator(
-      packDirModel,
-      undefined,
-      props.meta.name,
-      props.meta.author,
-      props.meta.description,
-      validationStatus.skipFiles
-    );
-
-    let outputZip;
-
-    try {
-      outputZip = await generator.generate();
-      // This is just a little hack to update the JWT if necessary before the upload
-      // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
-      // logic
-      await api.getUser();
-      await api.uploadZip(outputZip, progress => {
-        setUpdatePercent(progress);
-      });
-      setSuccessText(
-        'Pack has been uploaded and currently is being processed. It may take up to 10 minutes for changes to be reflected in the Toolbox. If you\'re not a trusted creator, your pack will not be visible until it is approved by a moderator.'
-      );
-      setShowSuccess(true);
-    } catch (e) {
-      let message = 'Unknown error uploading pack';
-      if(e.response?.data) {
-        message = e.response.data;
-      }
-      log.error(e);
-      setErrorText(`Error generating or uploading Pack: ${message}`);
-      setShowError(true);
-    } finally {
-      setUpdateInProgress(false);
-      setShowUpdatePack(false);
-
-      if(outputZip && settingsUtil.get('deleteAfterUpload') === true) {
-        const rmrf = promisify(rimraf);
-        log.info(`Removing output zip ${outputZip}`);
-        await rmrf(outputZip);
-      }
-    }
-  };
 
   const handleDeleteClose = async (doDelete = false) => {
     setDeleteInProgress(true);
@@ -136,15 +65,19 @@ export default function AdminControls(props: MyProps) {
       >
         Edit
       </Button>
-      <Button
-        className="w-100 mr-1"
-        variant="info"
-        onClick={() => {
-          setShowUpdatePack(true);
-        }}
-      >
-        Update
-      </Button>
+      <Link to={{
+        pathname: routes.CREATE,
+        state: { id: props.id }
+      }} className="w-100 mr-1">
+        <Button
+          className="w-100"
+          variant="info"
+          onClick={() => userContext.setPage(routes.CREATE)}
+        >
+          Update
+        </Button>
+      </Link>
+
       <Button
         className="w-100 mr-1"
         variant="info"
@@ -230,21 +163,6 @@ export default function AdminControls(props: MyProps) {
         packAuthor={props.meta.author}
         packDescription={props.meta.description}
       ></EditPackModal>
-      <UpdatePackModal
-        show={showUpdatePack}
-        onHide={() => {
-          setShowUpdatePack(false);
-        }}
-        onConfirm={async (packDir: string) => {
-          await doPackUpload(packDir);
-          setTimeout(() => {
-            props.onModifyComplete();
-          }, 60000);
-        }}
-        name={props.meta.name}
-        operationInProgress={updateInProgress}
-        updatePercent={updatePercent}
-      ></UpdatePackModal>
     </AdminControlsWrapper>
   );
 }

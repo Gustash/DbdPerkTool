@@ -18,11 +18,15 @@ class Steam {
     const manifest = vdf.parse(manifestText);
     const folders = [path.resolve(`${steamInstallPath}`)];
 
-    Object.keys(manifest.LibraryFolders).forEach(folder => {
-      if (isNumeric(folder)) {
-        folders.push(path.resolve(manifest.LibraryFolders[folder]));
-      }
-    });
+    const libFolderKey = Object.keys(manifest).find(key => key.toLowerCase() === 'libraryfolders');
+
+    if(libFolderKey) {
+      Object.keys(manifest[libFolderKey]).forEach(folder => {
+        if (isNumeric(folder)) {
+          folders.push(path.resolve(manifest.LibraryFolders[folder]));
+        }
+      });
+    }
 
     return folders;
   }

@@ -20,6 +20,8 @@ import UserContext from '../context/UserContext';
 import NoAuthorProfile from './NoAuthorProfile';
 import rimraf from 'rimraf';
 import { promisify } from 'util';
+import UploadAgreement from './UploadAgreement';
+import { DefaultContainer } from './DefaultContainer';
 
 axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 
@@ -32,7 +34,7 @@ const CreateButtonWrapper = styled.div`
   flex-direction: column;
 `;
 
-function replaceWindowsChars(str:string) : string {
+function replaceWindowsChars(str: string): string {
   return str.replace(/[\/\\,+$~%.':*?<>{}]/g, '_');
 }
 
@@ -47,20 +49,31 @@ export default function Create(props: MyProps) {
   const [description, setDescription] = useState('');
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
+  const [uploadAgreementShow, setUploadAgreementShow] = useState(false);
   const [packs, setPacks] = useState([]);
   const userContext = useContext(UserContext);
 
-  if (!userContext.user.authorProfile) {
+  if (!userContext?.user?.author) {
     return <NoAuthorProfile />;
   }
 
   const autoAuthor = userContext.user.abilities.cannot('manage', 'all');
 
+  const initialId = props.location?.state?.id;
+  const disableInputs: boolean = !!initialId;
+
   const loadPacks = async () => {
-    const packs = await axios.get(
-      `${settingsUtil.get('targetServer')}/v2/packs?light=true`
-    );
-    setPacks(packs.data.data);
+    const packs = await api.getPacks({ light: true, mine: true });
+    setPacks(packs.data);
+
+    if (initialId) {
+      const pack = packs.data.find(pack => pack.id === initialId);
+      if (pack) {
+        setTitle(pack.name);
+        setDescription(pack.description);
+        setAuthor(pack.author);
+      }
+    }
   };
 
   useEffect(() => {
@@ -68,7 +81,13 @@ export default function Create(props: MyProps) {
   }, []);
 
   const doCreate = async e => {
-    e.preventDefault();
+
+    if (api.needsToAcceptUploadAgreement()) {
+      setUploadAgreementShow(true);
+      return;
+    }
+
+    e?.preventDefault();
     const packDirModel = new PackDir(packDir);
 
     const validationStatus = await packDirModel.validate();
@@ -85,7 +104,7 @@ export default function Create(props: MyProps) {
       packDirModel,
       undefined,
       title,
-      autoAuthor ? userContext.user.authorProfile.name : author,
+      autoAuthor ? userContext.user.author.name : author,
       description,
       validationStatus.skipFiles
     );
@@ -112,7 +131,7 @@ export default function Create(props: MyProps) {
       console.log(e);
       console.trace();
       let message = 'Unknown error uploading pack';
-      if(e.response?.data) {
+      if (e.response?.data) {
         message = e.response.data;
       }
       log.debug(`Error uploading pack: `, e.response);
@@ -120,7 +139,7 @@ export default function Create(props: MyProps) {
       setSaving(false);
       setErrorModalShow(true);
     } finally {
-      if(outputZip && settingsUtil.get('deleteAfterUpload') === true) {
+      if (outputZip && settingsUtil.get('deleteAfterUpload') === true) {
         const rmrf = promisify(rimraf);
         log.info(`Removing output zip ${outputZip}`);
         await rmrf(outputZip);
@@ -128,7 +147,7 @@ export default function Create(props: MyProps) {
     }
   };
 
-  const handleFormChanged = async () => {};
+  const handleFormChanged = async () => { };
 
   const pickPackDir = async () => {
     const dir = await dialog.showOpenDialog({
@@ -144,92 +163,120 @@ export default function Create(props: MyProps) {
   const errorModalText = errorText;
   const successModalTitle = 'Success';
 
+  const packTitleInput = disableInputs ? (<PlainTextInput
+    label="Title"
+    disabled={true}
+    value={title}
+  />) : (<PlainTextInput
+    label="Title"
+    onInputChange={(text: string, event: Event) => {
+      setTitle(text);
+    }}
+    onChange={(selected: any) => {
+      if (selected && selected.length > 0) {
+        const targetPack = selected[0];
+        if (!targetPack.customOption) {
+          setTitle(targetPack.name);
+          setDescription(targetPack.description);
+          setAuthor(targetPack.author);
+        } else {
+          setTitle(targetPack.name);
+        }
+      }
+    }}
+    value={title}
+    options={packs.sort()}
+  />)
+
   return (
-    <Col className="col-8">
-      <Form
-        className="md-form"
-        onSubmit={doCreate}
-        onChange={handleFormChanged}
-      >
-        <PlainTextInput
-          label="Title"
-          onInputChange={(text: string, event: Event) => {
-            setTitle(text);
-          }}
-          onChange={(selected: any) => {
-            if (selected && selected.length > 0) {
-              const targetPack = selected[0];
-              if(!targetPack.customOption) {
-                setTitle(targetPack.name);
-                setDescription(targetPack.description);
-                setAuthor(targetPack.author);
-              } else {
-                setTitle(targetPack.name);
-              }
-            } 
-          }}
-          options={packs.sort()}
-        />
-        <PlainTextInput
-          label="Description"
-          onChange={e => {
-            setDescription(e.target.value);
-          }}
-          value={description}
-        />
-        {!autoAuthor && (
+    <div>
+      <DefaultContainer>
+        <Form
+          className="md-form"
+          onSubmit={doCreate}
+          onChange={handleFormChanged}
+        >
+          {packTitleInput}
           <PlainTextInput
-            label="Author"
+            label="Description"
             onChange={e => {
-              setAuthor(e.target.value);
+              setDescription(e.target.value);
             }}
-            value={author}
+            value={description}
+            disabled={disableInputs}
           />
-        )}
-
-        <Form.Group>
-          <Form.Row>
-            <Form.Label column sm="5" className="field-label-text">
-              Pack Directory Location
-            </Form.Label>
-          </Form.Row>
-          <Form.Row>
-            <Col sm="10">
-              <Form.Control
-                type="plaintext"
-                value={packDir}
-                className="dbd-input-field"
-                onChange={e => {
-                  setPackDir(e.target.value);
-                }}
-              />
-            </Col>
-            <Col>
-              <Button variant="secondary" onClick={pickPackDir}>
-                Browse
-              </Button>
-            </Col>
-          </Form.Row>
-        </Form.Group>
-
-        <CreateButtonWrapper>
-          <Button variant="secondary" type="submit" className="mb-1">
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-              className="mr-2"
-              hidden={!saving}
+          {!autoAuthor && (
+            <PlainTextInput
+              label="Author"
+              onChange={e => {
+                setAuthor(e.target.value);
+              }}
+              value={author}
+              disabled={disableInputs}
             />
-            Upload Pack
-          </Button>
-          {saving && (
-            <ProgressBar now={saveProgress} label={`${saveProgress}%`} />
           )}
-        </CreateButtonWrapper>
-      </Form>
+
+          <Form.Group>
+            <Form.Row>
+              <Form.Label column sm="5" className="field-label-text">
+                Pack Directory Location
+              </Form.Label>
+            </Form.Row>
+            <Form.Row>
+              <Col sm="10">
+                <Form.Control
+                  type="plaintext"
+                  value={packDir}
+                  className="dbd-input-field"
+                  onChange={e => {
+                    setPackDir(e.target.value);
+                  }}
+                />
+              </Col>
+              <Col>
+                <Button variant="secondary" onClick={pickPackDir}>
+                  Browse
+                </Button>
+              </Col>
+            </Form.Row>
+          </Form.Group>
+
+          <CreateButtonWrapper>
+            <Button variant="secondary" type="submit" className="mb-1">
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+                className="mr-2"
+                hidden={!saving}
+              />
+              Upload Pack
+            </Button>
+            {saving && (
+              <ProgressBar now={saveProgress} label={`${saveProgress}%`} />
+            )}
+          </CreateButtonWrapper>
+        </Form>
+      </DefaultContainer>
+      <UploadAgreement
+        show={uploadAgreementShow}
+        onHide={() => setUploadAgreementShow(false)}
+        onAgree={async () => {
+          try {
+            await api.acceptUploadAgreement()
+            userContext.setUser(await api.getUser());
+            setUploadAgreementShow(false);
+            doCreate(undefined);
+          }
+          catch (e) {
+            setUploadAgreementShow(false);
+            setErrorText('Unknown error accepting upload agreement');
+            setErrorModalShow(true);
+          }
+        }}
+      />
       <ErrorModal
         title={errorModalTitle}
         text={errorModalText}
@@ -242,6 +289,6 @@ export default function Create(props: MyProps) {
         show={successModalShow}
         onHide={() => setSuccessModalShow(false)}
       />
-    </Col>
+    </div>
   );
 }

@@ -118,9 +118,7 @@ export default function SideNav() {
   const userContext = useContext(UserContext);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showVote, setShowVote] = useState(false);
-  const [activeTab, setActiveTab] = useState(routes.PERKS);
   const [signedIn, setSignedIn] = useState(api.currentUser !== null);
-  console.log('Active Tab: ' + activeTab);
 
   let userIcon = <Image src={UserImage} className="user-profile-placeholder" />;
   if (signedIn) {
@@ -170,38 +168,38 @@ export default function SideNav() {
       <MenuEntry
         text="Featured Packs"
         image={MenuFeatured}
-        currentActive={activeTab}
+        currentActive={userContext.page}
         to={routes.FEATURED}
         onClick={(target: string) => {
-          setActiveTab(target);
+          userContext.setPage(target);
         }}
       />
       <MenuEntry
         text="All Packs"
         image={MenuPerk}
-        currentActive={activeTab}
+        currentActive={userContext.page}
         to={routes.PERKS}
         onClick={(target: string) => {
-          setActiveTab(target);
+          userContext.setPage(target);
         }}
       />
       <MenuEntry
         text="Install Default Icons"
         image={MenuDefaultImage}
-        currentActive={activeTab}
+        currentActive={userContext.page}
         to={routes.DEFAULT}
         onClick={(target: string) => {
-          setActiveTab(target);
+          userContext.setPage(target);
         }}
       />
       {showVote && (
         <MenuEntry
           text="Featured Pack Vote"
           image={MenuVote}
-          currentActive={activeTab}
+          currentActive={userContext.page}
           to={routes.VOTE}
           onClick={(target: string) => {
-            setActiveTab(target);
+            userContext.setPage(target);
           }}
         />
       )}
@@ -211,22 +209,22 @@ export default function SideNav() {
           {userContext.user.abilities.can('create', 'PerkPack') && (
             <MenuEntry
               text="Upload Pack"
-              currentActive={activeTab}
+              currentActive={userContext.page}
               to={routes.CREATE}
               image={MenuAdd}
               onClick={(target: string) => {
-                setActiveTab(target);
+                userContext.setPage(target);
               }}
             />
           )}
           {userContext.user.abilities.can('update', 'PerkPack') && (
             <MenuEntry
               text="My Packs"
-              currentActive={activeTab}
+              currentActive={userContext.page}
               to={routes.MY_PACKS}
               image={MenuMyPacks}
               onClick={(target: string) => {
-                setActiveTab(target);
+                userContext.setPage(target);
               }}
             />
           )}
@@ -236,11 +234,11 @@ export default function SideNav() {
       {signedIn && userContext.user.abilities.can('manage', 'all') && (
         <MenuEntry
           text="Admin"
-          currentActive={activeTab}
+          currentActive={userContext.page}
           to={routes.ADMIN}
           image={MenuAdmin}
           onClick={(target: string) => {
-            setActiveTab(target);
+            userContext.setPage(target);
           }}
         />
       )}
@@ -248,11 +246,23 @@ export default function SideNav() {
       {signedIn && userContext.user.abilities.can('update', 'UnmoderatedPacks') && (
         <MenuEntry
           text="Approvals"
-          currentActive={activeTab}
+          currentActive={userContext.page}
           to={routes.APPROVALS}
           image={MenuAdmin}
           onClick={(target: string) => {
-            setActiveTab(target);
+            userContext.setPage(target);
+          }}
+        />
+      )}
+
+      {signedIn && userContext.user.abilities.can('update', 'Users') && (
+        <MenuEntry
+          text="Users"
+          currentActive={userContext.page}
+          to={routes.USERS}
+          image={MenuAdmin}
+          onClick={(target: string) => {
+            userContext.setPage(target);
           }}
         />
       )}
@@ -261,29 +271,29 @@ export default function SideNav() {
         <MenuEntry
           text="Settings"
           image={MenuSettings}
-          currentActive={activeTab}
+          currentActive={userContext.page}
           to={routes.SETTINGS}
           onClick={(target: string) => {
-            setActiveTab(target);
+            userContext.setPage(target);
           }}
         />
         <MenuEntry
           text="About / Help"
           image={MenuAbout}
-          currentActive={activeTab}
+          currentActive={userContext.page}
           to={routes.HOME}
           onClick={(target: string) => {
-            setActiveTab(target);
+            userContext.setPage(target);
           }}
         />
         {signedIn && (
           <MenuEntry
             text="My Profile"
             image={MenuProfile}
-            currentActive={activeTab}
+            currentActive={userContext.page}
             to={routes.MY_PROFILE}
             onClick={(target: string) => {
-              setActiveTab(target);
+              userContext.setPage(target);
             }}
           />
         )}
@@ -291,7 +301,7 @@ export default function SideNav() {
           <MenuEntry
             text={signedIn ? 'Sign Out' : 'Sign In'}
             image={signedIn ? MenuSignOut : MenuSignIn}
-            currentActive={activeTab}
+            currentActive={userContext.page}
             onClick={async (target: string) => {
               if (!signedIn) {
                 signIn(async jwt => {

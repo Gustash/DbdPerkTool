@@ -6,7 +6,7 @@ import NoAuthorProfile from './NoAuthorProfile';
 export default function MyPacks() {
   const userContext = useContext(UserContext);
 
-  const userAuthorProfile = userContext.user.authorProfile;
+  const userAuthorProfile = userContext.user.author;
 
   if (!userAuthorProfile) {
     return <NoAuthorProfile/>

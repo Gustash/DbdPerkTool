@@ -33,7 +33,7 @@ export default function Admin(props: MyProps) {
     return <Redirect to={routes.PERKS} />;
   }
 
-  if (!userContext.user.authorProfile) {
+  if (!userContext.user.author) {
     return <NoAuthorProfile />;
   }
 

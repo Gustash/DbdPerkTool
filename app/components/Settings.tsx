@@ -15,6 +15,7 @@ import PlainTextInput from './Form/PlainTextInput';
 import log from 'electron-log';
 import { app, remote, shell } from 'electron';
 import Badge from './Badge';
+import { DefaultContainer } from './DefaultContainer';
 
 const mainWindow = remote.getCurrentWindow();
 
@@ -78,13 +79,14 @@ export default function Settings(props: MyProps) {
 
   const installPathHelp = (<span>
     <p>This is the path that DBD is installed in. For a step-by-step guide, visit <a href="https://dbdicontoolbox.com/help#i-am-getting-an-error-asking-me-to-set-my-install-location-via-the-setting-tab-what-do-i-do" onClick={(e) => openLink(e)}>this guide on the DBD Icon Toolbox site!</a></p>
-    </span>
+  </span>
   )
 
   const saveButtonValue = 'Save' + (unsaved ? '*' : '');
   return (
-    <Col className="col-8">
+    <DefaultContainer>
       <Form
+        className="md-form"
         onSubmit={async e => {
           e.preventDefault();
           log.info('Saving...');
@@ -123,14 +125,14 @@ export default function Settings(props: MyProps) {
           </TooltipWrapper>
         </Form.Group>
         <Form.Group>
-            <Form.Check
-              type="checkbox"
-              label="Delete .zip after upload"
-              checked={deleteZipAfterUpload}
-              onChange={e => {
-                setDeleteZipAfterUpload(e.target.checked);
-              }}
-            />
+          <Form.Check
+            type="checkbox"
+            label="Delete .zip after upload"
+            checked={deleteZipAfterUpload}
+            onChange={e => {
+              setDeleteZipAfterUpload(e.target.checked);
+            }}
+          />
         </Form.Group>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <Button variant="secondary" type="submit">
@@ -167,6 +169,6 @@ export default function Settings(props: MyProps) {
           </Button>
         </div>
       </Form>
-    </Col>
+    </DefaultContainer>
   );
 }

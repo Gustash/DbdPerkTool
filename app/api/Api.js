@@ -8,6 +8,10 @@ import fs from 'fs-extra';
 import logger from 'electron-log';
 import axios from 'axios';
 import ApiExecutor from './ApiExecutor';
+import { promisify } from 'util';
+import request from 'request';
+
+const NodeFormData = require('../../node_modules/form-data/lib/form_data.js');
 
 const mainWindow = remote.getCurrentWindow();
 
@@ -20,16 +24,17 @@ function defineAbilitiesFor(user) {
     can('manage', 'all');
   }
 
-  if(user.role === 'Moderator') {
+  if (user.role === 'Moderator') {
     can('update', 'UnmoderatedPacks');
+    can('update', 'Users');
   }
 
-  if(user.authorProfile && user.authorProfile.name) {
+  if (user.author && user.author.name) {
     can('manage', 'PerkPack', {
-      author: { $regex: `^${(user.authorProfile || {}).name}[ |+|&]?` }
+      author: { $regex: `^${(user.author || {}).name}[ |+|&]?` }
     });
   }
-  
+
   return new Ability(rules);
 }
 
@@ -95,6 +100,10 @@ class Api {
     }
   }
 
+  async getUsers(queryParams) {
+    return this.executor.apis.default.getUsers(queryParams);
+  }
+
   async determineTargetServer() {
     const servers = ['https://dead-by-daylight-icon-toolbox.herokuapp.com', 'http://app.dbdicontoolbox.com'];
     for (let i = 0; i < servers.length; i++) {
@@ -140,6 +149,47 @@ class Api {
     }
 
     return false;
+  }
+
+  async acceptUploadAgreement() {
+    await this.executor.apis.default.putUser(
+      {},
+      {
+        requestBody: {
+          hasAcceptedUploadAgreement: true
+        }
+      }
+    );
+  }
+
+  async setUserRole(username, role) {
+    await this.executor.apis.default.putUser(
+      {},
+      {
+        requestBody: {
+          username,
+          role
+        }
+      }
+    );
+  }
+
+  async updateAuthorProfile(newProfile) {
+    await this.executor.apis.default.putUser(
+      {},
+      {
+        requestBody: {
+          author: newProfile
+        }
+      }
+    );
+  }
+
+  needsToAcceptUploadAgreement() {
+    if (!this.currentUser) {
+      return false;
+    }
+    return !this.currentUser.hasAcceptedUploadAgreement;
   }
 
   async approvePack(packId, all = false) {

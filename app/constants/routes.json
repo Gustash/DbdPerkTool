@@ -9,5 +9,6 @@
   "ADMIN": "/admin",
   "APPROVALS": "/approvals",
   "VOTE": "/vote",
-  "FEATURED": "/featured"
+  "FEATURED": "/featured",
+  "USERS": "/users"
 }

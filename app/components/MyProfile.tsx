@@ -13,6 +13,7 @@ import uuid from 'react-uuid';
 import SuccessModal from './SuccessModal';
 import api from '../api/Api';
 import NoAuthorProfile from './NoAuthorProfile';
+import { DefaultContainer } from './DefaultContainer';
 
 type MyProps = {};
 
@@ -44,16 +45,12 @@ export default function MyProfile(props: MyProps) {
   if (!userContext.user) {
     return <Redirect to={routes.PERKS} />;
   }
-  
-  if (!userContext.user.authorProfile) {
-    return <NoAuthorProfile />;
-  }
 
-  const [blurb, setBlurb] = useState(userContext.user.authorProfile.blurb);
-  const [links, setLinks] = useState(userContext.user.authorProfile.links);
+  const [blurb, setBlurb] = useState(userContext.user.author?.blurb);
+  const [links, setLinks] = useState(userContext.user.author?.links);
   const [showSuccess, setShowSuccess] = useState(false);
   const [donateLink, setDonateLink] = useState(
-    userContext.user.authorProfile.donateLink
+    userContext.user.author?.donateLink
   );
 
   const addLink = () => {
@@ -80,66 +77,62 @@ export default function MyProfile(props: MyProps) {
   });
 
   return (
-    <Col className="col-8">
-      <UserImageWrapper>
-        <Image
-          src={userContext.user.steamAvatarUrl}
-          className="my-profile-avatar"
-          roundedCircle
-        />
-      </UserImageWrapper>
-      <Form
-        onSubmit={async e => {
-          e.preventDefault();
-          await api.executor.apis.default.putUser(
-            {},
-            {
-              requestBody: {
-                authorProfile: {
-                  blurb,
-                  donateLink,
-                  links
-                }
-              }
-            }
-          );
-          await userContext.setUser(await api.getUser());
-          setShowSuccess(true);
-        }}
-      >
-        <DescriptionHeader>General</DescriptionHeader>
-        <PlainTextInput
-          label="About Me"
-          value={blurb}
-          onChange={e => setBlurb(e.target.value)}
-        />
-        <PlainTextInput
-          label="Donation Link"
-          value={donateLink}
-          onChange={e => setDonateLink(e.target.value)}
-        />
-        <DescriptionHeader>
-          Other Links (Discord, Twitter, etc..)
-        </DescriptionHeader>
-        {authorLinks}
-        <AddLinkWrapper>
-          <i
-            onClick={() => {
-              addLink();
-            }}
-            className="fas fa-plus-circle fa-2x author-link-add"
-          ></i>
-        </AddLinkWrapper>
-        <Button variant="secondary" type="submit">
-          Save
-        </Button>
-      </Form>
+    <div>
+      <DefaultContainer>
+        <UserImageWrapper>
+          <Image
+            src={userContext.user.steamAvatarUrl}
+            className="my-profile-avatar"
+            roundedCircle
+          />
+        </UserImageWrapper>
+        <DescriptionHeader>Role: {userContext.user.role}</DescriptionHeader>
+        <Form
+          onSubmit={async e => {
+            e.preventDefault();
+            await api?.updateAuthorProfile({
+              blurb,
+              donateLink,
+              links
+            });
+            await userContext.setUser(await api.getUser());
+            setShowSuccess(true);
+          }}
+        >
+          <DescriptionHeader>General</DescriptionHeader>
+          <PlainTextInput
+            label="About Me"
+            value={blurb}
+            onChange={e => setBlurb(e.target.value)}
+          />
+          <PlainTextInput
+            label="Donation Link"
+            value={donateLink}
+            onChange={e => setDonateLink(e.target.value)}
+          />
+          <DescriptionHeader>
+            Other Links (Discord, Twitter, etc..)
+          </DescriptionHeader>
+          {authorLinks}
+          <AddLinkWrapper>
+            <i
+              onClick={() => {
+                addLink();
+              }}
+              className="fas fa-plus-circle fa-2x author-link-add"
+            ></i>
+          </AddLinkWrapper>
+          <Button variant="secondary" type="submit">
+            Save
+          </Button>
+        </Form>
+      </DefaultContainer>
       <SuccessModal
         onHide={() => setShowSuccess(false)}
         title="Success"
         text="Author profile updated successfully!"
         show={showSuccess}
       ></SuccessModal>
-    </Col>
+    </div>
   );
 }

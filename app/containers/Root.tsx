@@ -23,6 +23,7 @@ import Notification from '../components/Notification';
 import axios from 'axios';
 import electron from 'electron';
 import api from '../api/Api';
+import routes from '../constants/routes.json';
 
 type Props = {
   store: Store;
@@ -49,6 +50,7 @@ const Root = ({ store, history }: Props) => {
   const [updateProgress, setUpdateProgress] = useState(0);
   const [showUpdateDbdPath, setShowUpdateDbdPath] = useState(false);
   const [detectedDbdPath, setDetectedDbdPath] = useState('');
+  const [page, setCurrentPage] = useState(routes.PERKS);
   const [notification, setNotification] = useState({
     show: false,
     title: '',
@@ -127,7 +129,9 @@ const Root = ({ store, history }: Props) => {
             user: currentUser,
             setUser: user => {
               setCurrentUser(user);
-            }
+            },
+            page,
+            setPage: newPage => setCurrentPage(newPage)
           }}
         >
           <MainContainer>

@@ -7,8 +7,9 @@ import Tooltip from 'react-bootstrap/Tooltip';
 import Badge from '../Badge';
 
 type MyProps = {
-  onChange: Function;
+  onChange?: Function;
   onInputChange?: Function;
+  disabled?: boolean;
   options?: any;
   value: string;
   label: string;
@@ -58,6 +59,7 @@ export default function PlainTextInput(props: MyProps) {
         allowNew={true}
         labelKey='name'
         options={props.options}
+        value={props.value}
       />
     );
   } else {
@@ -65,6 +67,7 @@ export default function PlainTextInput(props: MyProps) {
       <Form.Control
         type="plaintext"
         value={props.value}
+        disabled={props.disabled}
         className="dbd-input-field"
         onChange={props.onChange}
       />

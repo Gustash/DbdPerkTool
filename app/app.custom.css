@@ -255,12 +255,29 @@ a:hover {
   color: #a37c5d;
 }
 
+.paginate-selector {
+  background: rgba(48, 48, 48, .5);
+  border: none;
+  border-radius: 0;
+  color: white;
+  border-bottom: 1px solid var(--main-color) !important;
+  width: 100px;
+  margin-right: 10px;
+}
+
 .form-control {
   background: rgba(48, 48, 48, 0);
   border: none;
   border-radius: 0;
   color: white;
   border-bottom: 1px solid var(--main-color) !important;
+}
+
+.form-control:disabled {
+  background: rgba(48, 48, 48, 0.4);
+  border-bottom: 1px solid var(--main-color) !important;
+  box-shadow: 0 1px 0 0 var(--main-color) !important;
+  color: white;
 }
 
 .form-control:focus {

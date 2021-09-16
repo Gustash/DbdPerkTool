@@ -14,6 +14,7 @@ import AdminPage from './components/Admin/Admin';
 import ApprovalPage from './components/Admin/Approvals';
 import VotePage from './components/Vote/Vote';
 import FeaturedPage from './components/Featured';
+import UsersPage from './components/Users';
 
 export default function Routes() {
   return (
@@ -30,6 +31,7 @@ export default function Routes() {
         <Route exact path={routes.APPROVALS} component={ApprovalPage}/>
         <Route exact path={routes.VOTE} component={VotePage}/>
         <Route exact path={routes.FEATURED} component={FeaturedPage}/>
+        <Route exact path={routes.USERS} component={UsersPage}/>
       </Switch>
     </App>
   );
