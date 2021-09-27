@@ -1,8 +1,4 @@
-import React, { Component, useState, useContext } from 'react';
-import fs from 'fs-extra';
-import log from 'electron-log';
-import path from 'path';
-import { app, remote, shell } from 'electron';
+import React, { useState, useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
@@ -11,13 +7,6 @@ import Spinner from 'react-bootstrap/Spinner';
 import ErrorModal from '../ErrorModal';
 import SuccessModal from '../SuccessModal';
 import api from '../../api/Api';
-import EditPackModal from './EditPackModal';
-import UpdatePackModal from './UpdatePackModal';
-import PackDir from '../../packdir/PackDir';
-import PackGenerator from '../../packgenerator/PackGenerator';
-import settingsUtil from '../../settings/Settings';
-import { promisify } from 'util';
-import rimraf from 'rimraf';
 import Api from '../../api/Api';
 
 type MyProps = {

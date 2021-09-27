@@ -12,21 +12,16 @@ import { PreviewGenerator } from './PreviewGenerator';
 const readdirAsync = promisify(fs.readdir);
 
 export default class PackGenerator {
-  packDir: PackDir;
-  outputPath: string;
-  packName: string;
-  packAuthor: string;
-  packDescription: string;
   packZipFile: string;
   outputZip: string;
-  skipFiles: Array<string>;
   constructor(
-    packDir: PackDir,
-    outputPath: string = '',
-    packName: string,
-    packAuthor: string,
-    packDescription: string,
-    skipFiles: Array<string>
+    private packDir: PackDir,
+    private outputPath: string = '',
+    private packName: string,
+    private parentPack: string | undefined,
+    private packAuthor: string,
+    private packDescription: string,
+    private skipFiles: Array<string>
   ) {
     this.packDir = packDir;
     if (outputPath.length === 0) {
@@ -75,15 +70,14 @@ export default class PackGenerator {
 
       log.info('Making dir...');
 
-      const packMeta = Object.assign(
-        {
-          name: this.packName,
-          author: this.packAuthor,
-          description: this.packDescription,
-          isNsfw: false
-        },
-        await this.packDir.getMeta()
-      );
+      const packMeta =         {
+        name: this.packName,
+        author: this.packAuthor,
+        description: this.packDescription,
+        isNsfw: false,
+        parentPack: this.parentPack,
+        ...(await this.packDir.getMeta())
+      }
 
       log.info('Pack Meta: ' + JSON.stringify(packMeta));
 

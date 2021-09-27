@@ -41,3 +41,9 @@ They're gone, such is life. You can get that kind of content elsewhere.
 
 ## How can I install the default icons again? I don't want custom icons anymore!
 You can either click on Install Default Icons in the Toolbox and install that pack, or delete the DBD UI/Icons directory.
+
+## I'm having an error uploading my pack!
+The pack upload is admittedly a bit finicky -- if you get any sort of weird error I've found that it sometimes helps to run all of your image files through [PNG Gauntlet](https://pnggauntlet.com/). This will do two things:
+
+1. Ensure your files are absolutely correct PNG format
+2. Make them a bit smaller/optimize them
