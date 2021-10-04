@@ -104,5 +104,9 @@ export default function getLanguage(portrait: String) {
       return 'Survivor / Leon Kennedy';
     case 'charportraits/gemini/k25_charselect_portrait.png':
       return 'Killer / Pin Daddy';
+    case 'charportraits/hubble/s22j_charselect_portrait.png':
+      return 'Survivor / James Sunderland';
+    case 'charportraits/hubble/s28_charselect_portrait.png':
+      return 'Survivor / Mikaela Reid';
   }
 }

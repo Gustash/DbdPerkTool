@@ -45,7 +45,12 @@ export class PreviewGenerator {
             icons = await Promise.all(desiredIcons.map(icon => getter(icon)));
         } catch(e) {
             logger.info(`Error getting icons: ${e}`);
-            icons = await this.pack.getRandomIcons(category, desiredIcons.length);
+            try {
+                icons = await this.pack.getRandomIcons(category, desiredIcons.length);
+            } catch(randomE) {
+                logger.info(`Error getting random icons: ${e}`);
+                throw randomE;
+            }
         }
 
         await Promise.all(icons.map((icon: any, i: number) => {

@@ -51,7 +51,6 @@ export default function Create(props: MyProps) {
   const [successText, setSuccessText] = useState('');
   const [uploadAgreementShow, setUploadAgreementShow] = useState(false);
   const [packs, setPacks] = useState([]);
-  const [allPacks, setAllPacks] = useState([]);
   const [parentPack, setParent] = useState(undefined);
   const userContext = useContext(UserContext);
 
@@ -66,9 +65,8 @@ export default function Create(props: MyProps) {
 
   const loadPacks = async () => {
     const packs = await api.getPacks({ light: true, mine: true });
-    const allPacks = await api.getPacks({ light: true });
-    setPacks(packs.data);
-    setAllPacks(allPacks.data);
+    const defaultPack = await api.getPacks({light: true, defaultOnly: true});
+    setPacks([...packs.data, ...defaultPack.data]);
 
     if (initialId) {
       const pack = packs.data.find(pack => pack.id === initialId);
@@ -202,7 +200,7 @@ export default function Create(props: MyProps) {
           onChange={handleFormChanged}
         >
           {packTitleInput}
-          <PlainTextInput
+          {/* <PlainTextInput
             label="Parent"
             onChange={(selected: any) => {
               if (selected && selected.length > 0) {
@@ -214,7 +212,7 @@ export default function Create(props: MyProps) {
             }}
             value={parentPack?.name}
             options={allPacks.sort()}
-          />
+          /> */}
           <PlainTextInput
             label="Description"
             onChange={e => {

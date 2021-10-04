@@ -98,6 +98,7 @@ export default class PackGenerator {
         await previewGenerator.generate();
       } catch(e) {
         reject(e);
+        return;
       }
 
 

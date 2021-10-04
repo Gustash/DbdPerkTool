@@ -120,6 +120,14 @@
     "actual": "CharPortraits/HB_charSelect_portrait.png"
   },
   {
+    "normalized": "charportraits/hubble/s22j_charselect_portrait.png",
+    "actual": "CharPortraits/Hubble/S22J_charSelect_portrait.png"
+  },
+  {
+    "normalized": "charportraits/hubble/s28_charselect_portrait.png",
+    "actual": "CharPortraits/Hubble/S28_charSelect_portrait.png"
+  },
+  {
     "normalized": "charportraits/jp_charselect_portrait.png",
     "actual": "CharPortraits/JP_charSelect_portrait.png"
   },
@@ -1036,6 +1044,10 @@
     "actual": "Help/iconHelp_generators.png"
   },
   {
+    "normalized": "help/iconhelp_grades.png",
+    "actual": "Help/iconhelp_grades.png"
+  },
+  {
     "normalized": "help/iconhelp_hatch.png",
     "actual": "Help/iconHelp_hatch.png"
   },
@@ -1130,6 +1142,10 @@
   {
     "normalized": "help/iconhelp_sabotage.png",
     "actual": "Help/iconHelp_sabotage.png"
+  },
+  {
+    "normalized": "help/iconhelp_scourgehooks.png",
+    "actual": "Help/iconhelp_scourgeHooks.png"
   },
   {
     "normalized": "help/iconhelp_scratchmarks.png",
@@ -2300,20 +2316,8 @@
     "actual": "ItemAddons/Guam/iconAddon_vhsPorn.png"
   },
   {
-    "normalized": "itemaddons/haiti/iconaddon_bloodyhairbroochi.png",
-    "actual": "ItemAddons/Haiti/iconAddon_bloodyHairBroochi.png"
-  },
-  {
-    "normalized": "itemaddons/haiti/iconaddon_dirtyuwabaki.png",
-    "actual": "ItemAddons/Haiti/iconAddon_dirtyUwabaki.png"
-  },
-  {
     "normalized": "itemaddons/haiti/iconaddon_driedcherryblossom.png",
     "actual": "ItemAddons/Haiti/iconAddon_driedCherryBlossom.png"
-  },
-  {
-    "normalized": "itemaddons/haiti/iconaddon_fathersglasses.png",
-    "actual": "ItemAddons/Haiti/iconAddon_fathersGlasses.png"
   },
   {
     "normalized": "itemaddons/haiti/iconaddon_giftedbamboocomb.png",
@@ -2332,10 +2336,6 @@
     "actual": "ItemAddons/Haiti/iconAddon_katanaTsuba.png"
   },
   {
-    "normalized": "itemaddons/haiti/iconaddon_katsumoritalisman.png",
-    "actual": "ItemAddons/Haiti/iconAddon_katsumoriTalisman.png"
-  },
-  {
     "normalized": "itemaddons/haiti/iconaddon_motherdaughterring.png",
     "actual": "ItemAddons/Haiti/iconAddon_motherDaughterRing.png"
   },
@@ -2346,10 +2346,6 @@
   {
     "normalized": "itemaddons/haiti/iconaddon_origamicrane.png",
     "actual": "ItemAddons/Haiti/iconAddon_origamiCrane.png"
-  },
-  {
-    "normalized": "itemaddons/haiti/iconaddon_prayersbeads.png",
-    "actual": "ItemAddons/Haiti/iconAddon_prayersBeads.png"
   },
   {
     "normalized": "itemaddons/haiti/iconaddon_rinsbrokenwatch.png",
@@ -2378,6 +2374,26 @@
   {
     "normalized": "itemaddons/haiti/iconaddon_zori.png",
     "actual": "ItemAddons/Haiti/iconAddon_zori.png"
+  },
+  {
+    "normalized": "itemaddons/hubble/iconaddon_furin.png",
+    "actual": "ItemAddons/Hubble/iconAddon_furin.png"
+  },
+  {
+    "normalized": "itemaddons/hubble/iconaddon_kintsugiteacup.png",
+    "actual": "ItemAddons/Hubble/iconAddon_kintsugiTeacup.png"
+  },
+  {
+    "normalized": "itemaddons/hubble/iconaddon_mothersglasses.png",
+    "actual": "ItemAddons/Hubble/iconAddon_mothersGlasses.png"
+  },
+  {
+    "normalized": "itemaddons/hubble/iconaddon_senkohanabi.png",
+    "actual": "ItemAddons/Hubble/iconAddon_senkoHanabi.png"
+  },
+  {
+    "normalized": "itemaddons/hubble/iconaddon_uchiwa.png",
+    "actual": "ItemAddons/Hubble/iconAddon_uchiwa.png"
   },
   {
     "normalized": "itemaddons/iconaddon_abdominaldressing.png",
@@ -2414,6 +2430,10 @@
   {
     "normalized": "itemaddons/iconaddon_beadglass.png",
     "actual": "ItemAddons/iconAddon_beadGlass.png"
+  },
+  {
+    "normalized": "itemaddons/iconaddon_bearoil.png",
+    "actual": "ItemAddons/iconAddon_bearOil.png"
   },
   {
     "normalized": "itemaddons/iconaddon_bloodamber.png",
@@ -2484,12 +2504,12 @@
     "actual": "ItemAddons/iconAddon_cleanRag.png"
   },
   {
-    "normalized": "itemaddons/iconaddon_coilskit4.png",
-    "actual": "ItemAddons/iconAddon_coilsKit4.png"
+    "normalized": "itemaddons/iconaddon_coffeegrinds.png",
+    "actual": "ItemAddons/iconAddon_coffeeGrinds.png"
   },
   {
-    "normalized": "itemaddons/iconaddon_coilspring.png",
-    "actual": "ItemAddons/iconAddon_coilSpring.png"
+    "normalized": "itemaddons/iconaddon_coilskit4.png",
+    "actual": "ItemAddons/iconAddon_coilsKit4.png"
   },
   {
     "normalized": "itemaddons/iconaddon_coxcombedclapper.png",
@@ -2596,12 +2616,12 @@
     "actual": "ItemAddons/iconAddon_leatherGrip.png"
   },
   {
-    "normalized": "itemaddons/iconaddon_lightchassis.png",
-    "actual": "ItemAddons/iconAddon_lightChassis.png"
+    "normalized": "itemaddons/iconaddon_lengthenedjaws.png",
+    "actual": "ItemAddons/iconAddon_lengthenedJaws.png"
   },
   {
-    "normalized": "itemaddons/iconaddon_logwooddye.png",
-    "actual": "ItemAddons/iconAddon_logwoodDye.png"
+    "normalized": "itemaddons/iconaddon_lightchassis.png",
+    "actual": "ItemAddons/iconAddon_lightChassis.png"
   },
   {
     "normalized": "itemaddons/iconaddon_longguidebar.png",
@@ -2610,6 +2630,10 @@
   {
     "normalized": "itemaddons/iconaddon_longlifebattery.png",
     "actual": "ItemAddons/iconAddon_longLifeBattery.png"
+  },
+  {
+    "normalized": "itemaddons/iconaddon_makeshiftwrap.png",
+    "actual": "ItemAddons/iconAddon_makeshiftWrap.png"
   },
   {
     "normalized": "itemaddons/iconaddon_mapaddendum.png",
@@ -2740,10 +2764,6 @@
     "actual": "ItemAddons/iconAddon_serratedJaws.png"
   },
   {
-    "normalized": "itemaddons/iconaddon_settingtools.png",
-    "actual": "ItemAddons/iconAddon_settingTools.png"
-  },
-  {
     "normalized": "itemaddons/iconaddon_shoplubricant.png",
     "actual": "ItemAddons/iconAddon_shopLubricant.png"
   },
@@ -2812,10 +2832,6 @@
     "actual": "ItemAddons/iconAddon_stampUnusual.png"
   },
   {
-    "normalized": "itemaddons/iconaddon_stichedbag.png",
-    "actual": "ItemAddons/iconAddon_stichedBag.png"
-  },
-  {
     "normalized": "itemaddons/iconaddon_stypticagent.png",
     "actual": "ItemAddons/iconAddon_stypticAgent.png"
   },
@@ -2828,12 +2844,12 @@
     "actual": "ItemAddons/iconAddon_syringe.png"
   },
   {
-    "normalized": "itemaddons/iconaddon_tapsetters.png",
-    "actual": "ItemAddons/iconAddon_tapSetters.png"
-  },
-  {
     "normalized": "itemaddons/iconaddon_tarbottle.png",
     "actual": "ItemAddons/iconAddon_tarBottle.png"
+  },
+  {
+    "normalized": "itemaddons/iconaddon_tensionspring.png",
+    "actual": "ItemAddons/iconAddon_tensionSpring.png"
   },
   {
     "normalized": "itemaddons/iconaddon_thethompsonsmix.png",
@@ -4128,6 +4144,18 @@
     "actual": "Perks/Haiti/iconPerks_spiritFury.png"
   },
   {
+    "normalized": "perks/hubble/iconperks_booncircleofhealing.png",
+    "actual": "Perks/Hubble/iconPerks_BoonCircleOfHealing.png"
+  },
+  {
+    "normalized": "perks/hubble/iconperks_boonshadowstep.png",
+    "actual": "Perks/Hubble/iconPerks_BoonShadowStep.png"
+  },
+  {
+    "normalized": "perks/hubble/iconperks_clairvoyance.png",
+    "actual": "Perks/Hubble/iconPerks_Clairvoyance.png"
+  },
+  {
     "normalized": "perks/iconperks_adrenaline.png",
     "actual": "Perks/iconPerks_adrenaline.png"
   },
@@ -4512,6 +4540,10 @@
     "actual": "Perks/Qatar/iconPerks_fixated.png"
   },
   {
+    "normalized": "perks/qatar/iconperks_guardian.png",
+    "actual": "Perks/Qatar/iconPerks_guardian.png"
+  },
+  {
     "normalized": "perks/qatar/iconperks_innerstrength.png",
     "actual": "Perks/Qatar/iconPerks_innerStrength.png"
   },
@@ -4520,12 +4552,24 @@
     "actual": "Perks/Qatar/iconPerks_mindBreaker.png"
   },
   {
+    "normalized": "perks/qatar/iconperks_pushthroughit.png",
+    "actual": "Perks/Qatar/iconPerks_pushThroughIt.png"
+  },
+  {
     "normalized": "perks/qatar/iconperks_secondwind.png",
     "actual": "Perks/Qatar/iconPerks_secondWind.png"
   },
   {
+    "normalized": "perks/qatar/iconperks_situationalawareness.png",
+    "actual": "Perks/Qatar/iconPerks_situationalAwareness.png"
+  },
+  {
     "normalized": "perks/qatar/iconperks_surge.png",
     "actual": "Perks/Qatar/iconPerks_surge.png"
+  },
+  {
+    "normalized": "perks/qatar/iconperks_survivalinstincts.png",
+    "actual": "Perks/Qatar/iconPerks_survivalInstincts.png"
   },
   {
     "normalized": "perks/sweden/iconperks_anymeansnecessary.png",
@@ -4858,6 +4902,10 @@
   {
     "normalized": "statuseffects/iconstatuseffects_bleeding.png",
     "actual": "StatusEffects/iconStatusEffects_bleeding.png"
+  },
+  {
+    "normalized": "statuseffects/iconstatuseffects_blessed.png",
+    "actual": "StatusEffects/iconStatusEffects_blessed.png"
   },
   {
     "normalized": "statuseffects/iconstatuseffects_bloodlust.png",

@@ -27,7 +27,8 @@ const languageMap: { [key: string]: string } = {
   'statuseffects/iconstatuseffects_speed.png': 'Speed',
   'statuseffects/iconstatuseffects_undetectable.png': 'Undetectable',
   'statuseffects/iconstatuseffects_vision.png': 'Vision',
-  'statuseffects/iconstatuseffects_incapacitated.png': 'Incapacitated'
+  'statuseffects/iconstatuseffects_incapacitated.png': 'Incapacitated',
+  'statuseffects/iconstatuseffects_blessed.png': 'Blessed',
 };
 
 export default function getLanguage(tag) {

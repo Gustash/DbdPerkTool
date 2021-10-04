@@ -205,6 +205,13 @@ const languageMap: { [key: string]: string } = {
   'perks/nolicense/iconperks_solesurvivor.png': '[NO LICENSE] Sole Survivor',
   'perks/nolicense/iconperks_vigil.png': '[NO LICENSE] Vigil',
   'perks/nolicense/iconperks_wakeup.png': '[NO LICENSE] Wake Up',
+  "perks/hubble/iconperks_booncircleofhealing.png": "Survivor / Boon: Circle of Healing",
+  "perks/hubble/iconperks_boonshadowstep.png": "Survivor / Boon: Shadow Step",
+  "perks/hubble/iconperks_clairvoyance.png": "Survivor / Clairvoyance",
+  "perks/qatar/iconperks_guardian.png": "Survivor / Guardian",
+  "perks/qatar/iconperks_pushthroughit.png": "Survivor / Push Through It",
+  "perks/qatar/iconperks_situationalawareness.png": "Survivor / Situtational Awareness",
+  "perks/qatar/iconperks_survivalinstincts.png": "Survivor / Survival Instincts"
 };
 
 export default function getLanguage(tag) {

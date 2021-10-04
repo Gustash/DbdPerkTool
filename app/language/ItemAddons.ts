@@ -908,6 +908,16 @@ const addons: { [key: string]: string } = {
     "itemaddons/gemini/iconaddon_spoiledmeal.png" : "Killer / The Cenobite / Spoiled Meal",
     "itemaddons/gemini/iconaddon_torturepillar.png" : "Killer / The Cenobite / Torture Pillar",
     "itemaddons/gemini/iconaddon_wrigglingmaggots.png" : "Killer / The Cenobite / Wriggling Maggots",
+    "itemaddons/hubble/iconaddon_furin.png": "Killer / The Spirit / Furin",
+    "itemaddons/hubble/iconaddon_kintsugiteacup.png": "Killer / The Spirit / Kintsugi Teacup",
+    "itemaddons/hubble/iconaddon_mothersglasses.png": "Killer / The Spirit / Mother's Glasses",
+    "itemaddons/hubble/iconaddon_senkohanabi.png": "Killer / The Spirit / Senko Hanabi",
+    "itemaddons/hubble/iconaddon_uchiwa.png": "Killer / The Spirit / Uchiwa",
+    "itemaddons/iconaddon_bearoil.png": "Killer / The Trapper / Bear Oil",
+    "itemaddons/iconaddon_coffeegrinds.png": "Killer / The Trapper / Coffee Grinds",
+    "itemaddons/iconaddon_lengthenedjaws.png": "Killer / The Trapper / Lengthened Jaws",
+    "itemaddons/iconaddon_makeshiftwrap.png": "Killer / The Trapper / Makeshift Wrap",
+    "itemaddons/iconaddon_tensionspring.png": "Killer / The Trapper / Tension Spring"
 };
 
 export default function getLanguage(filePath: string) {

@@ -64,7 +64,7 @@ export default class PerkPackArchive {
 		shuffle(files);
 
 		if (files.length < count) {
-			throw Error('Not enough files!');
+			throw Error(`Not enough files for type ${type}. Toolbox needs at least ${count}.`);
 		}
 
 		const randomFiles = files.slice(0, count);
