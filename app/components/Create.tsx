@@ -1,4 +1,5 @@
 import React, { Component, useState, useEffect, useContext } from 'react';
+import sizeOf from 'image-size';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -23,6 +24,7 @@ import { promisify } from 'util';
 import UploadAgreement from './UploadAgreement';
 import { DefaultContainer } from './DefaultContainer';
 import PreviewSelector from './PreviewSelector';
+import { ISizeCalculationResult } from 'image-size/dist/types/interface';
 
 axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 
@@ -61,6 +63,7 @@ export default function Create(props: MyProps) {
   const [parentPack, setParent] = useState(undefined);
   const [previewImages, setPreviewImages] = useState<Array<string>>([]);
   const [customPreviewImages, setCustomPreviewImages] = useState<Array<string>>([]);
+  const [hasPreviewBanner, setHasPreviewBanner] = useState(false);
   const userContext = useContext(UserContext);
 
   if (!userContext?.user?.author) {
@@ -128,7 +131,7 @@ export default function Create(props: MyProps) {
 
     try {
       log.debug('Generating output zip');
-      outputZip = await generator.generate(getPreviewImagesCombined());
+      outputZip = await generator.generate(getPreviewImagesCombined(), hasPreviewBanner);
       // This is just a little hack to update the JWT if necessary before the upload
       // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
       // logic
@@ -189,13 +192,13 @@ export default function Create(props: MyProps) {
       log.info(`Setting preview images...`);
       setPreviewImages(images);
       setPackDir(newDir);
-    } catch(e) {
+    } catch (e) {
       let message = JSON.stringify(e);
 
-      if(e?.message) {
+      if (e?.message) {
         message = e.message;
 
-        if(e.message.startsWith('Could not find')) {
+        if (e.message.startsWith('Could not find')) {
           message = 'Could not find enough files to generate preview. You must have either 4 perks or 4 portraits to upload a pack.'
         }
       }
@@ -214,7 +217,7 @@ export default function Create(props: MyProps) {
     }
   };
 
-  const pickPreviewImage = async (index) => {
+  const pickPreviewImage = async (index: number) => {
     const file = await dialog.showOpenDialog({
       filters: [
         { name: "Images", extensions: ["png"] },
@@ -224,17 +227,47 @@ export default function Create(props: MyProps) {
 
     if (!file.canceled && file.filePaths.length > 0) {
       console.log(file.filePaths[0]);
-      const imageBase64 = await fs.promises.readFile(file.filePaths[0], {encoding: 'base64'});
-      const customImages = [...customPreviewImages];
-      customImages[index] = `data:image/png;base64, ${imageBase64}`;
+
+      const imageBase64 = await fs.promises.readFile(file.filePaths[0], { encoding: 'base64' });
+      const dimensions = sizeOf(Buffer.from(imageBase64, 'base64'));
+      console.log(dimensions);
+
+      if (!dimensions || !dimensions.width || !dimensions.height) {
+        setErrorText('Error determining dimensions of preview image');
+        setErrorModalShow(true);
+        return;
+      }
+
+      const isWithinPerkOrPortraitDimensions = (dimensions: ISizeCalculationResult) => dimensions.width <= 512 && dimensions.height <= 512;
+      const isBanner = (dimensions: ISizeCalculationResult) => dimensions.width <= 1200 && dimensions.height <= 300;
+
+      if (!isWithinPerkOrPortraitDimensions(dimensions) && !isBanner(dimensions)) {
+        setErrorText('Preview icons must be either <=512width * <=512height OR <=1200width * <=300height');
+        setErrorModalShow(true);
+        return;
+      }
+
+      let customImages = [...customPreviewImages];
+      const encodedImage = `data:image/png;base64, ${imageBase64}`;
+
+      if (isWithinPerkOrPortraitDimensions(dimensions)) {
+        customImages[index] = encodedImage;
+        setHasPreviewBanner(false);
+      } else {
+        setHasPreviewBanner(true);
+        customImages = [encodedImage];
+      }
       setCustomPreviewImages(customImages);
     }
   };
 
   const getPreviewImagesCombined = () => {
+    if (hasPreviewBanner) {
+      return customPreviewImages;
+    }
     const images = [];
-    for(let i = 0; i < previewImages.length; i++) {
-      if(customPreviewImages[i]) {
+    for (let i = 0; i < previewImages.length; i++) {
+      if (customPreviewImages[i]) {
         images.push(customPreviewImages[i]);
       } else {
         images.push(previewImages[i]);

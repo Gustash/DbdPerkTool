@@ -81,8 +81,11 @@ export default function PortraitPack(props: MyProps) {
     setSaving(false);
   };
 
-  const urls = [...Array(4).keys()].map(i => {
-    return `portraits_${i}.png`;
+  const imageTag = props.meta.hasCustomPreviews ? 'preview' : 'portraits';
+  const numImages = props.meta.hasPreviewBanner ? 1 : 4;
+
+  const urls = [...Array(numImages).keys()].map(i => {
+    return `${imageTag}_${i}.png`;
   });
 
   const lastUpdateStr = DateTime.fromISO(props.meta.lastUpdate).toRelative();

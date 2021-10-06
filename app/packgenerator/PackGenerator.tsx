@@ -63,7 +63,7 @@ export default class PackGenerator {
     return images.map(image => `data:image/png;base64, ${image.toString('base64')}`)
   }
 
-  async generate(previews: string[]) {
+  async generate(previews: string[], hasPreviewBanner) {
     const currentGen = this;
     return new Promise(async (resolve, reject) => {
       // Start building archive
@@ -102,6 +102,7 @@ export default class PackGenerator {
         isNsfw: false,
         parentPack: this.parentPack,
         hasCustomPreviews: true,
+        hasPreviewBanner,
         ...(await this.packDir.getMeta())
       }
 

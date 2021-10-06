@@ -84,8 +84,9 @@ export default function PerkPack(props: MyProps) {
   };
 
   const imageTag = props.meta.hasCustomPreviews ? 'preview' : 'perks';
+  const numImages = props.meta.hasPreviewBanner ? 1 : 4;
 
-  const urls = [...Array(4).keys()].map(i => {
+  const urls = [...Array(numImages).keys()].map(i => {
     return `${imageTag}_${i}.png`;
   });
 
