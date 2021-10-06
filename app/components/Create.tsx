@@ -22,6 +22,7 @@ import rimraf from 'rimraf';
 import { promisify } from 'util';
 import UploadAgreement from './UploadAgreement';
 import { DefaultContainer } from './DefaultContainer';
+import PreviewSelector from './PreviewSelector';
 
 axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 
@@ -33,6 +34,12 @@ const CreateButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+const PreviewSelectorWrapper = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+`
 
 function replaceWindowsChars(str: string): string {
   return str.replace(/[\/\\,+$~%.':*?<>{}]/g, '_');
@@ -52,6 +59,8 @@ export default function Create(props: MyProps) {
   const [uploadAgreementShow, setUploadAgreementShow] = useState(false);
   const [packs, setPacks] = useState([]);
   const [parentPack, setParent] = useState(undefined);
+  const [previewImages, setPreviewImages] = useState<Array<string>>([]);
+  const [customPreviewImages, setCustomPreviewImages] = useState<Array<string>>([]);
   const userContext = useContext(UserContext);
 
   if (!userContext?.user?.author) {
@@ -65,7 +74,7 @@ export default function Create(props: MyProps) {
 
   const loadPacks = async () => {
     const packs = await api.getPacks({ light: true, mine: true });
-    const defaultPack = await api.getPacks({light: true, defaultOnly: true});
+    const defaultPack = await api.getPacks({ light: true, defaultOnly: true });
     setPacks([...packs.data, ...defaultPack.data]);
 
     if (initialId) {
@@ -75,7 +84,10 @@ export default function Create(props: MyProps) {
         setDescription(pack.description);
         setAuthor(pack.author);
       }
+    } else {
+      setAuthor(userContext.user.author.name);
     }
+
   };
 
   useEffect(() => {
@@ -107,7 +119,7 @@ export default function Create(props: MyProps) {
       undefined,
       title,
       parentPack?.id,
-      autoAuthor ? userContext.user.author.name : author,
+      author ?? userContext.user.author.name,
       description,
       validationStatus.skipFiles
     );
@@ -116,7 +128,7 @@ export default function Create(props: MyProps) {
 
     try {
       log.debug('Generating output zip');
-      outputZip = await generator.generate();
+      outputZip = await generator.generate(getPreviewImagesCombined());
       // This is just a little hack to update the JWT if necessary before the upload
       // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
       // logic
@@ -152,14 +164,84 @@ export default function Create(props: MyProps) {
 
   const handleFormChanged = async () => { };
 
+  const doSetPackDir = async (newDir: string) => {
+    const packDirModel = new PackDir(newDir);
+
+    const validationStatus = await packDirModel.validate();
+
+    if (validationStatus.isValid === false) {
+      setErrorText(validationStatus.failReason);
+      setErrorModalShow(true);
+      return;
+    }
+
+    const generator = new PackGenerator(
+      packDirModel,
+      undefined,
+      title,
+      null,
+      author ?? userContext.user.author.name,
+      description,
+      validationStatus.skipFiles
+    );
+    try {
+      const images = await generator.getPreviewImages();
+      log.info(`Setting preview images...`);
+      setPreviewImages(images);
+      setPackDir(newDir);
+    } catch(e) {
+      let message = JSON.stringify(e);
+
+      if(e?.message) {
+        message = e.message;
+
+        if(e.message.startsWith('Could not find')) {
+          message = 'Could not find enough files to generate preview. You must have either 4 perks or 4 portraits to upload a pack.'
+        }
+      }
+      setErrorText(message);
+      setErrorModalShow(true);
+    }
+  };
+
   const pickPackDir = async () => {
     const dir = await dialog.showOpenDialog({
       properties: ['openDirectory']
     });
 
     if (!dir.canceled && dir.filePaths.length > 0) {
-      setPackDir(dir.filePaths[0]);
+      doSetPackDir(dir.filePaths[0]);
     }
+  };
+
+  const pickPreviewImage = async (index) => {
+    const file = await dialog.showOpenDialog({
+      filters: [
+        { name: "Images", extensions: ["png"] },
+      ],
+      properties: ["openFile"]
+    });
+
+    if (!file.canceled && file.filePaths.length > 0) {
+      console.log(file.filePaths[0]);
+      const imageBase64 = await fs.promises.readFile(file.filePaths[0], {encoding: 'base64'});
+      const customImages = [...customPreviewImages];
+      customImages[index] = `data:image/png;base64, ${imageBase64}`;
+      setCustomPreviewImages(customImages);
+    }
+  };
+
+  const getPreviewImagesCombined = () => {
+    const images = [];
+    for(let i = 0; i < previewImages.length; i++) {
+      if(customPreviewImages[i]) {
+        images.push(customPreviewImages[i]);
+      } else {
+        images.push(previewImages[i]);
+      }
+    }
+
+    return images;
   };
 
   const errorModalTitle = 'Error generating pack';
@@ -185,6 +267,8 @@ export default function Create(props: MyProps) {
         } else {
           setTitle(targetPack.name);
         }
+
+
       }
     }}
     value={title}
@@ -221,16 +305,16 @@ export default function Create(props: MyProps) {
             value={description}
             disabled={disableInputs}
           />
-          {!autoAuthor && (
-            <PlainTextInput
-              label="Author"
-              onChange={e => {
-                setAuthor(e.target.value);
-              }}
-              value={author}
-              disabled={disableInputs}
-            />
-          )}
+
+          <PlainTextInput
+            label="Author"
+            onChange={e => {
+              setAuthor(e.target.value);
+            }}
+            value={author}
+            disabled={autoAuthor || disableInputs}
+          />
+
 
           <Form.Group>
             <Form.Row>
@@ -244,8 +328,8 @@ export default function Create(props: MyProps) {
                   type="plaintext"
                   value={packDir}
                   className="dbd-input-field"
-                  onChange={e => {
-                    setPackDir(e.target.value);
+                  onChange={async (e) => {
+                    doSetPackDir(e.target.value);
                   }}
                 />
               </Col>
@@ -256,6 +340,11 @@ export default function Create(props: MyProps) {
               </Col>
             </Form.Row>
           </Form.Group>
+
+          <PreviewSelectorWrapper>
+            <h3 className="field-label-text mb-2">Preview</h3>
+            <PreviewSelector author={author} name={title} images={getPreviewImagesCombined()} handlePickImage={pickPreviewImage} />
+          </PreviewSelectorWrapper>
 
           <CreateButtonWrapper>
             <Button variant="secondary" type="submit" className="mb-1">

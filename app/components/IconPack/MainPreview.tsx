@@ -5,25 +5,21 @@ import Image from 'react-bootstrap/Image';
 import Carousel from 'react-bootstrap/Carousel';
 import uuid from 'react-uuid';
 import styled from 'styled-components';
+import Badge from '../Badge';
+
 type MyProps = {
-  urls: Array<string>;
-  id: string;
+  images?: Array<string>;
+  urls?: Array<string>;
+  id?: string;
   viewMode: string;
-  baseUrl: string;
+  baseUrl?: string;
+  onPickImage?: any;
 };
 
 const ImageContainer = styled.div`
   display: flex;
   position: relative;
   text-align: center;
-`;
-
-const TextCentered = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-shadow: 2px 2px 4px #000000, -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 `;
 
 function buildNormalPreview(props: MyProps, additionalImgClasses: string) {
@@ -44,33 +40,30 @@ function buildNormalPreview(props: MyProps, additionalImgClasses: string) {
   );
 }
 
-function buildCompactPreview(props: MyProps, additionalImgClasses: string) {
-  const imageClass = `perk-preview-img-compact${additionalImgClasses}`;
-  const images = props.urls.map<React.ReactNode>((url, index) => {
+function buildStaticPreview(props: MyProps, additionalImgClasses: string) {
+  const imageClass = `perk-preview-img${additionalImgClasses}`;
+  const images = props.images.map<React.ReactNode>((image, index) => {
     return (
-      <Carousel.Item key={uuid()}>
-        <Image key={Date.now()} className={imageClass} src={`${props.baseUrl}${url}`} fluid />
-      </Carousel.Item>
+      <Badge>
+      <Col key={uuid()} onClick={() => { props.onPickImage(index) }}>
+        <Image key={Date.now()} className={imageClass} src={image} fluid />
+        <i className="fas fa-upload" ></i>
+      </Col>
+      </Badge>
     );
   });
   return (
-    <ImageContainer>
-      <Carousel indicators={false} key={uuid()} interval={null} slide={false}>
-        {images}
-      </Carousel>
-    </ImageContainer>
+    <Row className="flex-nowrap">
+      <ImageContainer>
+        {images}{' '}
+      </ImageContainer>
+    </Row>
   );
 }
 
 export default function MainPreview(props: MyProps) {
   let content;
   const additionalImgClasses = '';
-
-  if (props.viewMode === 'Normal') {
-    content = buildNormalPreview(props, additionalImgClasses);
-  } else {
-    content = buildCompactPreview(props, additionalImgClasses);
-  }
-
+  content = props.urls ? buildNormalPreview(props, additionalImgClasses) : buildStaticPreview(props, additionalImgClasses);
   return content;
 }

@@ -6,6 +6,9 @@ import imagemin from 'imagemin';
 import imageminPngquant from 'imagemin-pngquant';
 import { CorrectedFile } from '../packdir/PackDir';
 
+export const DEFAULT_PERK_ICONS = ['smallgame', 'soulguard', 'trailoftorment', 'coupdegrace'];
+export const DEFAULT_PORTRAIT_ICONS = ['s23', 'mk', 'gs', 'be'];
+
 export class PreviewGenerator {
     private pack: any;
     constructor(private archive: any, files: Array<CorrectedFile>, basePath: string, private meta: PackCapabilities ) {
@@ -32,10 +35,13 @@ export class PreviewGenerator {
 	}
 
     async addImageToArchive(imageData: any, imageName: string) {
+        if(!this.archive) {
+            return;
+        }
         logger.info(`Compressing image ${imageName}`);
         const compressedData = await PreviewGenerator.compressImage(imageData);
         logger.info(`Compressed image ${imageName}`);
-        this.archive.append(compressedData, {name: imageName});
+        this.archive?.append(compressedData, {name: imageName});
     }
 
     async doPreviewCategory(desiredIcons: string[], getter: Function, category: string, pathPrefix?: string) {
@@ -59,11 +65,11 @@ export class PreviewGenerator {
     }
 
     async doPerks() {
-        return this.doPreviewCategory(['smallgame', 'soulguard', 'trailoftorment', 'coupdegrace'], this.pack.getPerk.bind(this.pack), 'perks');
+        return this.doPreviewCategory(DEFAULT_PERK_ICONS, this.pack.getPerk.bind(this.pack), 'perks');
     }
 
     async doPortraits() {
-        return this.doPreviewCategory(['s23', 'mk', 'gs', 'be'], this.pack.getPortrait.bind(this.pack), 'charportraits', 'portraits');
+        return this.doPreviewCategory(DEFAULT_PORTRAIT_ICONS, this.pack.getPortrait.bind(this.pack), 'charportraits', 'portraits');
     }
 
     async doItems() {

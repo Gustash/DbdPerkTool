@@ -6,7 +6,8 @@ import { promisify } from 'util';
 import slash from 'slash';
 import fs from 'fs';
 import log from 'electron-log';
-import { PreviewGenerator } from './PreviewGenerator';
+import { DEFAULT_PERK_ICONS, DEFAULT_PORTRAIT_ICONS, PreviewGenerator } from './PreviewGenerator';
+import PerkPackArchive from '../models/PerkPackArchive';
 
 
 const readdirAsync = promisify(fs.readdir);
@@ -38,7 +39,31 @@ export default class PackGenerator {
     this.skipFiles = skipFiles;
   }
 
-  async generate() {
+  async getPreviewImages() {
+    const packMeta = {
+      name: this.packName,
+      author: this.packAuthor,
+      description: this.packDescription,
+      isNsfw: false,
+      parentPack: this.parentPack,
+      ...(await this.packDir.getMeta())
+    }
+
+    const files = this.packDir.correctedPathFiles;
+
+    const packArchive = new PerkPackArchive(files, this.packDir.dir);
+
+    const defaults = packMeta.hasPerks ? DEFAULT_PERK_ICONS : DEFAULT_PORTRAIT_ICONS;
+    const getter = packMeta.hasPerks ? packArchive.getPerk.bind(packArchive) : packArchive.getPortrait.bind(packArchive);
+
+    const images = await Promise.all(defaults.map(name => {
+      return getter(name);
+    }));
+
+    return images.map(image => `data:image/png;base64, ${image.toString('base64')}`)
+  }
+
+  async generate(previews: string[]) {
     const currentGen = this;
     return new Promise(async (resolve, reject) => {
       // Start building archive
@@ -53,7 +78,7 @@ export default class PackGenerator {
         zlib: { level: 9 } // Sets the compression level.
       });
 
-      output.on('close', function() {
+      output.on('close', function () {
         log.info(archive.pointer() + ' total bytes');
         log.info(
           'archiver has been finalized and the output file descriptor has closed.'
@@ -62,7 +87,7 @@ export default class PackGenerator {
       });
 
       // good practice to catch this error explicitly
-      archive.on('error', function(err) {
+      archive.on('error', function (err) {
         reject(err);
       });
 
@@ -70,12 +95,13 @@ export default class PackGenerator {
 
       log.info('Making dir...');
 
-      const packMeta =         {
+      const packMeta = {
         name: this.packName,
         author: this.packAuthor,
         description: this.packDescription,
         isNsfw: false,
         parentPack: this.parentPack,
+        hasCustomPreviews: true,
         ...(await this.packDir.getMeta())
       }
 
@@ -85,7 +111,7 @@ export default class PackGenerator {
 
       files.forEach((file: CorrectedFile) => {
         const pathInZip = slash(file.newPath);
-        if(currentGen.skipFiles.includes(pathInZip.toLowerCase())) {
+        if (currentGen.skipFiles.includes(pathInZip.toLowerCase())) {
           // log.warn(`Skipping ${pathInZip}`);
         } else {
           archive.append(fs.createReadStream(file.originalPath), { name: 'Pack/' + pathInZip });
@@ -96,11 +122,17 @@ export default class PackGenerator {
       try {
         const previewGenerator = new PreviewGenerator(archive, files, this.packDir.dir, packMeta);
         await previewGenerator.generate();
-      } catch(e) {
+      } catch (e) {
         reject(e);
         return;
       }
 
+      previews.forEach((preview, index) => {
+        const buf = this.base64ImageToBuffer(preview);
+        archive.append(buf, {
+          name: 'previews/preview_' + index + '.png'
+        })
+      })
 
       archive.append(JSON.stringify(packMeta, null, 2), {
         name: 'meta.json'
@@ -109,5 +141,10 @@ export default class PackGenerator {
       log.info('Finalizing');
       archive.finalize();
     });
+  }
+
+  private base64ImageToBuffer(image: string) {
+    const data = image.split('data:image/png;base64, ')[1];
+    return Buffer.from(data, 'base64');
   }
 }

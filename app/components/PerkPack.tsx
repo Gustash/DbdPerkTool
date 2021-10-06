@@ -83,8 +83,10 @@ export default function PerkPack(props: MyProps) {
     setSaving(false);
   };
 
+  const imageTag = props.meta.hasCustomPreviews ? 'preview' : 'perks';
+
   const urls = [...Array(4).keys()].map(i => {
-    return `perks_${i}.png`;
+    return `${imageTag}_${i}.png`;
   });
 
   const lastUpdateStr = DateTime.fromISO(props.meta.lastUpdate).toRelative();

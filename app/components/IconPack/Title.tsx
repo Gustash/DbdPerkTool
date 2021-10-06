@@ -19,9 +19,10 @@ const FavoriteWrapper = styled.div`
 
 type MyProps = {
   name: string;
-  id: string;
-  isApproved: boolean;
-  isFeatured: boolean;
+  id?: string;
+  isApproved?: boolean;
+  isFeatured?: boolean;
+  preview?: boolean;
 };
 
 export default function Title(props: MyProps) {
@@ -32,13 +33,13 @@ export default function Title(props: MyProps) {
 
   const ribbonClass = !props.isApproved ? 'ribbon-unapproved' : 'ribbon';
   const ribbonText = !props.isApproved ? 'UNAPPROVED' : 'Featured';
-  const hasRibbon = props.isFeatured || !props.isApproved;
+  const hasRibbon = !props.preview && (props.isFeatured || !props.isApproved);
 
   const favoriteStarClass = isFavorite
     ? 'fas fa-star fa-lg'
     : 'far fa-star fa-lg';
   const favoriteStar =
-    userContext.user != null ? (
+    (!props.preview && userContext.user != null) ? (
       <FavoriteWrapper
         onClick={async () => {
           await api.updateFavorite(props.id, !isFavorite);
@@ -65,7 +66,7 @@ export default function Title(props: MyProps) {
       <Card.Title>
         {favoriteStar}
         {props.name}
-        <PackLink id={props.id}></PackLink>
+        {!props.preview && <PackLink id={props.id}></PackLink>}
       </Card.Title>
     );
   }
