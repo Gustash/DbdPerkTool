@@ -56,9 +56,15 @@ export default class PackGenerator {
     const defaults = packMeta.hasPerks ? DEFAULT_PERK_ICONS : DEFAULT_PORTRAIT_ICONS;
     const getter = packMeta.hasPerks ? packArchive.getPerk.bind(packArchive) : packArchive.getPortrait.bind(packArchive);
 
-    const images = await Promise.all(defaults.map(name => {
-      return getter(name);
-    }));
+    let images = [];
+    try {
+      images = await Promise.all(defaults.map(name => {
+        return getter(name);
+      }));
+    } catch (e) {
+      images = await packArchive.getRandomIcons(packMeta.hasPerks ? 'perks' : 'portraits', 4);
+    }
+
 
     return images.map(image => `data:image/png;base64, ${image.toString('base64')}`)
   }

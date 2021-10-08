@@ -50,14 +50,23 @@ function buildImgRow(
 export default function PerkPackDetails(props: MyProps) {
   const baseUrl = props.meta.previewDir;
   let portraitImg = undefined;
+  let perkImg = undefined;
 
   const capabilities = [];
 
+  const imgClass = '';
+
   if (props.meta.hasPerks) {
     capabilities.push('perks');
+    perkImg = buildImgRow(
+      [0, 1, 2, 3].map(i => {
+        return `${baseUrl}perks_${i}.png`;
+      }),
+      'Perks',
+      12,
+      imgClass
+    );
   }
-
-  const imgClass = '';
 
   if (props.meta.hasPortraits) {
     capabilities.push('charportraits');
@@ -198,7 +207,7 @@ export default function PerkPackDetails(props: MyProps) {
               <b>Latest Chapter: </b>
               <i>{props.meta.latestChapter}</i>
             </Card.Body>
-
+            {perkImg}
             {portraitImg}
             {offeringsImg}
             {itemImg}
