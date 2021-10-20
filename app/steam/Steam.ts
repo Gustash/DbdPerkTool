@@ -23,12 +23,15 @@ class Steam {
     if(libFolderKey) {
       Object.keys(manifest[libFolderKey]).forEach(folder => {
         if (isNumeric(folder)) {
-          folders.push(path.resolve(manifest.LibraryFolders[folder]));
+          const steamPath = path.resolve(manifest[libFolderKey][folder].path ?? manifest[libFolderKey][folder]);
+          if(steamPath && !folders.includes(steamPath.toLowerCase())) {
+            folders.push();
+          }
         }
       });
     }
 
-    return folders;
+    return folders ?? [];
   }
 
   static async getInstallPath() {

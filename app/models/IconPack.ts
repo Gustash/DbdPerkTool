@@ -24,7 +24,7 @@ export class InstallPathNotFoundError extends Error {
 
 export abstract class IconPack {
   meta: PackMeta;
-  static tempDir = path.resolve((electron.app || electron.remote.app).getPath('userData'), 'temp');
+  static tempDir = path.resolve((electron.app || electron.remote.app).getPath('temp'));
   constructor(meta: PackMeta) {
     this.meta = meta;
   }
@@ -72,20 +72,13 @@ export abstract class IconPack {
    * @returns temporary directory. Must be removed manually!
    */
   private async extractZip(zipPath: string) {
-    return new Promise((resolve, reject) => {
-      const tmpDir = { name: path.resolve(IconPack.tempDir,`${Date.now()}_${this.replaceWindowsChars(this.meta.id)}`) };
-      fs.createReadStream(zipPath)
-        .pipe(unzipper.Extract({ path: tmpDir.name }))
-        .on('close', () => {
-          resolve(tmpDir);
-        })
-        .on('error', e => {
-          reject(e);
-        });
-    });
+    const tmpDir = { name: path.resolve(IconPack.tempDir, `${Date.now()}_${this.replaceWindowsChars(this.meta.id)}`) };
+    const d = await unzipper.Open.file(zipPath);
+    await d.extract({path: tmpDir.name});
+    return tmpDir;
   }
 
-  private replaceWindowsChars(str:string) : string {
+  private replaceWindowsChars(str: string): string {
     return str.replace(/[\/\\,+$~%.':*?<>{}]/g, '_');
   }
 
@@ -118,7 +111,7 @@ export abstract class IconPack {
    * @param onProgress - optional. Called with an integer percentage as the download progresses
    * @returns temporary directory
    */
-  private async downloadAndExtract(onProgress: Function = () => {}) {
+  private async downloadAndExtract(onProgress: Function = () => { }) {
     onProgress('Downloading...');
     log.debug('Downloading Zip');
     const zipPath = await this.downloadZip(onProgress);
@@ -156,19 +149,29 @@ export abstract class IconPack {
       onProgress('Copying...');
       await this.copyFilesTo(`${paths.extractPath.name}/Pack`, dbdIconsPath, opts);
       await this.saveInstalledPackId();
+    } catch (e) {
+      log.error(`Error installing pack: ${e.message ?? e}`);
+      throw e;
     } finally {
       if (paths?.extractPath) {
         try {
           logger.info(`Removing ${paths.extractPath.name}`);
           await fs.remove(paths.extractPath.name);
-        } catch (e) { }
+        } catch (e) {
+          logger.error(`Error removing extract dir`, e);
+          throw e;
+        }
       }
       if (paths?.zipPath) {
         try {
           logger.info(`Removing ${paths.zipPath.name}`);
           await fs.remove(paths.zipPath.name);
-        } catch (e) { }
+        } catch (e) {
+          logger.error(`Error removing extract zip`, e);
+          throw e;
+        }
       }
+      log.info(`Done installing!`);
     }
 
 

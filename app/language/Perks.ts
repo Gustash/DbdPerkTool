@@ -102,7 +102,7 @@ const languageMap: { [key: string]: string } = {
   'perks/iconperks_sprintburst.png': 'Survivor / Sprint Burst',
   'perks/iconperks_streetwise.png': 'Survivor / Streetwise',
   'perks/iconperks_stridor.png': 'Killer / Stridor',
-  'perks/iconperks_thatanophobia.png': 'Killer / Thanatophobia',
+  'perks/iconperks_thatanophobia.png': 'Killer / Thatanophobia',
   'perks/iconperks_thisisnothappening.png': 'Survivor / This Is Not Happening',
   'perks/iconperks_tinkerer.png': 'Killer / Tinkerer',
   'perks/iconperks_unnervingpresence.png': 'Killer / Unnerving Presence',

@@ -49,7 +49,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     await settingsUtil.read();
-    await IconPack.cleanTemp();
     const targetServer = settingsUtil.settings.targetServerOverride || await api.determineTargetServer();
     if(targetServer === null) {
       remote.dialog.showErrorBox("Error", "Unable to communicate with the DBD Toolbox Server!");

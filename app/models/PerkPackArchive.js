@@ -124,7 +124,7 @@ export default class PerkPackArchive {
 
 	getIconList(type) {
 		return this.getAllIconFileNames((file) =>
-			file.startsWith(`${type}` + '/'),
+			file.includes(`${type}` + '/'),
 		).map(file => file.originalPath);
 	}
 
