@@ -240,6 +240,10 @@
     "actual": "DailyRituals/dailyRitualIcon_deviousness.png"
   },
   {
+    "normalized": "dailyrituals/dailyritualicon_halloween.png",
+    "actual": "DailyRituals/dailyRitualIcon_Halloween.png"
+  },
+  {
     "normalized": "dailyrituals/dailyritualicon_hunter.png",
     "actual": "DailyRituals/dailyRitualIcon_hunter.png"
   },
@@ -534,6 +538,10 @@
   {
     "normalized": "favors/halloween/iconfavors_pustulapetals.png",
     "actual": "Favors/Halloween/iconFavors_pustulaPetals.png"
+  },
+  {
+    "normalized": "favors/halloween2021/iconfavors_cursedseed.png",
+    "actual": "Favors/Halloween2021/iconFavors_CursedSeed.png"
   },
   {
     "normalized": "favors/iconfavors_ardentravenwreath.png",
