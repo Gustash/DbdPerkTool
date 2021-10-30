@@ -8,6 +8,7 @@ import ErrorModal from '../ErrorModal';
 import SuccessModal from '../SuccessModal';
 import api from '../../api/Api';
 import Api from '../../api/Api';
+import { Form } from 'react-bootstrap';
 
 type MyProps = {
   id: string;
@@ -30,12 +31,13 @@ export default function ApprovalControls(props: MyProps) {
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successText, setSuccessText] = useState('');
+  const [rejectReason, setRejectReason] = useState('');
 
   const handleDeleteClose = async (doDelete = false) => {
     setDeleteInProgress(true);
     try {
       if (doDelete) {
-        await api.executor.apis.default.deletePack({ id: props.id });
+        await api.executor.apis.default.rejectPack({ id: props.id }, { requestBody: { reason: rejectReason } });
         props.onModifyComplete();
       }
     } catch (e) {
@@ -50,8 +52,8 @@ export default function ApprovalControls(props: MyProps) {
 
   const handleApprovePack = async () => {
     try {
-        await Api.approvePack(props.id);
-        props.onModifyComplete();
+      await Api.approvePack(props.id);
+      props.onModifyComplete();
 
     } catch (e) {
       setErrorText(e.message);
@@ -65,7 +67,7 @@ export default function ApprovalControls(props: MyProps) {
         className="w-100 mr-1 ml-1 approve-button"
         variant="info"
         onClick={() => {
-            handleApprovePack();
+          handleApprovePack();
         }}
       >
         Approve
@@ -89,13 +91,18 @@ export default function ApprovalControls(props: MyProps) {
           <Modal.Title>Are you sure?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          This will delete pack {props.meta.name}. Are you sure about that?
+          <Form.Group controlId="exampleForm.ControlTextarea1">
+            <Form.Label>Please enter a reason for your rejection [REQUIRED]</Form.Label>
+            <Form.Control as="textarea" rows={3} onChange={e => setRejectReason(e.target.value)} />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button
             variant="info"
             onClick={() => {
-              handleDeleteClose(true);
+              if (rejectReason && rejectReason.length > 0) {
+                handleDeleteClose(true);
+              }
             }}
           >
             {deleteInProgress && (

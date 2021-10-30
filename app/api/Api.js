@@ -17,6 +17,11 @@ const mainWindow = remote.getCurrentWindow();
 
 axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 
+function escapeRegex(string) {
+  return string;
+  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
 function defineAbilitiesFor(user) {
   const { can, cannot, rules } = new AbilityBuilder();
 
@@ -31,7 +36,7 @@ function defineAbilitiesFor(user) {
 
   if (user.author && user.author.name) {
     can('manage', 'PerkPack', {
-      author: { $regex: `^${(user.author || {}).name}[ |+|&]?` }
+      author: { $regex: `^${escapeRegex((user.author || {}).name)}[ |+|&]?` }
     });
   }
 
