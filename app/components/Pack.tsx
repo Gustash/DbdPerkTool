@@ -1,4 +1,4 @@
-import React, { Component, useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { subject } from '@casl/ability';
 import fs from 'fs-extra';
 import log from 'electron-log';
@@ -20,11 +20,20 @@ import LatestChapter from './IconPack/LatestChapter';
 import MainPreview from './IconPack/MainPreview';
 import Title from './IconPack/Title';
 import settingsUtils from '../settings/Settings';
-import api from '../api/Api';
 import UserContext from '../context/UserContext';
 import AdminControls from './IconPack/AdminControls';
-import { InstallPathNotFoundError } from '../models/IconPack';
 import ApprovalControls from './IconPack/ApprovalControls';
+import { InstallPathNotFoundError } from '../models/IconPack';
+
+export enum PackType {
+    Portraits,
+    Perks
+};
+
+const IMAGE_TAG_FROM_TYPE: { [key in PackType]: string; } = {
+    [PackType.Portraits]: 'portraits',
+    [PackType.Perks]: 'perks'
+}
 
 type MyProps = {
   id: string;
@@ -32,17 +41,19 @@ type MyProps = {
   meta: any;
   onAuthorClick: any;
   setFilter: any;
-  onError: any;
+  onError: (message: string, link ?: string) => void;
   onInstallComplete: any;
-  viewMode: string;
   onModifyComplete: any;
+  approvalRequired: boolean;
+  type: PackType;
 };
 
-export default function PortraitPack(props: MyProps) {
+
+export default function Pack(props: MyProps) {
   const [saving, setSaving] = useState(false);
+  const [installState, setInstallState] = useState('');
   const [showInstallOpts, setShowInstallOpts] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [installStage, setInstallStage] = useState('');
   const userContext = useContext(UserContext);
 
   const doInstall = async (id: string, progressCb: any, opts: any) => {
@@ -63,7 +74,7 @@ export default function PortraitPack(props: MyProps) {
       }
 
       props.onInstallComplete(id);
-    } catch (e) {
+    } catch (e: any) {
       let errorMessage = e.message || JSON.stringify(e);
       let link: string | undefined = undefined;
       if(e.type === InstallPathNotFoundError.TYPE) {
@@ -75,13 +86,13 @@ export default function PortraitPack(props: MyProps) {
 
   const installPack = async (opts: Array<string>) => {
     setSaving(true);
-    await doInstall(props.id, (stage: string) => {
-      setInstallStage(stage);
+    await doInstall(props.id, (state: string) => {
+      setInstallState(state);
     }, opts);
     setSaving(false);
   };
 
-  const imageTag = props.meta.hasCustomPreviews ? 'preview' : 'portraits';
+  const imageTag = props.meta.hasCustomPreviews ? 'preview' : IMAGE_TAG_FROM_TYPE[props.type];
   const numImages = props.meta.hasPreviewBanner ? 1 : 4;
 
   const urls = [...Array(numImages).keys()].map(i => {
@@ -135,33 +146,6 @@ export default function PortraitPack(props: MyProps) {
     </Card.Body>
   );
 
-  if (props.viewMode === 'Compact') {
-    cardBody = (
-      <Card.Body>
-        <b>Author:</b>{' '}
-        <Author
-          onClick={(name: string) => {
-            props.onAuthorClick(name);
-          }}
-          name={props.meta.author}
-        />
-        <br />
-        <b>Latest Chapter:</b>{' '}
-        <LatestChapter
-          name={props.meta.latestChapter}
-          onClick={() => {
-            props.setFilter(props.meta.latestChapter);
-          }}
-        />
-        <Row className="mb-2">
-          <Col>
-            <b>Last Update:</b> {lastUpdateStr}
-          </Col>
-        </Row>
-      </Card.Body>
-    );
-  }
-
   const featured = props.meta.featured ? 'pack-featured' : '';
 
   let adminButtons = null;
@@ -186,7 +170,6 @@ export default function PortraitPack(props: MyProps) {
             urls={urls}
             id={props.id}
             baseUrl={props.meta.previewDir}
-            viewMode={props.viewMode}
           />
         </Card.Body>
         <Title
@@ -198,7 +181,7 @@ export default function PortraitPack(props: MyProps) {
         {cardBody}
         <InstallButton
           installInProgress={saving}
-          progressText={installStage}
+          progressText={installState}
           onClick={() => {
             setShowInstallOpts(true);
           }}

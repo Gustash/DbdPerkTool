@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
-import Carousel from 'react-bootstrap/Carousel';
 import uuid from 'react-uuid';
 import styled from 'styled-components';
 import Badge from '../Badge';
@@ -11,7 +10,6 @@ type MyProps = {
   images?: Array<string>;
   urls?: Array<string>;
   id?: string;
-  viewMode: string;
   baseUrl?: string;
   onPickImage?: any;
 };

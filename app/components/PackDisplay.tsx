@@ -4,21 +4,16 @@ import axios from 'axios';
 import Spinner from 'react-bootstrap/Spinner';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import nomar from 'nomar';
-import log from 'electron-log';
 import styled from 'styled-components';
 import ReactPaginate from 'react-paginate';
-import settingsUtil from '../settings/Settings';
 import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
 import AuthorModal from './AuthorModal';
 import PackDisplayHeader from './PackDisplayHeader';
 import PackDisplayFilters from './PackDisplayFilters';
-import UserContext from '../context/UserContext';
 import api from '../api/Api';
-import PerkPack from './PerkPack';
-import PortraitPack from './PortraitPack';
 import { ipcRenderer } from 'electron';
+import Pack, { PackType } from './Pack';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -55,11 +50,11 @@ const PaginatorWrapper = styled.div`
 `;
 
 const SORT_KEY_MAP = {
-  'Name': {key: 'name', dir: 'ascending'},
-  'Date': {key: 'lastUpdate', dir: 'descending'},
-  'Downloads': {key: 'downloads', dir: 'descending'},
-  'Chapter': {key: 'latestChapter', dir: 'descending'},
-  'Author': {key: 'author', dir: 'ascending'},
+  'Name': { key: 'name', dir: 'ascending' },
+  'Date': { key: 'lastUpdate', dir: 'descending' },
+  'Downloads': { key: 'downloads', dir: 'descending' },
+  'Chapter': { key: 'latestChapter', dir: 'descending' },
+  'Author': { key: 'author', dir: 'ascending' },
 };
 
 
@@ -81,7 +76,7 @@ export default function PackDisplay(props: MyProps) {
   const [packs, setPacks] = useState([]);
   const deckWrapperRef = React.createRef();
 
-  useEffect(() => { 
+  useEffect(() => {
     ipcRenderer.removeAllListeners('url-action');
     ipcRenderer.on('url-action', (event, arg) => {
       setSearchFilter(arg);
@@ -91,71 +86,54 @@ export default function PackDisplay(props: MyProps) {
   const fromPacksBuildCards = (opts) => {
     const myPacks = packs.data;
     return myPacks.map(pack => {
-      if (pack.hasPerks) {
-        return (
-          <PerkPack
-            viewMode={opts.viewMode}
-            onError={opts.onError}
-            onInstallComplete={opts.onInstallComplete}
-            meta={pack}
-            id={pack.id}
-            downloads={pack.downloads}
-            setFilter={opts.onSetFilter}
-            onAuthorClick={(author: string) => {
-              opts.onAuthorClick(author);
-            }}
-            approvalRequired={!!props.unapprovedOnly}
-            onModifyComplete={opts.onModifyComplete}
-          />
-        );
-      } else {
-        return (
-          <PortraitPack
-            viewMode={opts.viewMode}
-            onError={opts.onError}
-            onInstallComplete={opts.onInstallComplete}
-            meta={pack}
-            id={pack.id}
-            downloads={pack.downloads}
-            setFilter={opts.onSetFilter}
-            onAuthorClick={(author: string) => {
-              opts.onAuthorClick(author);
-            }}
-            onModifyComplete={opts.onModifyComplete}
-          />
-        );
-      }
+      const primaryType = pack.hasPerks ? PackType.Perks : PackType.Portraits;
+      return (
+        <Pack
+          onError={opts.onError}
+          onInstallComplete={opts.onInstallComplete}
+          meta={pack}
+          id={pack.id}
+          downloads={pack.downloads}
+          setFilter={opts.onSetFilter}
+          onAuthorClick={(author: string) => {
+            opts.onAuthorClick(author);
+          }}
+          approvalRequired={!!props.unapprovedOnly}
+          onModifyComplete={opts.onModifyComplete}
+          type={primaryType}
+        />
+      );
     });
   };
 
   const loadPacks = async () => {
-    if(props.defaultOnly) {
-      const packs = await api.getPacks({defaultOnly: true});
+    if (props.defaultOnly) {
+      const packs = await api.getPacks({ defaultOnly: true });
       setPacks(packs);
       return;
     }
     const capabilities = filters.length > 0 ? filters.join('|') : null;
-    const params = {page: page + 1, limit: pageSize, capabilities, unapproved: props.unapprovedOnly};
-    
-    if(searchFilter) {
+    const params = { page: page + 1, limit: pageSize, capabilities, unapproved: props.unapprovedOnly };
+
+    if (searchFilter) {
       params.search = searchFilter;
     }
 
-    if(props.featured === true) {
+    if (props.featured === true) {
       params.isFeatured = true;
     }
 
-    if(favoritesOnly) {
+    if (favoritesOnly) {
       params.favorites = true;
     }
 
-    if(props.mine) {
+    if (props.mine) {
       params.mine = true;
     }
 
     const apiSortKey = SORT_KEY_MAP[sortKey];
 
-    if(apiSortKey) {
+    if (apiSortKey) {
       params.sort = apiSortKey.key;
       params.sortdir = apiSortKey.dir;
     }
@@ -184,22 +162,22 @@ export default function PackDisplay(props: MyProps) {
   const paginate = !(props.paginate === false);
   const errorModalText = errorText;
 
-  if(!packs.data) {
+  if (!packs.data) {
     return (
-    <div className="d-flex flex-column justify-content-center align-items-center">
-      <Spinner
-        as="span"
-        animation="border"
-        role="status"
-        aria-hidden="true"
-      />
-      <h1>Loading...</h1>
-    </div>);
+      <div className="d-flex flex-column justify-content-center align-items-center">
+        <Spinner
+          as="span"
+          animation="border"
+          role="status"
+          aria-hidden="true"
+        />
+        <h1>Loading...</h1>
+      </div>);
   }
 
   const cards = fromPacksBuildCards({
     viewMode: viewMode,
-    onError: (msg: string, link ?: string) => {
+    onError: (msg: string, link?: string) => {
       setErrorText(msg);
       setErrorLink(link);
       setErrorModalShow(true);
