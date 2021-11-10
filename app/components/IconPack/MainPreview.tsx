@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
+// @ts-ignore
 import uuid from 'react-uuid';
 import styled from 'styled-components';
 import Badge from '../Badge';
@@ -22,7 +23,7 @@ const ImageContainer = styled.div`
 
 function buildNormalPreview(props: MyProps, additionalImgClasses: string) {
   const imageClass = `perk-preview-img${additionalImgClasses}`;
-  const images = props.urls.map<React.ReactNode>((url, index) => {
+  const images = props.urls?.map<React.ReactNode>((url) => {
     return (
       <Col key={uuid()}>
         <Image key={Date.now()} className={imageClass} src={`${props.baseUrl}${url}`} fluid />
@@ -40,7 +41,7 @@ function buildNormalPreview(props: MyProps, additionalImgClasses: string) {
 
 function buildStaticPreview(props: MyProps, additionalImgClasses: string) {
   const imageClass = `perk-preview-img${additionalImgClasses}`;
-  const images = props.images.map<React.ReactNode>((image, index) => {
+  const images = props.images?.map<React.ReactNode>((image, index) => {
     return (
       <Badge>
       <Col key={uuid()} onClick={() => { props.onPickImage(index) }}>

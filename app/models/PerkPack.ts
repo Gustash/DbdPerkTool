@@ -1,13 +1,9 @@
-import fs from 'fs-extra';
-import path from 'path';
 import copy from 'recursive-copy';
-import readdir from 'recursive-readdir';
 import log from 'electron-log';
-import { PackMeta } from './PackMeta';
 import {IconPack} from './IconPack';
 import settingsUtil from '../settings/Settings';
-import slash from 'slash';
-import { promisify } from 'util';
+import { PackMeta } from '../api/ApiTypes';
+
 
 export default class PerkPack extends IconPack {
   opts: any;
@@ -20,8 +16,8 @@ export default class PerkPack extends IconPack {
       return copy(sourcePath, destPath, { overwrite: true });
     }
     // Create an object for faster lookup
-    const desiredFilesObj = {};
-    opts.forEach(file => {
+    const desiredFilesObj: {[key: string]: boolean} = {};
+    opts.forEach((file: string) => {
       desiredFilesObj[file] = true;
     });
     const filterFn = (src: String) => {

@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Form from 'react-bootstrap/Form';
-import log from 'electron-log';
 import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
 import ReactDOM from 'react-dom';
 
 type MyProps = {
   onFiltersSet: Function;
-  initialFilters: [string];
+  initialFilters: string[];
 };
 
 const FilterCheckboxContainer = styled.div`

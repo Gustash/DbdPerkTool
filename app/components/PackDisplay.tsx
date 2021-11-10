@@ -14,6 +14,8 @@ import PackDisplayFilters from './PackDisplayFilters';
 import api from '../api/Api';
 import { ipcRenderer } from 'electron';
 import Pack, { PackType } from './Pack';
+import { PackQueryParams, PackMeta } from '../api/ApiTypes';
+import log from 'electron-log';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -49,7 +51,7 @@ const PaginatorWrapper = styled.div`
   background: rgba(0, 0, 0, 0.5);
 `;
 
-const SORT_KEY_MAP = {
+const SORT_KEY_MAP: { [key: string]: {key: string, dir: string}; } = {
   'Name': { key: 'name', dir: 'ascending' },
   'Date': { key: 'lastUpdate', dir: 'descending' },
   'Downloads': { key: 'downloads', dir: 'descending' },
@@ -57,33 +59,39 @@ const SORT_KEY_MAP = {
   'Author': { key: 'author', dir: 'ascending' },
 };
 
-
 export default function PackDisplay(props: MyProps) {
   const [errorModalShow, setErrorModalShow] = useState(false);
   const [searchFilter, setSearchFilter] = useState('');
-  const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState<Array<string>>([]);
   const [sortKey, setSortKey] = useState('Downloads');
   const [errorText, setErrorText] = useState('');
-  const [errorLink, setErrorLink] = useState('');
+  const [errorLink, setErrorLink] = useState<string | undefined>('');
   const [showAuthorPage, setShowAuthorPage] = useState(false);
   const [currentAuthor, setCurrentAuthor] = useState('');
-  const [viewMode, setViewMode] = useState('Normal');
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(12);
   const [successModalShow, setSuccessModalShow] = useState(false);
   const [successModalText, setSuccessModalText] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [packs, setPacks] = useState([]);
-  const deckWrapperRef = React.createRef();
+  const [packs, setPacks] = useState<{meta: {totalDocs: number}, data: Array<PackMeta>}>({meta: {totalDocs: 0}, data: []});
+  const deckWrapperRef = React.createRef<typeof DeckWrapper>();
 
   useEffect(() => {
     ipcRenderer.removeAllListeners('url-action');
-    ipcRenderer.on('url-action', (event, arg) => {
+    ipcRenderer.on('url-action', (_event, arg) => {
       setSearchFilter(arg);
     });
   });
 
-  const fromPacksBuildCards = (opts) => {
+  type CardOpts = {
+    onError: (message: string, link?: string) => void;
+    onInstallComplete: (id: string) => void;
+    onSetFilter: (text: string) => void;
+    onAuthorClick: (author: string) => void;
+    onModifyComplete: () => void;
+  }
+
+  const fromPacksBuildCards = (opts: CardOpts) => {
     const myPacks = packs.data;
     return myPacks.map(pack => {
       const primaryType = pack.hasPerks ? PackType.Perks : PackType.Portraits;
@@ -112,8 +120,9 @@ export default function PackDisplay(props: MyProps) {
       setPacks(packs);
       return;
     }
-    const capabilities = filters.length > 0 ? filters.join('|') : null;
-    const params = { page: page + 1, limit: pageSize, capabilities, unapproved: props.unapprovedOnly };
+    const capabilities = filters.length > 0 ? filters.join('|') : undefined;
+
+    const params: PackQueryParams = { page: page + 1, limit: pageSize, capabilities, unapproved: props.unapprovedOnly };
 
     if (searchFilter) {
       params.search = searchFilter;
@@ -146,7 +155,7 @@ export default function PackDisplay(props: MyProps) {
     loadPacks();
   }, [searchFilter, page, pageSize, filters, favoritesOnly, sortKey]);
 
-  const fromCardsBuildDeck = cards => {
+  const fromCardsBuildDeck = (cards: JSX.Element[]) => {
     return (
       <Row key="pack-cards" className="justify-content-center">
         {cards.map(card => (
@@ -176,7 +185,6 @@ export default function PackDisplay(props: MyProps) {
   }
 
   const cards = fromPacksBuildCards({
-    viewMode: viewMode,
     onError: (msg: string, link?: string) => {
       setErrorText(msg);
       setErrorLink(link);
@@ -184,6 +192,10 @@ export default function PackDisplay(props: MyProps) {
     },
     onInstallComplete: (id: string) => {
       const pack = packs.data.find(pack => pack.id === id);
+      if(!pack) {
+        log.error('Pack not found after install!', id);
+        return;
+      }
       setSuccessModalText(`Pack ${pack.name} installed!`);
       setSuccessModalShow(true);
     },
@@ -208,11 +220,8 @@ export default function PackDisplay(props: MyProps) {
       {showHeaderBar && (
         <div>
           <PackDisplayHeader
-            currentPage={page}
-            numPages={numPages}
             initialPageSize={pageSize}
             initialSortKey={sortKey}
-            initialViewMode={viewMode}
             onSearchFilter={(text: string) => {
               setPage(0);
               setSearchFilter(text);
@@ -221,14 +230,11 @@ export default function PackDisplay(props: MyProps) {
               setSortKey(text);
             }}
             initialFilterText={searchFilter}
-            onViewModeSet={(mode: string) => {
-              setViewMode(mode);
-            }}
             onPageSizeSet={(size: number) => {
               setPage(0);
               setPageSize(size);
             }}
-            onShowFavoritesSet={favoritesOnly => {
+            onShowFavoritesSet={(favoritesOnly: boolean) => {
               setFavoritesOnly(favoritesOnly);
               setPage(0);
             }}
@@ -236,7 +242,7 @@ export default function PackDisplay(props: MyProps) {
           />
           <PackDisplayFilters
             initialFilters={filters}
-            onFiltersSet={(newFilters: [string]) => {
+            onFiltersSet={(newFilters: string[]) => {
               setFilters(newFilters);
             }}
           />

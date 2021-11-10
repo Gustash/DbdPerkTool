@@ -116,6 +116,10 @@
     "actual": "CharPortraits/Haiti/HK_charSelect_portrait.png"
   },
   {
+    "normalized": "charportraits/haiti/template.png",
+    "actual": "CharPortraits/Haiti/template.png"
+  },
+  {
     "normalized": "charportraits/hb_charselect_portrait.png",
     "actual": "CharPortraits/HB_charSelect_portrait.png"
   },
@@ -126,6 +130,14 @@
   {
     "normalized": "charportraits/hubble/s28_charselect_portrait.png",
     "actual": "CharPortraits/Hubble/S28_charSelect_portrait.png"
+  },
+  {
+    "normalized": "charportraits/ion/t_k26_charselect_portrait.png",
+    "actual": "CharPortraits/Ion/T_K26_charSelect_portrait.png"
+  },
+  {
+    "normalized": "charportraits/ion/t_s29_charselect_portrait.png",
+    "actual": "CharPortraits/Ion/T_S29_charSelect_portrait.png"
   },
   {
     "normalized": "charportraits/jp_charselect_portrait.png",
@@ -836,6 +848,10 @@
     "actual": "Favors/iconFavors_wardWhite.png"
   },
   {
+    "normalized": "favors/ion/iconfavors_crowseye.png",
+    "actual": "Favors/Ion/iconFavors_crowsEye.png"
+  },
+  {
     "normalized": "favors/kenya/iconfavors_damagedphoto.png",
     "actual": "Favors/Kenya/iconFavors_damagedPhoto.png"
   },
@@ -1358,6 +1374,10 @@
   {
     "normalized": "helploading/iconhelploading_wraith.png",
     "actual": "HelpLoading/iconHelpLoading_wraith.png"
+  },
+  {
+    "normalized": "helploading/ion/t_iconhelploading_birdsoftorment.png",
+    "actual": "HelpLoading/Ion/T_iconHelpLoading_birdsOfTorment.png"
   },
   {
     "normalized": "helploading/qatar/iconhelploading_demogorgon.png",
@@ -2952,6 +2972,86 @@
     "actual": "ItemAddons/iconItemAddon_temp1.png"
   },
   {
+    "normalized": "itemaddons/ion/iconaddon_automaticdrawing.png",
+    "actual": "ItemAddons/Ion/iconAddon_AutomaticDrawing.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_charcoalstick.png",
+    "actual": "ItemAddons/Ion/iconAddon_CharcoalStick.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_choclocorn.png",
+    "actual": "ItemAddons/Ion/iconAddon_ChocloCorn.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_darkestink.png",
+    "actual": "ItemAddons/Ion/iconAddon_DarkestInk.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_festeringcarrion.png",
+    "actual": "ItemAddons/Ion/iconAddon_FesteringCarrion.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_gardenofrot.png",
+    "actual": "ItemAddons/Ion/iconAddon_GardenofRot.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_inkegg.png",
+    "actual": "ItemAddons/Ion/iconAddon_InkEgg.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_iridescentfeather.png",
+    "actual": "ItemAddons/Ion/iconAddon_IridescentFeather.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_jacobsbabyshoes.png",
+    "actual": "ItemAddons/Ion/iconAddon_JacobsBabyShoes.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_ogriefolover.png",
+    "actual": "ItemAddons/Ion/iconAddon_OGriefOLover.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_oilpaints.png",
+    "actual": "ItemAddons/Ion/iconAddon_OilPaints.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_severedhands.png",
+    "actual": "ItemAddons/Ion/iconAddon_SeveredHands.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_severedtongue.png",
+    "actual": "ItemAddons/Ion/iconAddon_SeveredTongue.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_silverbell.png",
+    "actual": "ItemAddons/Ion/iconAddon_SilverBell.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_stilllifecrow.png",
+    "actual": "ItemAddons/Ion/iconAddon_StillLifeCrow.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_thicktar.png",
+    "actual": "ItemAddons/Ion/iconAddon_ThickTar.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_thornynest.png",
+    "actual": "ItemAddons/Ion/iconAddon_ThornyNest.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_untitledagony.png",
+    "actual": "ItemAddons/Ion/iconAddon_UntitledAgony.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_velvetfabric.png",
+    "actual": "ItemAddons/Ion/iconAddon_VelvetFabric.png"
+  },
+  {
+    "normalized": "itemaddons/ion/iconaddon_vibrantobituary.png",
+    "actual": "ItemAddons/Ion/iconAddon_VibrantObituary.png"
+  },
+  {
     "normalized": "itemaddons/kenya/iconaddon_colddirt.png",
     "actual": "ItemAddons/Kenya/iconAddon_coldDirt.png"
   },
@@ -4392,6 +4492,30 @@
     "actual": "Perks/iconPerks_whispers.png"
   },
   {
+    "normalized": "perks/ion/t_iconperks_boonexponential.png",
+    "actual": "Perks/Ion/T_iconPerks_BoonExponential.png"
+  },
+  {
+    "normalized": "perks/ion/t_iconperks_correctiveaction.png",
+    "actual": "Perks/Ion/T_iconPerks_CorrectiveAction.png"
+  },
+  {
+    "normalized": "perks/ion/t_iconperks_grimembrace.png",
+    "actual": "Perks/Ion/T_iconPerks_grimEmbrace.png"
+  },
+  {
+    "normalized": "perks/ion/t_iconperks_hexpentimento.png",
+    "actual": "Perks/Ion/T_iconPerks_hexPentimento.png"
+  },
+  {
+    "normalized": "perks/ion/t_iconperks_overcome.png",
+    "actual": "Perks/Ion/T_iconPerks_Overcome.png"
+  },
+  {
+    "normalized": "perks/ion/t_iconperks_painresonance.png",
+    "actual": "Perks/Ion/T_iconPerks_painResonance.png"
+  },
+  {
     "normalized": "perks/kate/iconperks_boilover.png",
     "actual": "Perks/Kate/iconPerks_boilOver.png"
   },
@@ -4850,6 +4974,10 @@
   {
     "normalized": "powers/iconpowers_trap.png",
     "actual": "Powers/iconPowers_trap.png"
+  },
+  {
+    "normalized": "powers/ion/t_iconpowers_birdsoftorment.png",
+    "actual": "Powers/Ion/T_iconPowers_birdsOfTorment.png"
   },
   {
     "normalized": "powers/kenya/iconpowers_feralfrenzy.png",

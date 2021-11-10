@@ -1,4 +1,4 @@
-import { PackMeta } from './PackMeta';
+import { PackMeta } from "../api/ApiTypes";
 
 export default class PackMetaMapper {
   static fromRaw(rawPackMeta: any): PackMeta {
@@ -6,6 +6,8 @@ export default class PackMetaMapper {
       latestChapter: rawPackMeta.latestChapter,
       hasPortraits: rawPackMeta.hasPortraits,
       hasPowers: rawPackMeta.hasPowers,
+      hasAddons: rawPackMeta.hasAddons,
+      hasFavors: rawPackMeta.hasFavors,
       hasItems: rawPackMeta.hasItems,
       hasStatusEffects: rawPackMeta.hasStatusEffects,
       hasPerks: rawPackMeta.hasPerks,

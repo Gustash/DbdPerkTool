@@ -72,7 +72,7 @@ export default class PackDir {
   }
 
   async populateNormalizedFiles() {
-    if(this.normalizedFiles.length === 0) {
+    if (this.normalizedFiles.length === 0) {
       const userFilesRaw = await recursiveRead(this.dir);
       this.normalizedFiles = userFilesRaw.map(file => {
         return slash(path.relative(this.dir, file)).toLowerCase();
@@ -82,24 +82,24 @@ export default class PackDir {
   }
 
   getExpectedFileByFilename(fileName: string): ExpectedFile | undefined {
-    return expectedFiles.find((file: {normalized: string, actual: string}) => {
+    return expectedFiles.find((file: { normalized: string, actual: string }) => {
       return path.basename(file.normalized) === path.basename(fileName);
     });
   }
 
   getExpectedFileByFilePath(fileName: string): ExpectedFile | undefined {
-    return expectedFiles.find((file: {normalized: string, actual: string}) => {
+    return expectedFiles.find((file: { normalized: string, actual: string }) => {
       return slash(fileName).toLowerCase().includes(slash(file.normalized).toLowerCase());
     });
   }
 
   getNormalizedFilePath(fileName: string): string | undefined {
     let foundPath = this.getExpectedFileByFilePath(fileName) ?? this.getExpectedFileByFilename(fileName);
-    if(!foundPath) {
+    if (!foundPath) {
       log.info(`Could not find file ${fileName}`);
     }
 
-    if(foundPath && this.excludedFiles.includes(path.basename(foundPath.normalized))) {
+    if (foundPath && this.excludedFiles.includes(path.basename(foundPath.normalized))) {
       foundPath = undefined;
       log.info(`File ${fileName} excluded`);
     }
@@ -108,16 +108,16 @@ export default class PackDir {
   }
 
   async correctFilePaths() {
-    if(this.correctedPathFiles.length === 0) {
+    if (this.correctedPathFiles.length === 0) {
       const normalizedFiles = await this.getNormalizedFiles();
       normalizedFiles.forEach((file: string) => {
-          const fullPath = this.getNormalizedFilePath(file);
-          if(fullPath) {
-            this.correctedPathFiles.push({
-              originalPath: path.resolve(this.dir, file),
-              newPath: fullPath
-            });
-          }
+        const fullPath = this.getNormalizedFilePath(file);
+        if (fullPath) {
+          this.correctedPathFiles.push({
+            originalPath: path.resolve(this.dir, file),
+            newPath: fullPath
+          });
+        }
       });
     }
   }
@@ -186,23 +186,24 @@ export default class PackDir {
 
   async getLatestChapter() {
     const correctedPaths = (await this.getCorrectedFilePaths()).map(correctedPath => correctedPath.newPath);
-    
+
 
     const dirs: Array<string> = [];
 
     correctedPaths.forEach((file: string) => {
       const filename = '/' + path.basename(file);
       const dir = file.split(filename)[0].split('/').pop()?.toLowerCase();
-      if(dir && !dirs.includes(dir)) {
+      if (dir && !dirs.includes(dir)) {
         dirs.push(dir);
       }
     });
-
-    if(dirs.includes('hubble')) {
-      return 'Chapter XXII: Hour of the Witch'
-    } else if(dirs.includes('gemini')) {
+    if (dirs.includes('ion')) {
+      return 'Chapter XXII: Portrait of a Murder'
+    } else if (dirs.includes('hubble')) {
+      return 'Chapter XXII.5: Hour of the Witch'
+    } else if (dirs.includes('gemini')) {
       return 'Chapter XXI: Hellraiser'
-    } else if(dirs.includes('eclipse')) {
+    } else if (dirs.includes('eclipse')) {
       return 'Chapter XX: Resident Evil';
     } else if (dirs.includes('comet')) {
       return 'Chapter XIX: All-Kill';

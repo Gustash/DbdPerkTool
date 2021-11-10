@@ -14,11 +14,9 @@ type MyProps = {
   initialSortKey: string;
   onSearchFilter: Function;
   initialFilterText: string;
-  onViewModeSet: Function;
-  initialViewMode: string;
   onPageSizeSet: Function;
   initialPageSize: number;
-  initialShowFavorites: boolean;
+  initialShowFavorites?: boolean;
   onShowFavoritesSet: Function;
   refresh: Function;
 };
@@ -59,10 +57,9 @@ export default function PackDisplayHeader(props: MyProps) {
   const userContext = useContext(UserContext);
   const [searchText, setSearchText] = useState(props.initialFilterText);
   const [sortKeyText, setSortKeyText] = useState(props.initialSortKey);
-  const [viewModeText, setViewModeText] = useState(props.initialViewMode);
   const [pageSizeText, setPageSizeText] = useState(props.initialPageSize);
   const [showFavorites, setShowFavorites] = useState(
-    props.initialShowFavorites
+    props.initialShowFavorites ?? false
   );
 
   // The idea here is to only actually run the search after the user is finished typing
@@ -74,11 +71,6 @@ export default function PackDisplayHeader(props: MyProps) {
   const setSortKey = (text: string) => {
     setSortKeyText(text);
     props.onSortKeySet(text);
-  };
-
-  const setViewMode = (text: string) => {
-    setViewModeText(text);
-    props.onViewModeSet(text);
   };
 
   const setSearchFilter = (text: string) => {

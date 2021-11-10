@@ -13,7 +13,6 @@ import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
 import log from 'electron-log';
 import axios from 'axios';
-import PackMeta from '../models/PackMeta';
 import settingsUtil from '../settings/Settings';
 import styled from 'styled-components';
 import api from '../api/Api';

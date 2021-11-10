@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import log from 'electron-log';
 import { DateTime } from 'luxon';
 import path from 'path';
-import { app, remote, shell } from 'electron';
+import { app, remote } from 'electron';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';

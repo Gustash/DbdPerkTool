@@ -7,8 +7,8 @@ import path from 'path';
 import log from 'electron-log';
 import settingsUtil from '../settings/Settings';
 import logger from 'electron-log';
-import { PackMeta } from './PackMeta';
 import { promisify } from 'util';
+import { PackMeta } from '../api/ApiTypes';
 
 const { ipcRenderer } = electron;
 
