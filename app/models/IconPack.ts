@@ -103,6 +103,11 @@ export abstract class IconPack {
           resolve(zip);
         }
       });
+
+      ipcRenderer.on('downloadProgress', (event, progress) => {
+        log.info(`Progress: ${progress}%`);
+        onProgress?.(`Downloading ${progress.toFixed(2)}%`);
+      });
     });
   }
 

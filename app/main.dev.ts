@@ -18,6 +18,7 @@ import { EventEmitter } from 'events';
 import axios from 'axios';
 import fs from 'fs';
 import fetch from 'electron-fetch';
+import { FileDownloader } from './utils/FileDownloader';
 const WIN32 = process.platform === 'win32';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
@@ -28,6 +29,7 @@ app.allowRendererProcessReuse = false;
 let mainWindow: BrowserWindow | null = null;
 
 let deeplinkingUrl;
+let downloadInProgress = false;
 
 const protocolLauncherArg = '--protocol-launcher';
 const possibleProtocols = ['dbdicontoolbox'];
@@ -251,24 +253,13 @@ const createWindow = async () => {
     // Remove this if your app does not use auto updates
     // eslint-disable-next-line
     new AppUpdater(mainWindow);
-    ipcMain.on('downloadFile', async (event, args) => {
-      log.info(`Downloading ${args.url} to ${args.outputLocation}`);
+    ipcMain.on('downloadFile', async (_event, args: {outputLocation: string, url: string}) => {
+      const downloader = new FileDownloader(args.outputLocation, args.url);
       try {
-        fetch(args.url).then(res => {
-          const dest = fs.createWriteStream(args.outputLocation);
-          res.body.pipe(dest);
-          dest.on('close', () => {
-            log.info('Download complete!');
-            mainWindow.webContents.send('downloadComplete');
-          });
-          dest.on('error', err => {
-            log.error('Download error: ', err);
-            mainWindow.webContents.send('downloadComplete', err);
-          });
-        });
-      } catch (err) {
-        log.error('Download error: ', err);
-        mainWindow.webContents.send('downloadComplete', err);
+        await downloader.begin(progress =>  mainWindow?.webContents.send('downloadProgress', progress));
+        mainWindow?.webContents.send('downloadComplete');
+      } catch(e) {
+        mainWindow?.webContents.send('downloadComplete', e);
       }
     });
   });
