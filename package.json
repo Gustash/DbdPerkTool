@@ -1,7 +1,7 @@
 {
   "name": "electron-react-boilerplate",
   "productName": "Dead By Daylight Icon Toolbox",
-  "version": "2.6.2",
+  "version": "2.6.3",
   "description": "Dead By Daylight Icon Toolbox",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -135,6 +135,7 @@
     "@types/react-table": "^7.7.3",
     "@types/react-test-renderer": "^16.9.2",
     "@types/redux-logger": "^3.0.7",
+    "@types/rimraf": "^3.0.2",
     "@types/sinon": "^7.5.2",
     "@types/tapable": "^1.0.5",
     "@types/vfile-message": "^2.0.0",

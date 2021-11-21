@@ -1,7 +1,7 @@
 {
   "name": "dbdicontoolbox",
   "productName": "Dead By Daylight Icon Toolbox",
-  "version": "2.6.2",
+  "version": "2.6.3",
   "description": "Dead By Daylight Icon Toolbox",
   "main": "./main.prod.js",
   "author": {
@@ -15,11 +15,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "canvas": "git+https://github.com/nrcrast/node-canvas.git#v2.7.0-nanfix",
-    "imagemin": "^7.0.1",
-    "imagemin-pngquant": "^9.0.2",
     "keytar": "^6.0.1",
     "shuffle-array": "^1.0.1",
     "slugify": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/archiver": "^5.1.1",
+    "@types/recursive-readdir": "^2.2.0",
+    "@types/rimraf": "^3.0.2",
+    "@types/shuffle-array": "^1.0.2"
   }
 }

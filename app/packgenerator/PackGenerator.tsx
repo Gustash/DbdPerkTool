@@ -2,15 +2,11 @@ import path from 'path';
 import PackDir, { CorrectedFile } from '../packdir/PackDir';
 import archiver from 'archiver';
 import slugify from '@sindresorhus/slugify';
-import { promisify } from 'util';
 import slash from 'slash';
 import fs from 'fs';
 import log from 'electron-log';
 import { DEFAULT_PERK_ICONS, DEFAULT_PORTRAIT_ICONS, PreviewGenerator } from './PreviewGenerator';
-import PerkPackArchive from '../models/PerkPackArchive';
-
-
-const readdirAsync = promisify(fs.readdir);
+import {IconType, PerkPackArchive} from '../models/PerkPackArchive';
 
 export default class PackGenerator {
   packZipFile: string;
@@ -51,7 +47,7 @@ export default class PackGenerator {
 
     const files = this.packDir.correctedPathFiles;
 
-    const packArchive = new PerkPackArchive(files, this.packDir.dir);
+    const packArchive = new PerkPackArchive(files);
 
     const defaults = packMeta.hasPerks ? DEFAULT_PERK_ICONS : DEFAULT_PORTRAIT_ICONS;
     const getter = packMeta.hasPerks ? packArchive.getPerk.bind(packArchive) : packArchive.getPortrait.bind(packArchive);
@@ -62,14 +58,14 @@ export default class PackGenerator {
         return getter(name);
       }));
     } catch (e) {
-      images = await packArchive.getRandomIcons(packMeta.hasPerks ? 'perks' : 'portraits', 4);
+      images = await packArchive.getRandomIcons(packMeta.hasPerks ? IconType.PERKS : IconType.PORTRAITS, 4);
     }
 
 
     return images.map(image => `data:image/png;base64, ${image.toString('base64')}`)
   }
 
-  async generate(previews: string[], hasPreviewBanner) {
+  async generate(previews: string[], hasPreviewBanner?: boolean) {
     const currentGen = this;
     return new Promise(async (resolve, reject) => {
       // Start building archive
@@ -127,7 +123,7 @@ export default class PackGenerator {
 
       // TODO build previews
       try {
-        const previewGenerator = new PreviewGenerator(archive, files, this.packDir.dir, packMeta);
+        const previewGenerator = new PreviewGenerator(archive, files, packMeta);
         await previewGenerator.generate();
       } catch (e) {
         reject(e);

@@ -160,7 +160,18 @@ class Api {
   async popNotification() {
     logger.debug('Popping notification');
     // @ts-ignore
-    return this.executor.apis.default.popNotification(settingsUtil.settings.lastNotificationRead ? { since: settingsUtil.settings.lastNotificationRead } : {});
+    const notif = await this.executor.apis.default.popNotification(settingsUtil.settings.lastNotificationRead ? { since: settingsUtil.settings.lastNotificationRead } : {});
+    // Global notification
+    if(notif) {
+      return notif;
+    }
+
+    // // User notifications
+    // if(!this.currentUser) {
+    //   return;
+    // }
+
+    // await this.executor.apis.default.
   }
 
   async checkForPackChanges() {

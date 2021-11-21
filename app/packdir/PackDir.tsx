@@ -74,7 +74,7 @@ export default class PackDir {
   async populateNormalizedFiles() {
     if (this.normalizedFiles.length === 0) {
       const userFilesRaw = await recursiveRead(this.dir);
-      this.normalizedFiles = userFilesRaw.map(file => {
+      this.normalizedFiles = userFilesRaw.map((file: string) => {
         return slash(path.relative(this.dir, file)).toLowerCase();
       });
       this.normalizedFiles.sort();

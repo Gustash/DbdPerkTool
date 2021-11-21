@@ -1,47 +1,23 @@
-import { PackCapabilities } from '../models/PackMeta';
-import PerkPackArchive from '../models/PerkPackArchive'
+import { PerkPackArchive } from '../models/PerkPackArchive'
 import PackGallery from '../utils/PackGallery';
 import logger from 'electron-log';
-import imagemin from 'imagemin';
-import imageminPngquant from 'imagemin-pngquant';
 import { CorrectedFile } from '../packdir/PackDir';
+import { PackCapabilities } from '../api/ApiTypes';
 
 export const DEFAULT_PERK_ICONS = ['smallgame', 'soulguard', 'trailoftorment', 'coupdegrace'];
 export const DEFAULT_PORTRAIT_ICONS = ['s23', 'mk', 'gs', 'be'];
 
 export class PreviewGenerator {
     private pack: any;
-    constructor(private archive: any, files: Array<CorrectedFile>, basePath: string, private meta: PackCapabilities ) {
-        this.pack = new PerkPackArchive(files, basePath);
+    constructor(private archive: any, files: Array<CorrectedFile>, private meta: PackCapabilities) {
+        this.pack = new PerkPackArchive(files);
     }
 
-    static async compressImage(image: any) {
-		return new Promise((resolve, reject) => {
-			imagemin
-				.buffer(image, {
-					plugins: [
-						imageminPngquant({
-							quality: [0.6, 0.8],
-						}),
-					],
-				})
-				.then((buf) => {
-					resolve(buf);
-				})
-				.catch((err) => {
-					reject(err);
-				});
-		});
-	}
-
     async addImageToArchive(imageData: any, imageName: string) {
-        if(!this.archive) {
+        if (!this.archive) {
             return;
         }
-        logger.info(`Compressing image ${imageName}`);
-        const compressedData = await PreviewGenerator.compressImage(imageData);
-        logger.info(`Compressed image ${imageName}`);
-        this.archive?.append(compressedData, {name: imageName});
+        this.archive?.append(imageData, { name: imageName });
     }
 
     async doPreviewCategory(desiredIcons: string[], getter: Function, category: string, pathPrefix?: string) {
@@ -49,18 +25,18 @@ export class PreviewGenerator {
         logger.info(`Processing preview for ${category}`);
         try {
             icons = await Promise.all(desiredIcons.map(icon => getter(icon)));
-        } catch(e) {
+        } catch (e) {
             logger.info(`Error getting icons: ${e}`);
             try {
                 icons = await this.pack.getRandomIcons(category, desiredIcons.length);
-            } catch(randomE) {
+            } catch (randomE) {
                 logger.info(`Error getting random icons: ${e}`);
                 throw randomE;
             }
         }
 
         await Promise.all(icons.map((icon: any, i: number) => {
-            return this.addImageToArchive(icon,  `previews/${pathPrefix || category}_${i}.png`);
+            return this.addImageToArchive(icon, `previews/${pathPrefix || category}_${i}.png`);
         }));
     }
 
@@ -73,7 +49,7 @@ export class PreviewGenerator {
     }
 
     async doItems() {
-        return this.doPreviewCategory(['toolboxWornOut', 'toolbox', 'flashlightSport', 'flashlightUtility','rainbowmap'], this.pack.getItem.bind(this.pack), 'items');
+        return this.doPreviewCategory(['toolboxWornOut', 'toolbox', 'flashlightSport', 'flashlightUtility', 'rainbowmap'], this.pack.getItem.bind(this.pack), 'items');
     }
 
     async doPowers() {
@@ -93,25 +69,25 @@ export class PreviewGenerator {
     }
 
     async generate() {
-        if(this.meta.hasPerks === true) {
+        if (this.meta.hasPerks === true) {
             await this.doPerks();
         }
-        if(this.meta.hasPortraits === true) {
+        if (this.meta.hasPortraits === true) {
             await this.doPortraits();
         }
-        if(this.meta.hasItems === true) {
+        if (this.meta.hasItems === true) {
             await this.doItems();
         }
-        if(this.meta.hasPowers === true) {
+        if (this.meta.hasPowers === true) {
             await this.doPowers();
         }
-        if(this.meta.hasAddons === true) {
+        if (this.meta.hasAddons === true) {
             await this.doAddons();
         }
-        if(this.meta.hasStatusEffects === true) {
+        if (this.meta.hasStatusEffects === true) {
             await this.doStatusEffects();
         }
-        if(this.meta.hasFavors === true) {
+        if (this.meta.hasFavors === true) {
             await this.doFavors();
         }
         const gallery = new PackGallery(this.pack);
