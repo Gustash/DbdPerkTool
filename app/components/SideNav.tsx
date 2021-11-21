@@ -1,4 +1,5 @@
 import React, { Component, useState, useContext, useEffect } from 'react';
+import path from 'path';
 import electron from 'electron';
 import { shell } from 'electron';
 import styled from 'styled-components';
@@ -78,38 +79,27 @@ const AccessoryWrapper = styled.div`
 `;
 
 async function signIn(onJwt) {
+  console.log(path.join(__dirname, 'SideNavPreload.js'));
   const authWindow = new BrowserWindow({
     width: 800,
     height: 600,
     show: false,
     //frame: false,
     autoHideMenuBar: true,
-    'node-integration': false,
-    'web-security': false
+    'web-security': false,
+    webPreferences: {
+      preload: path.join(__dirname, 'dist/SideNavPreload.js')
+    }
   });
 
-  // This is just an example url - follow the guide for whatever service you are using
-  const authUrl = `${settingsUtil.get('targetServer')}/auth/steam`;
+  const authUrl = `${settingsUtil.get('targetServer')}/auth/steam?v2=true`;
 
   authWindow.loadURL(authUrl);
   authWindow.show();
-  // 'will-navigate' is an event emitted when the window.location changes
-  // newUrl should contain the tokens you need
-  authWindow.webContents.on('did-redirect-navigation', async function (
-    event,
-    newUrl
-  ) {
-    if (newUrl.startsWith(`${authUrl}/return`)) {
-      const result = await authWindow.webContents.executeJavaScript(
-        `document.querySelector('pre').innerText`
-      );
-
-      const jwtToken = JSON.parse(result);
-      if (jwtToken.jwtToken) {
-        onJwt(jwtToken);
-        authWindow.close();
-      }
+  authWindow.webContents.on('ipc-message', async (_event, channel: string, jwt: string) => {
+    if (channel === 'jwtAvailable') {
       authWindow.close();
+      onJwt(JSON.parse(jwt));
     }
   });
 }

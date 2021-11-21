@@ -58,7 +58,13 @@ class Api {
   async getUser(): Promise<User | null> {
     try {
       // @ts-ignore
-      const user = await this.executor?.apis.default.getUser();
+      let user = await this.executor?.apis.default.getUser();
+
+      // sometimes it seems like this returns the full resp and not just the body...
+      if(!user.username && user.body) {
+        user = user.body;
+      }
+      
       if (user.username) {
         user.abilities = defineAbilitiesFor(user);
         this.currentUser = user;
@@ -82,6 +88,12 @@ class Api {
     // @ts-ignore
     await this.executor.saveJwt();
     await this.getUser();
+  }
+
+  async exchangeCodeForJwt(code: string) {
+    const url = `${settingsUtil.get('targetServer')}/auth/steam/finalize/${code}`;
+    const resp = await axios.get(url);
+    return resp.data;
   }
 
   async connectAuthor(steamId: string, authorName: string) {

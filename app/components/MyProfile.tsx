@@ -19,6 +19,8 @@ type MyProps = {};
 
 const DescriptionHeader = styled.h4``;
 
+const UserInfoHeader = styled.h6``;
+
 const AddLinkWrapper = styled.div`
   display: flex;
   flex-direction: row-reverse;
@@ -86,7 +88,9 @@ export default function MyProfile(props: MyProps) {
             roundedCircle
           />
         </UserImageWrapper>
-        <DescriptionHeader>Role: {userContext.user.role}</DescriptionHeader>
+        <UserInfoHeader><b>Author Name:</b> {userContext.user.author.name}</UserInfoHeader>
+        <UserInfoHeader><b>Role:</b> {userContext.user.role}</UserInfoHeader>
+        <UserInfoHeader><b>Total pack downloads:</b> {userContext.user.author.totalDownloads ?? 'Unknown'}</UserInfoHeader>
         <Form
           onSubmit={async e => {
             e.preventDefault();
