@@ -266,6 +266,14 @@ a:hover {
   margin-right: 10px;
 }
 
+.form-control:read-only {
+  background: rgba(48, 48, 48, 0);
+  border: none;
+  border-radius: 0;
+  color: white;
+  border-bottom: 1px solid var(--main-color) !important;
+}
+
 .form-control {
   background: rgba(48, 48, 48, 0);
   border: none;

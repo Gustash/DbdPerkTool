@@ -9,7 +9,7 @@ export const DEFAULT_PORTRAIT_ICONS = ['s23', 'mk', 'gs', 'be'];
 
 export class PreviewGenerator {
     private pack: any;
-    constructor(private archive: any, files: Array<CorrectedFile>, private meta: PackCapabilities) {
+    constructor(private archive: any, files: Array<CorrectedFile>, private meta: PackCapabilities, private onUpdate: (line: string) => void) {
         this.pack = new PerkPackArchive(files);
     }
 
@@ -90,7 +90,7 @@ export class PreviewGenerator {
         if (this.meta.hasFavors === true) {
             await this.doFavors();
         }
-        const gallery = new PackGallery(this.pack);
+        const gallery = new PackGallery(this.pack, this.onUpdate);
         const images = await gallery.create();
         await Promise.all(images.map(image => {
             return this.addImageToArchive(image.data, `previews/gallery_${image.type}.png`);

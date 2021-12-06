@@ -65,13 +65,11 @@ export default class PackGenerator {
     return images.map(image => `data:image/png;base64, ${image.toString('base64')}`)
   }
 
-  async generate(previews: string[], hasPreviewBanner?: boolean) {
+  async generate(previews: string[], hasPreviewBanner: boolean, onUpdate: (line: string) => void) {
     const currentGen = this;
     return new Promise(async (resolve, reject) => {
       // Start building archive
-      log.info(
-        'Building archive ' + path.resolve(this.outputPath, this.packZipFile)
-      );
+      onUpdate('Building archive ' + path.resolve(this.outputPath, this.packZipFile));
       const output = fs.createWriteStream(
         path.resolve(this.outputPath, this.packZipFile)
       );
@@ -81,8 +79,8 @@ export default class PackGenerator {
       });
 
       output.on('close', function () {
-        log.info(archive.pointer() + ' total bytes');
-        log.info(
+        onUpdate(archive.pointer() + ' total bytes')
+        onUpdate(
           'archiver has been finalized and the output file descriptor has closed.'
         );
         resolve(currentGen.outputZip);
@@ -95,7 +93,7 @@ export default class PackGenerator {
 
       archive.pipe(output);
 
-      log.info('Making dir...');
+      onUpdate('Making dir...');
 
       const packMeta = {
         name: this.packName,
@@ -108,7 +106,7 @@ export default class PackGenerator {
         ...(await this.packDir.getMeta())
       }
 
-      log.info('Pack Meta: ' + JSON.stringify(packMeta));
+      onUpdate('Pack Meta: ' + JSON.stringify(packMeta));
 
       const files = this.packDir.correctedPathFiles;
 
@@ -121,9 +119,9 @@ export default class PackGenerator {
         }
       });
 
-      // TODO build previews
       try {
-        const previewGenerator = new PreviewGenerator(archive, files, packMeta);
+        onUpdate('Building preview images');
+        const previewGenerator = new PreviewGenerator(archive, files, packMeta, onUpdate);
         await previewGenerator.generate();
       } catch (e) {
         reject(e);

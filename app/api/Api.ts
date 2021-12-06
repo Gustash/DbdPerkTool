@@ -9,6 +9,7 @@ import logger from 'electron-log';
 import axios from 'axios';
 import ApiExecutor from './ApiExecutor';
 import { PackQueryParams, User } from './ApiTypes';
+import { ipcRenderer } from 'electron';
 
 const mainWindow = remote.getCurrentWindow();
 
@@ -61,10 +62,10 @@ class Api {
       let user = await this.executor?.apis.default.getUser();
 
       // sometimes it seems like this returns the full resp and not just the body...
-      if(!user.username && user.body) {
+      if (!user.username && user.body) {
         user = user.body;
       }
-      
+
       if (user.username) {
         user.abilities = defineAbilitiesFor(user);
         this.currentUser = user;
@@ -162,7 +163,7 @@ class Api {
     // @ts-ignore
     const notif = await this.executor.apis.default.popNotification(settingsUtil.settings.lastNotificationRead ? { since: settingsUtil.settings.lastNotificationRead } : {});
     // Global notification
-    if(notif) {
+    if (notif) {
       return notif;
     }
 
@@ -245,38 +246,24 @@ class Api {
   }
 
   async uploadZip(sourceFile: string, onProgress: (pct: number) => void) {
-    const fileDetails = fs.statSync(sourceFile);
+    ipcRenderer.on('upload-progress', (_event: any, progress: number) => {
+      onProgress(progress);
+    });
 
-    if (fileDetails.size / 1000000.0 > 150) {
-      throw Error('File is too large. Must be less than 150MB!');
+    await this.getUser();
+    try {
+      const args = {
+        sourceFile,
+        // @ts-ignore
+        token: this.executor.jwt.token,
+        // @ts-ignore
+        uploadUrl: settingsUtil.settings.uploadServer || await this.executor.apis.default.getUploadServer()
+      };
+      await ipcRenderer.invoke('upload-zip', args);
+    } finally {
+      ipcRenderer.removeAllListeners('upload-progress');
     }
 
-    const file = await fs.readFile(sourceFile);
-    // This is just a little hack to update the JWT if necessary before the upload
-    // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
-    // logic
-    await this.getUser();
-    // @ts-ignore
-    const uploadUrl = settingsUtil.settings.uploadServer || await this.executor.apis.default.getUploadServer();
-    await axios.post(`${uploadUrl}/v2/packs`, file, {
-      headers: {
-        'Content-Type': 'application/octet-stream',
-        // @ts-ignore
-        Authorization: `Bearer ${this.executor.jwt.token}`
-      },
-      onUploadProgress: progressEvent => {
-        const totalLength = progressEvent.lengthComputable
-          ? progressEvent.total
-          : progressEvent.target.getResponseHeader('content-length') ||
-          progressEvent.target.getResponseHeader(
-            'x-decompressed-content-length'
-          );
-        console.log('onUploadProgress', totalLength);
-        if (totalLength !== null) {
-          onProgress(Math.round((progressEvent.loaded * 100) / totalLength));
-        }
-      }
-    });
   }
 }
 

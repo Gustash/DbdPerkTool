@@ -10,6 +10,7 @@ import logger from 'electron-log';
 import { promisify } from 'util';
 import { PackMeta } from '../api/ApiTypes';
 
+const { ipcRenderer: ipc } = require('electron-better-ipc');
 const { ipcRenderer } = electron;
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
@@ -74,7 +75,7 @@ export abstract class IconPack {
   private async extractZip(zipPath: string) {
     const tmpDir = { name: path.resolve(IconPack.tempDir, `${Date.now()}_${this.replaceWindowsChars(this.meta.id)}`) };
     const d = await unzipper.Open.file(zipPath);
-    await d.extract({path: tmpDir.name});
+    await d.extract({ path: tmpDir.name });
     return tmpDir;
   }
 
@@ -87,28 +88,28 @@ export abstract class IconPack {
    * @param onProgress - optional. Called with an integer percentage as the download progresses
    * @returns Buffer of raw zip data
    */
-  private async downloadZip(onProgress?: Function): Promise<Buffer> {
+  private async downloadZip(onProgress?: Function): Promise<{ name: string }> {
     const url = await this.getZipUrl();
     const zip = { name: path.resolve(IconPack.tempDir, `${Date.now()}_${this.replaceWindowsChars(this.meta.id)}.zip`) };
-    return new Promise((resolve, reject) => {
-      ipcRenderer.send('downloadFile', {
-        outputLocation: zip.name,
-        url
-      });
 
-      ipcRenderer.on('downloadComplete', (event, err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(zip);
-        }
-      });
-
-      ipcRenderer.on('downloadProgress', (event, progress) => {
-        log.info(`Progress: ${progress}%`);
-        onProgress?.(`Downloading ${progress.toFixed(2)}%`);
-      });
+    ipcRenderer.on('downloadProgress', (event, progress) => {
+      log.info(`Progress: ${progress}%`);
+      onProgress?.(`Downloading ${progress.toFixed(2)}%`);
     });
+
+    const error = await ipcRenderer.invoke('downloadFile', {
+      outputLocation: zip.name,
+      url
+    });
+
+    if (error) {
+      ipcRenderer.removeAllListeners('downloadProgress');
+      throw error;
+    }
+
+    ipcRenderer.removeAllListeners('downloadProgress');
+
+    return zip;
   }
 
   /**

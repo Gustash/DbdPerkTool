@@ -5,7 +5,7 @@ import { IconType, PerkPackArchive } from '../models/PerkPackArchive';
 
 export default class PackGallery {
 
-	constructor(private archive: PerkPackArchive) {
+	constructor(private archive: PerkPackArchive, private onUpdate: (line: string) => void) {
 	}
 
 	public async create() {
@@ -17,11 +17,10 @@ export default class PackGallery {
 	private async buildUncompressedImages(types: IconType[]) {
 		const images = [];
 		for (let i = 0; i < types.length; i += 1) {
-			logger.info(`Processing images for type ${types[i]}`);
+			this.onUpdate(`Processing gallery images for type ${types[i]}`);
 			const type = types[i];
 			const files = this.archive.getIconList(type);
 			if (files.length > 0) {
-				console.log(`Type: ${type}: `, files);
 				images.push(await this.generateImageFor(type, files));
 			}
 		}
@@ -29,7 +28,7 @@ export default class PackGallery {
 	}
 
 	private async generateImageFor(type: IconType, files: CorrectedFile[]) {
-		const img = await ImageGrid.generate(files);
+		const img = await ImageGrid.generate(files, this.onUpdate);
 		return { type, data: img };
 	}
 

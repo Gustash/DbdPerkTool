@@ -17,6 +17,11 @@ process.once('loaded', function() {
   global.setImmediate = _setImmediate;
 });
 
+process.on('uncaughtException', function (err) {
+  logger.error(err);
+})
+
+
 process.traceProcessWarnings = true;
 
 const store = configureStore();

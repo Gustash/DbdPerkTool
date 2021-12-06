@@ -24,6 +24,7 @@ import UploadAgreement from './UploadAgreement';
 import { DefaultContainer } from './DefaultContainer';
 import PreviewSelector from './PreviewSelector';
 import { ISizeCalculationResult } from 'image-size/dist/types/interface';
+import CreationLog from './CreationLog';
 
 axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 
@@ -64,10 +65,20 @@ export default function Create(props: MyProps) {
   const [customPreviewImages, setCustomPreviewImages] = useState<Array<string>>([]);
   const [hasPreviewBanner, setHasPreviewBanner] = useState(false);
   const userContext = useContext(UserContext);
+  const [creationLogLines, setCreationLogLines] = useState<Array<string>>([]);
 
   if (!userContext?.user?.author) {
     return <NoAuthorProfile />;
   }
+
+  const appendToCreationLog = (lines: string | Array<string>) => {
+    if(!Array.isArray(lines)) {
+      lines = [lines];
+    }
+    const linesWithDate = lines.map(line => `${new Date().toISOString()}: ${line}`);
+    setCreationLogLines(oldLines => [...oldLines, ...linesWithDate]);
+    log.debug(lines);
+  };
 
   const autoAuthor = userContext.user.abilities.cannot('manage', 'all');
 
@@ -77,7 +88,10 @@ export default function Create(props: MyProps) {
   const loadPacks = async () => {
     const packs = await api.getPacks({ light: true, mine: true });
     const defaultPack = await api.getPacks({ light: true, defaultOnly: true });
-    setPacks([...packs.data, ...defaultPack.data]);
+    const allPacks = [...packs.data, ...defaultPack.data].sort((a,b) => {
+      return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+    });
+    setPacks(allPacks);
 
     if (initialId) {
       const pack = packs.data.find(pack => pack.id === initialId);
@@ -97,7 +111,7 @@ export default function Create(props: MyProps) {
   }, []);
 
   const doCreate = async e => {
-
+    appendToCreationLog('Beginning creation');
     if (api.needsToAcceptUploadAgreement()) {
       setUploadAgreementShow(true);
       return;
@@ -106,6 +120,7 @@ export default function Create(props: MyProps) {
     e?.preventDefault();
     const packDirModel = new PackDir(packDir);
 
+    appendToCreationLog(`Validating directory '${packDirModel.dir}'`);
     const validationStatus = await packDirModel.validate();
 
     if (validationStatus.isValid === false) {
@@ -129,12 +144,15 @@ export default function Create(props: MyProps) {
     let outputZip;
 
     try {
-      log.debug('Generating output zip');
-      outputZip = await generator.generate(getPreviewImagesCombined(), hasPreviewBanner);
+      appendToCreationLog('Generating output zip');
+      outputZip = await generator.generate(getPreviewImagesCombined(), hasPreviewBanner, (logLine: string) => {
+        const lines = logLine.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+        appendToCreationLog(lines);
+      });
       // This is just a little hack to update the JWT if necessary before the upload
       // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
       // logic
-      log.debug('Output zip generated. Uploading...');
+      appendToCreationLog('Output zip generated. Uploading...');
       await api.getUser();
       await api.uploadZip(outputZip, progress => {
         setSaveProgress(progress);
@@ -151,6 +169,7 @@ export default function Create(props: MyProps) {
       if (e.response?.data) {
         message = e.response.data;
       }
+      appendToCreationLog(`Error uploading pack: ${message}`);
       log.debug(`Error uploading pack: `, e.response);
       setErrorText(`Error generating or uploading Pack: ${message}`);
       setSaving(false);
@@ -394,6 +413,7 @@ export default function Create(props: MyProps) {
             {saving && (
               <ProgressBar now={saveProgress} label={`${saveProgress}%`} />
             )}
+            <CreationLog lines={creationLogLines}/>
           </CreateButtonWrapper>
         </Form>
       </DefaultContainer>

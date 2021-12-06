@@ -13,12 +13,10 @@ import electron, { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import ProgressBar from 'electron-progressbar';
-import { EventEmitter } from 'events';
 import axios from 'axios';
-import fs from 'fs';
-import fetch from 'electron-fetch';
 import { FileDownloader } from './utils/FileDownloader';
+import { IpcCommandHandler, registerIpcCommands } from './ipc-commands';
+const { ipcMain: ipc } = require('electron-better-ipc');
 const WIN32 = process.platform === 'win32';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
@@ -27,12 +25,17 @@ const gotTheLock = app.requestSingleInstanceLock();
 app.allowRendererProcessReuse = false;
 
 let mainWindow: BrowserWindow | null = null;
+let ipcHandler = new IpcCommandHandler();
 
 let deeplinkingUrl;
 let downloadInProgress = false;
 
 const protocolLauncherArg = '--protocol-launcher';
 const possibleProtocols = ['dbdicontoolbox'];
+
+process.on('uncaughtException', function (err) {
+  log.error(err);
+})
 
 export default class AppUpdater {
   constructor(win) {
@@ -250,18 +253,13 @@ const createWindow = async () => {
       mainWindow.focus();
     }
 
+    ipcHandler.setMainWindow(mainWindow);
+    ipcHandler.registerAll();
+
     // Remove this if your app does not use auto updates
     // eslint-disable-next-line
     new AppUpdater(mainWindow);
-    ipcMain.on('downloadFile', async (_event, args: {outputLocation: string, url: string}) => {
-      const downloader = new FileDownloader(args.outputLocation, args.url);
-      try {
-        await downloader.begin(progress =>  mainWindow?.webContents.send('downloadProgress', progress));
-        mainWindow?.webContents.send('downloadComplete');
-      } catch(e) {
-        mainWindow?.webContents.send('downloadComplete', e);
-      }
-    });
+    
   });
 
   mainWindow.on('closed', () => {
