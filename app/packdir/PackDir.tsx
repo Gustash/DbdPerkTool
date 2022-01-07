@@ -155,7 +155,13 @@ export default class PackDir {
     });
   }
 
-  async validate() {
+  async validate(): Promise<{
+    isValid: false;
+    failReason: string;
+  } | {
+    isValid: true;
+    skipFiles: Array<string>;
+  }> {
     const perksDirExists = await this.hasPerks();
     const portraitsDirExists = await this.hasPortraits();
     if (perksDirExists || portraitsDirExists) {

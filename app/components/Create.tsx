@@ -43,10 +43,6 @@ flex-direction: column;
 align-items: center;
 `
 
-function replaceWindowsChars(str: string): string {
-  return str.replace(/[\/\\,+$~%.':*?<>{}]/g, '_');
-}
-
 export default function Create(props: MyProps) {
   const [packDir, setPackDir] = useState('');
   const [errorModalShow, setErrorModalShow] = useState(false);

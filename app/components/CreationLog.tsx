@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Form } from "react-bootstrap";
 
 export default function CreationLog(props: { lines: string[] }) {
-    const textRef = useRef(null);
+    const textRef = useRef<any>(null);
 
     useEffect(() => {
         if(textRef?.current) {

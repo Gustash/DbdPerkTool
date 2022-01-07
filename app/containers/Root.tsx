@@ -61,20 +61,6 @@ const Root = ({ store, history }: Props) => {
     ipcRenderer.send('update-available-resp', doUpdate);
   };
 
-  ipcRenderer.on('update-available', (event, arg) => {
-      log.info(`Update available: ${JSON.stringify(arg)}`);
-      setShowUpdateModal(true);
-      log.info(`Release notes: ${arg.releaseNotes}`);
-      setReleaseNotes(arg.releaseNotes);
-      setLatestVersion(arg.version);
-  });
-
-  ipcRenderer.on('update-progress', (event, arg) => {
-    log.info('Update: ', arg);
-    setShowProgressModal(true);
-    setUpdateProgress(parseInt(arg.percent));
-  });
-
   const popNotification = async () => {
     const notification = await api.popNotification();
 
@@ -111,8 +97,27 @@ const Root = ({ store, history }: Props) => {
     log.info(`Starting Toolbox v${(
       electron.app || electron.remote.app
     ).getVersion()}`);
+    
+    ipcRenderer.on('update-available', (event, arg) => {
+      log.info(`Update available: ${JSON.stringify(arg)}`);
+      setShowUpdateModal(true);
+      log.info(`Release notes: ${arg.releaseNotes}`);
+      setReleaseNotes(arg.releaseNotes);
+      setLatestVersion(arg.version);
+    });
+
+    ipcRenderer.on('update-progress', (event, arg) => {
+      log.info('Update: ', arg);
+      setShowProgressModal(true);
+      setUpdateProgress(parseInt(arg.percent));
+    });
     checkDbdPath();
     popNotification();
+
+    return () => {
+      ipcRenderer.removeAllListeners('update-available');
+      ipcRenderer.removeAllListeners('update-progress');
+    };
   }, []);
 
 
