@@ -1,7 +1,6 @@
 import React, { Component, useState, useContext, useEffect } from 'react';
 import path from 'path';
 import electron from 'electron';
-import { shell } from 'electron';
 import styled from 'styled-components';
 import routes from '../constants/routes.json';
 import Image from 'react-bootstrap/Image';
@@ -30,7 +29,9 @@ import MenuAdmin from '../img/menu_admin.png';
 import MenuVote from '../img/menu_vote.png';
 import MenuFeatured from '../img/menu_featured.png';
 
-const { BrowserWindow } = electron.remote;
+import logger from 'electron-log';
+
+const { BrowserWindow, app } = electron.remote;
 
 const NavContentWrapper = styled.div`
   display: flex;
@@ -79,7 +80,8 @@ const AccessoryWrapper = styled.div`
 `;
 
 async function signIn(onJwt) {
-  console.log(path.join(__dirname, 'SideNavPreload.js'));
+  const preloadPath = path.join(app.getAppPath(), 'dist', 'SideNavPreload.js');
+  logger.info(preloadPath);
   const authWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -88,7 +90,7 @@ async function signIn(onJwt) {
     autoHideMenuBar: true,
     'web-security': false,
     webPreferences: {
-      preload: path.join(__dirname, 'dist/SideNavPreload.js')
+      preload: path.join(preloadPath)
     }
   });
 
@@ -96,11 +98,16 @@ async function signIn(onJwt) {
 
   authWindow.loadURL(authUrl);
   authWindow.show();
-  authWindow.webContents.on('ipc-message', async (_event, channel: string, jwt: string) => {
-    if (channel === 'jwtAvailable') {
-      authWindow.close();
-      onJwt(JSON.parse(jwt));
-    }
+  authWindow.webContents.on('did-finish-load', () => {
+    logger.info('Web contents loaded');
+    // authWindow.webContents.openDevTools();
+    authWindow.webContents.on('ipc-message', async (_event, channel: string, jwt: string) => {
+      logger.info(`IPC Message ${channel}: ${jwt}`);
+      if (channel === 'jwtAvailable') {
+        authWindow.close();
+        onJwt(JSON.parse(jwt));
+      }
+    });
   });
 }
 
