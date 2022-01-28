@@ -23,14 +23,13 @@ type ExpectedFile = {
 };
 
 export type CorrectedFile = {
-  originalPath: string;
-  newPath: string;
+  originalPath: string; // Absolute path on filesystem
+  newPath: string; // This is the relative path inside the zip
 };
 export default class PackDir {
-  dir: string;
   meta: metaSchema;
   metaFilled: boolean;
-  normalizedFiles: Array<string> = [];
+  normalizedFiles: Array<string> = []; // Local paths relative to pack directory, lowercase and unixified
   correctedPathFiles: Array<CorrectedFile> = [];
   excludedFiles: Array<string> = [
     'iconperks_artefacthunter.png',
@@ -56,8 +55,7 @@ export default class PackDir {
     'iconpowers_detention.png',
   ]
 
-  constructor(dir: string) {
-    this.dir = dir;
+  constructor(private dir: string, private onUpdate: (line: string) => void) {
     this.meta = {
       latestChapter: 'Unknown',
       hasPortraits: false,
@@ -89,19 +87,20 @@ export default class PackDir {
 
   getExpectedFileByFilePath(fileName: string): ExpectedFile | undefined {
     return expectedFiles.find((file: { normalized: string, actual: string }) => {
-      return slash(fileName).toLowerCase().includes(slash(file.normalized).toLowerCase());
+      return slash(fileName).toLowerCase().includes(slash(file.normalized).toLowerCase()) ||
+        slash(file.normalized).toLowerCase().includes(slash(fileName).toLowerCase());
     });
   }
 
   getNormalizedFilePath(fileName: string): string | undefined {
     let foundPath = this.getExpectedFileByFilePath(fileName) ?? this.getExpectedFileByFilename(fileName);
     if (!foundPath) {
-      log.info(`Could not find file ${fileName}`);
+      this.onUpdate(`Unexpected File Excluded: ${fileName}`);
     }
 
     if (foundPath && this.excludedFiles.includes(path.basename(foundPath.normalized))) {
       foundPath = undefined;
-      log.info(`File ${fileName} excluded`);
+      this.onUpdate(`Unexpected File Excluded: ${fileName}`);
     }
 
     return foundPath?.actual;
@@ -112,11 +111,35 @@ export default class PackDir {
       const normalizedFiles = await this.getNormalizedFiles();
       normalizedFiles.forEach((file: string) => {
         const fullPath = this.getNormalizedFilePath(file);
+
         if (fullPath) {
-          this.correctedPathFiles.push({
-            originalPath: path.resolve(this.dir, file),
-            newPath: fullPath
-          });
+          const currentEntryIndex = this.correctedPathFiles.findIndex(correctedPath => correctedPath.newPath === fullPath);
+          if (currentEntryIndex < 0) {
+            this.correctedPathFiles.push({
+              originalPath: path.resolve(this.dir, file),
+              newPath: fullPath
+            });
+          } else {
+            // The pack is already in the list
+            // Decide whether or not the current file is a better match
+
+            const relativePathSegments = slash(fullPath).toLowerCase().split('/');
+            const fsPathSegments = file.split('/');
+
+            // If this entry doesn't have any segments that don't exist in the relative path
+            let replace = true;
+            for (let i = 0; i < fsPathSegments.length; i++) {
+              if (!relativePathSegments.includes(fsPathSegments[i])) {
+                replace = false;
+                break;
+              }
+            }
+
+            if (replace) {
+              this.onUpdate(`File ${path.resolve(this.dir, file)} is a closer match than ${this.correctedPathFiles[currentEntryIndex].originalPath}, replacing`);
+              this.correctedPathFiles[currentEntryIndex].originalPath = path.resolve(this.dir, file);
+            }
+          }
         }
       });
     }

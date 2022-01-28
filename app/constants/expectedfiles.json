@@ -116,10 +116,6 @@
     "actual": "CharPortraits/Haiti/HK_charSelect_portrait.png"
   },
   {
-    "normalized": "charportraits/haiti/template.png",
-    "actual": "CharPortraits/Haiti/template.png"
-  },
-  {
     "normalized": "charportraits/hb_charselect_portrait.png",
     "actual": "CharPortraits/HB_charSelect_portrait.png"
   },
@@ -260,6 +256,10 @@
     "actual": "DailyRituals/dailyRitualIcon_hunter.png"
   },
   {
+    "normalized": "dailyrituals/dailyritualicon_lunar.png",
+    "actual": "DailyRituals/dailyRitualIcon_lunar.png"
+  },
+  {
     "normalized": "dailyrituals/dailyritualicon_objectives.png",
     "actual": "DailyRituals/dailyRitualIcon_objectives.png"
   },
@@ -270,6 +270,10 @@
   {
     "normalized": "dailyrituals/dailyritualicon_survival.png",
     "actual": "DailyRituals/dailyRitualIcon_survival.png"
+  },
+  {
+    "normalized": "dailyrituals/dailyritualicon_winter.png",
+    "actual": "DailyRituals/dailyRitualIcon_winter.png"
   },
   {
     "normalized": "emblems/emblemicon_benevolent_bronze.png",
@@ -1398,10 +1402,6 @@
   {
     "normalized": "helploading/yemen/iconhelploading_k21.png",
     "actual": "HelpLoading/Yemen/iconHelpLoading_k21.png"
-  },
-  {
-    "normalized": "itemaddons/aurora/iconaddon_artifacter.png",
-    "actual": "ItemAddons/Aurora/iconAddon_artifactER.png"
   },
   {
     "normalized": "itemaddons/aurora/iconaddon_babyteeth.png",
@@ -3908,12 +3908,20 @@
     "actual": "items/Limited/iconItems_flashbangGrenade.png"
   },
   {
+    "normalized": "items/limited/iconitems_limitedfragilemirror.png",
+    "actual": "items/Limited/iconItems_LimitedFragileMirror.png"
+  },
+  {
     "normalized": "items/limited/iconitems_limiteditemvaccine.png",
     "actual": "items/Limited/iconItems_LimitedItemVaccine.png"
   },
   {
     "normalized": "items/limited/iconitems_limitedlamentconfiguration.png",
     "actual": "items/Limited/iconItems_LimitedLamentConfiguration.png"
+  },
+  {
+    "normalized": "items/limited/iconitems_limitedrepairedmirror.png",
+    "actual": "items/Limited/iconItems_LimitedRepairedMirror.png"
   },
   {
     "normalized": "items/lunarevent/iconitems_toolboxlunar.png",

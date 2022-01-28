@@ -108,5 +108,9 @@ export default function getLanguage(portrait: String) {
       return 'Survivor / James Sunderland';
     case 'charportraits/hubble/s28_charselect_portrait.png':
       return 'Survivor / Mikaela Reid';
+    case 'charportraits/ion/t_k26_charselect_portrait.png':
+      return 'Killer / The Artist';
+    case 'charportraits/ion/t_s29_charselect_portrait.png':
+      return 'Survivor / Jonah Vasquez';
   }
 }

@@ -102,6 +102,11 @@ export default function Create(props: MyProps) {
 
   };
 
+  const logUpdater = (logLine: string) => {
+    const lines = logLine.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+    appendToCreationLog(lines);
+  }
+
   useEffect(() => {
     loadPacks();
   }, []);
@@ -114,7 +119,8 @@ export default function Create(props: MyProps) {
     }
 
     e?.preventDefault();
-    const packDirModel = new PackDir(packDir);
+
+    const packDirModel = new PackDir(packDir, logUpdater);
 
     appendToCreationLog(`Validating directory '${packDirModel.dir}'`);
     const validationStatus = await packDirModel.validate();
@@ -182,7 +188,7 @@ export default function Create(props: MyProps) {
   const handleFormChanged = async () => { };
 
   const doSetPackDir = async (newDir: string) => {
-    const packDirModel = new PackDir(newDir);
+    const packDirModel = new PackDir(newDir, logUpdater);
 
     const validationStatus = await packDirModel.validate();
 

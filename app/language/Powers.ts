@@ -41,7 +41,25 @@ const languageMap: { [key: string]: string } = {
   "powers/eclipse/iconpowers_t-virus2.png": 'Nemesis / T-Virus 02',
   "powers/eclipse/iconpowers_t-virus3.png": 'Nemesis / T-Virus 03',
   "powers/eclipse/iconpowers_tyrantmutations.png": 'Nemesis / Tryant Mutations',
-  "powers/gemini/iconpowers_summonsofpain.png": "Pin Daddy / Summons of Pain"
+  "powers/gemini/iconpowers_summonsofpain.png": "Pin Daddy / Summons of Pain",
+  "powers/comet/iconpowers_showstopper_03.png": "The Trickster / Showstopper 03",
+  "powers/ion/t_iconpowers_birdsoftorment.png": "The Artist / Birds Of Torment",
+  "powers/atl_hud_atk_punishmentoffdamned.png": "HUD / Punishment Of The Damned",
+  "powers/atl_hud_kill_icon.png": "HUD / Kill",
+  "powers/atl_hud_pb_drop.png": "HUD / Drop",
+  "powers/atl_hud_pb_iconabsorb.png": "HUD / Absorb",
+  "powers/atl_hud_pb_iconbloodfury.png": "HUD / Blood Fury",
+  "powers/atl_hud_pb_icondash.png": "HUD / Dash",
+  "powers/atl_hud_pb_icondemonstrike.png": "HUD / Demon Strike",
+  "powers/atl_hud_pb_iconinvisibilitybell_02.png": "HUD / Invisibility Bell",
+  "powers/atl_hud_pb_iconpunishment.png": "HUD / Punishment",
+  "powers/atl_hud_pb_iconresetbeartrap.png": "HUD / Reset Bear Trap",
+  "powers/atl_hud_pb_iconstalking.png": "HUD / Stalking",
+  "powers/atl_hud_pb_iconstealth.png": "HUD / Stealth",
+  "powers/atl_hud_pb_ritesofjudgement.png": "HUD / Rites of Judgement",
+  "powers/qatar/atl_hud_pb_demogorgondashmode.png": "HUD / Demo Dash",
+  "powers/qatar/atl_hud_pb_shred.png": "HUD / Shred",
+  "powers/qatar/atl_hud_pb_traverseupdown.png": "HUD / Traverse Upside-Down"
 };
 
 export default function getLanguage(tag) {

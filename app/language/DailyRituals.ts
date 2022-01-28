@@ -8,6 +8,9 @@ const languageMap: { [key: string]: string } = {
   'dailyrituals/dailyritualicon_sacrifice.png': 'Sacrifice',
   'dailyrituals/dailyritualicon_survival.png': 'Survival',
   'dailyrituals/dailyritualicon_halloween.png': 'Halloween',
+  'dailyrituals/dailyritualicon_lunar.png': 'Lunar',
+  'dailyrituals/dailyritualicon_winter.png': 'Winter',
+  
 };
 
 export default function getLanguage(tag) {

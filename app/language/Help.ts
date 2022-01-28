@@ -108,7 +108,8 @@ const languageMap: { [key: string]: string } = {
   'helploading/eclipse/iconhelploading_tyrantmutations.png': 'Tyrant Mutations',
   'helploading/gemini/iconhelploading_summonsofpain.png': 'Summons of Pain',
   'help/iconhelp_grades.png': 'Grades',
-  'help/iconhelp_scourgehooks.png': 'Scourge Hooks'
+  'help/iconhelp_scourgehooks.png': 'Scourge Hooks',
+  'helploading/ion/t_iconhelploading_birdsoftorment.png': 'Birds of Torment'
 };
 
 export default function getLanguage(tag: string) {

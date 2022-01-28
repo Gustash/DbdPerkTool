@@ -917,7 +917,27 @@ const addons: { [key: string]: string } = {
     "itemaddons/iconaddon_coffeegrinds.png": "Killer / The Trapper / Coffee Grinds",
     "itemaddons/iconaddon_lengthenedjaws.png": "Killer / The Trapper / Lengthened Jaws",
     "itemaddons/iconaddon_makeshiftwrap.png": "Killer / The Trapper / Makeshift Wrap",
-    "itemaddons/iconaddon_tensionspring.png": "Killer / The Trapper / Tension Spring"
+    "itemaddons/iconaddon_tensionspring.png": "Killer / The Trapper / Tension Spring",
+    "itemaddons/ion/iconaddon_automaticdrawing.png": "Killer / The Artist / Automatic Drawing",
+    "itemaddons/ion/iconaddon_charcoalstick.png": "Killer / The Artist / Charcoal Stick",
+    "itemaddons/ion/iconaddon_choclocorn.png": "Killer / The Artist / Choclo Corn",
+    "itemaddons/ion/iconaddon_darkestink.png": "Killer / The Artist / Darkest Ink",
+    "itemaddons/ion/iconaddon_festeringcarrion.png": "Killer / The Artist / Festering Carrion",
+    "itemaddons/ion/iconaddon_gardenofrot.png": "Killer / The Artist / Garden Of Rot",
+    "itemaddons/ion/iconaddon_inkegg.png": "Killer / The Artist / Ink Egg",
+    "itemaddons/ion/iconaddon_iridescentfeather.png": "Killer / The Artist / Iridescent Feather",
+    "itemaddons/ion/iconaddon_jacobsbabyshoes.png": "Killer / The Artist / Jacob\'s Baby Shoes",
+    "itemaddons/ion/iconaddon_ogriefolover.png": "Killer / The Artist / O Grief, O Lover",
+    "itemaddons/ion/iconaddon_oilpaints.png": "Killer / The Artist / Oil Paints",
+    "itemaddons/ion/iconaddon_severedhands.png": "Killer / The Artist / Severed Hands",
+    "itemaddons/ion/iconaddon_severedtongue.png": "Killer / The Artist / Severed Tongue",
+    "itemaddons/ion/iconaddon_silverbell.png": "Killer / The Artist / Silver Bell",
+    "itemaddons/ion/iconaddon_stilllifecrow.png": "Killer / The Artist / Still Life Crow",
+    "itemaddons/ion/iconaddon_thicktar.png": "Killer / The Artist / Thicc Tar",
+    "itemaddons/ion/iconaddon_thornynest.png": "Killer / The Artist / Thorny Nest",
+    "itemaddons/ion/iconaddon_untitledagony.png": "Killer / The Artist / Untitled Agony",
+    "itemaddons/ion/iconaddon_velvetfabric.png": "Killer / The Artist / Velvet Fabric",
+    "itemaddons/ion/iconaddon_vibrantobituary.png": "Killer / The Artist / Vibrant Obituary",
 };
 
 export default function getLanguage(filePath: string) {

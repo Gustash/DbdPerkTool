@@ -18,7 +18,7 @@ export default class PackGenerator {
     private parentPack: string | undefined,
     private packAuthor: string,
     private packDescription: string,
-    private skipFiles: Array<string>
+    private skipFiles: Array<string>,
   ) {
     this.packDir = packDir;
     if (outputPath.length === 0) {

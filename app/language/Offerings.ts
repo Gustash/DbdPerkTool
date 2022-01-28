@@ -133,7 +133,8 @@ const languageMap: { [key: string]: string } = {
   'favors/xp/iconfavors_stampedpostcard.png': "Stamped Postcard",
   'favors/xp/iconfavors_thorndoll.png': "Thorn Doll",
   'favors/xp/iconfavors_woodenchalice.png': "Wooden Chalice",
-  'favors/halloween2021/iconfavors_cursedseed.png': 'Cursed Seed (Halloween 2021)'
+  'favors/halloween2021/iconfavors_cursedseed.png': 'Cursed Seed (Halloween 2021)',
+  'favors/ion/iconfavors_crowseye.png': 'Crows Eye',
 };
 
 export default function getLanguage(tag: string) {

@@ -211,7 +211,13 @@ const languageMap: { [key: string]: string } = {
   "perks/qatar/iconperks_guardian.png": "Survivor / Guardian",
   "perks/qatar/iconperks_pushthroughit.png": "Survivor / Push Through It",
   "perks/qatar/iconperks_situationalawareness.png": "Survivor / Situtational Awareness",
-  "perks/qatar/iconperks_survivalinstincts.png": "Survivor / Survival Instincts"
+  "perks/qatar/iconperks_survivalinstincts.png": "Survivor / Survival Instincts",
+  "perks/ion/t_iconperks_boonexponential.png": "Survivor / Boon: Exponential",
+  "perks/ion/t_iconperks_correctiveaction.png": "Survivor / Corrective Action",
+  "perks/ion/t_iconperks_grimembrace.png": "Killer / Grim Embrace",
+  "perks/ion/t_iconperks_hexpentimento.png": "Killer / Hex: Pentimento",
+  "perks/ion/t_iconperks_overcome.png": "Survivor / Overcome",
+  "perks/ion/t_iconperks_painresonance.png": "Killer / Pain Resonance"
 };
 
 export default function getLanguage(tag) {

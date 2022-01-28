@@ -31,7 +31,10 @@ const languageMap: { [key: string]: string } = {
   "items/limited/iconitems_limiteditemvaccine.png": 'Vaccine',
   "items/anniversary/iconitems_toolbox_anniversary2021.png": "2021 Toolbox",
   "items/iconitems_carriedbody.png": "Carried Body",
-  "items/limited/iconitems_limitedlamentconfiguration.png": "Limited Lament Configuration"
+  "items/limited/iconitems_limitedlamentconfiguration.png": "Limited Lament Configuration",
+  "items/iconitems_toolboxcommodious_-_copy.png": "Toolbox (Copy)",
+  "items/limited/iconitems_limitedfragilemirror.png": "Limited Fragile Mirror",
+  "items/limited/iconitems_limitedrepairedmirror.png": "Limited Repaired Mirror",
   
 };
 
