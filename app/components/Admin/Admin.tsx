@@ -50,7 +50,7 @@ export default function Admin(props: MyProps) {
       </Button>
       <SendNotification
         show={showSendNotif}
-        onConfirm={async (file: string, title: string) => {
+        onConfirm={async (file: string, title: string, username?: string) => {
           setShowSendNotif(false);
           const fileContents = await fs.readFile(file, 'utf-8');
           try {
@@ -59,7 +59,8 @@ export default function Admin(props: MyProps) {
               {
                 requestBody: {
                   name: title,
-                  text: fileContents
+                  text: fileContents,
+                  username,
                 }
               }
             );

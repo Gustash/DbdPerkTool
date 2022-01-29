@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { hot } from 'react-hot-loader/root';
@@ -15,10 +15,12 @@ import UpdateProgress from '../components/update/UpdateProgress';
 import settingsUtil from '../settings/Settings';
 import DeadByDaylight from '../steam/DeadByDaylight';
 import UserContext from '../context/UserContext';
-import Notification from '../components/Notification';
+import Notification, { NotificationType } from '../components/Notification';
 import electron from 'electron';
 import api from '../api/Api';
 import routes from '../constants/routes.json';
+import { ApiNotification } from '../api/ApiTypes';
+import Api from '../api/Api';
 
 type Props = {
   store: Store;
@@ -37,6 +39,8 @@ const MainContainer = styled.div`
   height: 100vh;
 `;
 
+type NotificationState = { show: boolean } & Pick<ApiNotification, 'name' | 'text' | '_id'>;
+
 const Root = ({ store, history }: Props) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [latestVersion, setLatestVersion] = useState('');
@@ -45,13 +49,9 @@ const Root = ({ store, history }: Props) => {
   const [updateProgress, setUpdateProgress] = useState(0);
   const [showUpdateDbdPath, setShowUpdateDbdPath] = useState(false);
   const [detectedDbdPath, setDetectedDbdPath] = useState('');
+  const [userNotificationPopupDismissed, setUserNotificationPopupDismissed] = useState(false);
   const [page, setCurrentPage] = useState(routes.PERKS);
-  const [notification, setNotification] = useState({
-    show: false,
-    title: '',
-    text: '',
-    id: ''
-  });
+  const [notification, setNotification] = useState<NotificationState | null>(null);
   const [currentUser, setCurrentUser] = useState(api.currentUser);
 
   const onUpdateModalClose = (doUpdate: boolean) => {
@@ -67,10 +67,22 @@ const Root = ({ store, history }: Props) => {
     if (notification) {
       setNotification({
         show: true,
-        id: notification._id,
+        _id: notification._id,
         text: notification.text,
-        title: notification.name
+        name: notification.name
       });
+    } else if (currentUser && !userNotificationPopupDismissed) {
+      const hasNotifications = await currentUser.getNumNotifications();
+
+      if (hasNotifications) {
+        setUserNotificationPopupDismissed(true);
+        setNotification({
+          show: true,
+          _id: '',
+          text: 'Go to your profile to see your unread notifications!',
+          name: 'You have new account notifications'
+        });
+      }
     }
   };
 
@@ -97,7 +109,7 @@ const Root = ({ store, history }: Props) => {
     log.info(`Starting Toolbox v${(
       electron.app || electron.remote.app
     ).getVersion()}`);
-    
+
     ipcRenderer.on('update-available', (event, arg) => {
       log.info(`Update available: ${JSON.stringify(arg)}`);
       setShowUpdateModal(true);
@@ -114,9 +126,16 @@ const Root = ({ store, history }: Props) => {
     checkDbdPath();
     popNotification();
 
+    const interval = setInterval(async () => {
+      if(currentUser) {
+        setCurrentUser(await Api.getUser());
+      }
+    }, 30000);
+
     return () => {
       ipcRenderer.removeAllListeners('update-available');
       ipcRenderer.removeAllListeners('update-progress');
+      clearInterval(interval);
     };
   }, []);
 
@@ -151,20 +170,20 @@ const Root = ({ store, history }: Props) => {
               progress={updateProgress}
               show={showProgressModal}
             />
-            <Notification
+            {notification && (<Notification
               show={notification.show}
-              id={notification.id}
-              title={notification.title}
+              id={notification._id}
+              title={notification.name}
               text={notification.text}
               onHide={async () => {
-                setNotification({ show: false, id: '', text: '', title: '' });
+                setNotification(null);
                 try {
                   await popNotification();
                 } catch (err) {
                   logger.error(err);
                 }
               }}
-            />
+            />)}
           </MainContainer>
         </UserContext.Provider>
       </ConnectedRouter>

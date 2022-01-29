@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useContext, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { remote } from 'electron';
 import Modal from 'react-bootstrap/Modal';
@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import PlainTextInput from '../Form/PlainTextInput';
 import Spinner from 'react-bootstrap/Spinner';
+import UserContext from '../../context/UserContext';
 
 const { dialog } = remote;
 
@@ -17,8 +18,10 @@ type MyProps = {
 };
 
 export default function UpdatePackModal(props: MyProps) {
+  const userContext = useContext(UserContext);
   const [notificationFile, setNotificationFile] = useState('');
   const [notificationName, setNotificationName] = useState('');
+  const [notificationUser, setNotificationUser] = useState<string>(userContext?.user?.username ?? '');
 
   const pickFile = async () => {
     const dir = await dialog.showOpenDialog({
@@ -52,6 +55,11 @@ export default function UpdatePackModal(props: MyProps) {
                 value={notificationName}
                 onChange={e => setNotificationName(e.target.value)}
               />
+              		<PlainTextInput
+                label="User"
+                value={notificationUser ?? ''}
+                onChange={e => setNotificationUser(e.target.value)}
+              />
           <Form.Row>
             <Col sm="10">
               <Form.Control
@@ -75,7 +83,7 @@ export default function UpdatePackModal(props: MyProps) {
         <Button
           variant="secondary"
           onClick={() => {
-            props.onConfirm(notificationFile, notificationName);
+            props.onConfirm(notificationFile, notificationName, notificationUser.length > 0 ? notificationUser : undefined);
           }}
         >
           Send

@@ -239,6 +239,7 @@
     "luxon": "^1.25.0",
     "markdown-it": "^11.0.1",
     "merge-images": "^2.0.0",
+    "moment": "^2.29.1",
     "namor": "^2.0.3",
     "nan": "2.13.2",
     "node-fetch": "^2.6.0",

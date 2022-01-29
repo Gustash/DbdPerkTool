@@ -8,7 +8,7 @@ import fs from 'fs-extra';
 import logger from 'electron-log';
 import axios from 'axios';
 import ApiExecutor from './ApiExecutor';
-import { PackQueryParams, User } from './ApiTypes';
+import { ApiNotification, PackQueryParams, User } from './ApiTypes';
 import { ipcRenderer } from 'electron';
 
 const mainWindow = remote.getCurrentWindow();
@@ -56,6 +56,41 @@ class Api {
     await this.getUser();
   }
 
+  async populateNotificationMethods(user: Partial<User>) {
+    const apiInstance = this.executor?.apis?.default;
+    if (!apiInstance) {
+      return;
+    }
+    user.deleteAllNotifications = async () => {
+      return apiInstance.deleteAllNotifications();
+    };
+
+    user.deleteNotification = async (notification: ApiNotification) => {
+      return apiInstance.deleteNotification({ id: notification._id });
+    };
+
+    user.getNotifications = async (page?: number, limit?: number) => {
+      return apiInstance.getUserNotifications({ page, limit });
+    };
+
+    user.getNumNotifications = async () => {
+      const hasNotifications = await apiInstance.getUserHasNotifications();
+      return hasNotifications.numNotifications;
+    };
+
+    user.markAllNotificationsRead = async () => {
+      return apiInstance.clearUserNotifications();
+    }
+
+    user.markNotification = async (notification: ApiNotification, read: boolean) => {
+      return apiInstance.markNotification({ id: notification._id }, {
+        requestBody: {
+          read
+        }
+      });
+    };
+  };
+
   async getUser(): Promise<User | null> {
     try {
       // @ts-ignore
@@ -68,6 +103,8 @@ class Api {
 
       if (user.username) {
         user.abilities = defineAbilitiesFor(user);
+        this.populateNotificationMethods(user);
+        user.numNotifications = await user.getNumNotifications();
         this.currentUser = user;
         log.info(`User logged in: ${user.username} - ${user.steamDisplayName}`);
         return this.currentUser;

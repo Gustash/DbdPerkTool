@@ -1,7 +1,6 @@
 import path from 'path';
 import slash from 'slash';
 import recursiveRead from 'recursive-readdir';
-import log from 'electron-log';
 import expectedFiles from '../constants/expectedfiles.json';
 import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises;
@@ -27,11 +26,11 @@ export type CorrectedFile = {
   newPath: string; // This is the relative path inside the zip
 };
 export default class PackDir {
-  meta: metaSchema;
-  metaFilled: boolean;
-  normalizedFiles: Array<string> = []; // Local paths relative to pack directory, lowercase and unixified
-  correctedPathFiles: Array<CorrectedFile> = [];
-  excludedFiles: Array<string> = [
+  private meta: metaSchema;
+  private metaFilled: boolean;
+  private normalizedFiles: Array<string> = []; // Local paths relative to pack directory, lowercase and unixified
+  private correctedPathFiles: Array<CorrectedFile> = [];
+  private excludedFiles: Array<string> = [
     'iconperks_artefacthunter.png',
     'iconperks_laststanding.png',
     'iconperks_toughrunner.png',

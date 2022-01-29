@@ -14,6 +14,8 @@ import SuccessModal from './SuccessModal';
 import api from '../api/Api';
 import NoAuthorProfile from './NoAuthorProfile';
 import { DefaultContainer } from './DefaultContainer';
+import { ApiNotifications } from '../api/ApiTypes';
+import Notifications from './Notifications';
 
 type MyProps = {};
 
@@ -38,6 +40,7 @@ export default function MyProfile(props: MyProps) {
 
   const refreshUser = async () => {
     userContext.setUser(await api.getUser());
+    await userContext.user?.getNotifications();
   };
 
   useEffect(() => {
@@ -137,6 +140,10 @@ export default function MyProfile(props: MyProps) {
         text="Author profile updated successfully!"
         show={showSuccess}
       ></SuccessModal>
+      <br/>
+      <DefaultContainer>
+        <Notifications></Notifications>
+      </DefaultContainer>
     </div>
   );
 }

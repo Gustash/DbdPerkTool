@@ -45,7 +45,7 @@ export default class PackGenerator {
       ...(await this.packDir.getMeta())
     }
 
-    const files = this.packDir.correctedPathFiles;
+    const files = await this.packDir.getCorrectedFilePaths();
 
     const packArchive = new PerkPackArchive(files);
 
@@ -108,7 +108,7 @@ export default class PackGenerator {
 
       onUpdate('Pack Meta: ' + JSON.stringify(packMeta));
 
-      const files = this.packDir.correctedPathFiles;
+      const files = await this.packDir.getCorrectedFilePaths();
 
       files.forEach((file: CorrectedFile) => {
         const pathInZip = slash(file.newPath);

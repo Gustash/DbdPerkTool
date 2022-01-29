@@ -285,7 +285,7 @@ export default function SideNav() {
         />
         {signedIn && (
           <MenuEntry
-            text="My Profile"
+            text={`My Profile (${userContext.user.numNotifications})`}
             image={MenuProfile}
             currentActive={userContext.page}
             to={routes.MY_PROFILE}
