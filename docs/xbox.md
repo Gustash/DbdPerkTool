@@ -104,5 +104,12 @@ Last update February 2022
  28. Click "Save"
 
 
-congratulations, you can now install icon pack!
+## Congratulations! You can now install icon pack from the toolbox!
+
+Custom character portrait
+
 ![FINALLY](images/dbd_xbox10.png)
+
+Custom perk icon
+
+![Perk](images/dbd_xbox11.png)
