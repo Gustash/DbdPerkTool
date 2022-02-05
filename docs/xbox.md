@@ -5,7 +5,9 @@ permalink: /help/xbox
 ---
 
 ### Here's a way to install custom icon on Dead by Daylight in Xbox Game pass for PC
-(Last update February 2022)
+As of now, the Xbox game pass for PC modding still beta testing, so this instruction might change in the future.
+
+Last update February 2022
 
 ## Prerequisite
  - Microsoft Store (with Game pass account)
