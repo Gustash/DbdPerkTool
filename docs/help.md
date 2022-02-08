@@ -8,7 +8,16 @@ Over 20 THOUSAND people use this tool (which is insane) and nobody has ever been
 
 It's also worth noting that on occasion when there's a DBD Update, EAC will give you a warning about your game files. This isn't related to the toolbox, it's been happening for years!
 ## I installed my game through Windows store, can I use this tool?
-Unfortunately, no. The only version of this game that allows you to change icons is the Steam version.
+Short answer, Yes! Please refer to [Xbox game pass for PC instruction](/help/xbox)
+
+## I installed my game through Epic Games, can I use this tool?
+Yes! You'll need to find your install location manually, though,for now. 
+
+Most likely it's under Local Disk (eg C:\) > Program Files > Epic Games > Dead by Daylight.
+
+If not, it'll be under wherever else you have your Epic Launcher games installed. This differs from person to person, so we can't say for sure where you'll find it.
+
+Once you find this path, you can follow the steps below starting at step 4!
 
 ## I installed my game through Epic Games, can I use this tool?
 Yes! You'll need to find your install location manually, though,for now. 
