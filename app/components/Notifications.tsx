@@ -25,7 +25,6 @@ const UserTableFooter = styled.div`
 
 const Styles = styled.div`
   padding: 1rem;
-  overflow-y: scroll;
   height: 100%;
   display: block;
   max-width: 100%;

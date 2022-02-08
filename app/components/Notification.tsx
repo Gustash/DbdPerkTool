@@ -7,32 +7,17 @@ import settingsUtil from '../settings/Settings';
 
 const md = new MarkdownIt();
 
-export enum NotificationType {
-  Global,
-  User
-};
-
-type MyProps = UserNotification | GlobalNotification;
-
-type CommonNotification = {
+type MyProps = {
   show: any;
   onHide: any;
   title: string;
   text: string;
-};
-
-type UserNotification = CommonNotification & {
-  type: NotificationType.User;
-}
-
-type GlobalNotification = CommonNotification & {
-  id: string;
-  type: NotificationType.Global;
+  id?: string;
 }
 
 export default function Notification(props: MyProps) {
   const dismiss = async () => {
-    if (props.type === NotificationType.Global) {
+    if (props.id?.length > 0) {
       settingsUtil.settings.lastNotificationRead = props.id;
       await settingsUtil.save();
     }

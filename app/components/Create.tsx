@@ -165,6 +165,7 @@ export default function Create(props: MyProps) {
       setSaving(false);
       setSuccessModalShow(true);
     } catch (e) {
+      log.error(e);
       console.log(e);
       console.trace();
       let message = 'Unknown error uploading pack';
@@ -172,7 +173,8 @@ export default function Create(props: MyProps) {
         message = e.response.data;
       }
       appendToCreationLog(`Error uploading pack: ${message}`);
-      log.debug(`Error uploading pack: `, e.response);
+      appendToCreationLog(e);
+      log.error(`Error uploading pack: `, e?.response ?? e);
       setErrorText(`Error generating or uploading Pack: ${message}`);
       setSaving(false);
       setErrorModalShow(true);

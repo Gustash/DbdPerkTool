@@ -35,6 +35,26 @@ display: flex;
 justify-content: center;
 `;
 
+const NotificationContainer = styled.div`
+    display: flex;
+    background: rgba(0, 0, 0, .5);
+    flex-direction: column;
+    min-width: 800px;
+    height: 100%;
+    overflow-y: scroll;
+    padding: 10px;
+`
+
+const ProfileContainer = styled.div`
+    display: flex;
+    background: rgba(0, 0, 0, .5);
+    flex-direction: column;
+    min-width: 800px;
+    height: 100%;
+    overflow-y: none;
+    padding: 10px;
+`
+
 export default function MyProfile(props: MyProps) {
   const userContext = useContext(UserContext);
 
@@ -82,7 +102,7 @@ export default function MyProfile(props: MyProps) {
   });
 
   return (
-    <div>
+    <ProfileContainer>
       <DefaultContainer>
         <UserImageWrapper>
           <Image
@@ -141,9 +161,9 @@ export default function MyProfile(props: MyProps) {
         show={showSuccess}
       ></SuccessModal>
       <br/>
-      <DefaultContainer>
+      <NotificationContainer>
         <Notifications></Notifications>
-      </DefaultContainer>
-    </div>
+      </NotificationContainer>
+    </ProfileContainer>
   );
 }
