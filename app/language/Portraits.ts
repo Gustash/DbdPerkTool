@@ -112,5 +112,9 @@ export default function getLanguage(portrait: String) {
       return 'Killer / The Artist';
     case 'charportraits/ion/t_s29_charselect_portrait.png':
       return 'Survivor / Jonah Vasquez';
+    case 'charportraits/kepler/k27_charselect_portrait.png':
+      return 'Killer / The Onryō';
+    case 'charportraits/kepler/s30_charselect_portrait.png':
+      return 'Survivor / Yoichi Asakawa';
   }
 }

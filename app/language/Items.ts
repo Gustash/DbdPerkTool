@@ -35,7 +35,7 @@ const languageMap: { [key: string]: string } = {
   "items/iconitems_toolboxcommodious_-_copy.png": "Toolbox (Copy)",
   "items/limited/iconitems_limitedfragilemirror.png": "Limited Fragile Mirror",
   "items/limited/iconitems_limitedrepairedmirror.png": "Limited Repaired Mirror",
-  
+  "items/limited/iconitems_limitedvhstape.png": 'Limited VHS Tape'
 };
 
 export default function getLanguage(tag) {

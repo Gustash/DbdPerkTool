@@ -148,6 +148,14 @@
     "actual": "CharPortraits/Kenya/KS_charSelect_portrait.png"
   },
   {
+    "normalized": "charportraits/kepler/k27_charselect_portrait.png",
+    "actual": "CharPortraits/Kepler/K27_charSelect_portrait.png"
+  },
+  {
+    "normalized": "charportraits/kepler/s30_charselect_portrait.png",
+    "actual": "CharPortraits/Kepler/S30_charSelect_portrait.png"
+  },
+  {
     "normalized": "charportraits/l4d/bo_charselect_portrait.png",
     "actual": "CharPortraits/L4D/BO_charSelect_portrait.png"
   },
@@ -1382,6 +1390,10 @@
   {
     "normalized": "helploading/ion/t_iconhelploading_birdsoftorment.png",
     "actual": "HelpLoading/Ion/T_iconHelpLoading_birdsOfTorment.png"
+  },
+  {
+    "normalized": "helploading/kepler/iconhelploading_delugeoffear.png",
+    "actual": "HelpLoading/Kepler/iconHelpLoading_delugeOfFear.png"
   },
   {
     "normalized": "helploading/qatar/iconhelploading_demogorgon.png",
@@ -3132,6 +3144,86 @@
     "actual": "ItemAddons/Kenya/iconAddon_theLegionButton.png"
   },
   {
+    "normalized": "itemaddons/kepler/iconaddon_bloodyfingernail.png",
+    "actual": "ItemAddons/Kepler/iconAddon_BloodyFingernail.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_cabinsign.png",
+    "actual": "ItemAddons/Kepler/iconAddon_CabinSign.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_clumpofhair.png",
+    "actual": "ItemAddons/Kepler/iconAddon_ClumpOfHair.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_disortedphoto.png",
+    "actual": "ItemAddons/Kepler/iconAddon_DisortedPhoto.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_iridescentvhstape.png",
+    "actual": "ItemAddons/Kepler/iconAddon_IridescentVHStape.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_motherscomb.png",
+    "actual": "ItemAddons/Kepler/iconAddon_MothersComb.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_mothersmirror.png",
+    "actual": "ItemAddons/Kepler/iconAddon_MothersMirror.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_oldnewspaper.png",
+    "actual": "ItemAddons/Kepler/iconAddon_OldNewspaper.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_reikoswatch.png",
+    "actual": "ItemAddons/Kepler/iconAddon_ReikosWatch.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_remotecontrol.png",
+    "actual": "ItemAddons/Kepler/iconAddon_RemoteControl.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_ricketypinwheel.png",
+    "actual": "ItemAddons/Kepler/iconAddon_RicketyPinwheel.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_ringdrawing.png",
+    "actual": "ItemAddons/Kepler/iconAddon_RingDrawing.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_seasoakedcloth.png",
+    "actual": "ItemAddons/Kepler/iconAddon_SeaSoakedCloth.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_tapeeditingdeck.png",
+    "actual": "ItemAddons/Kepler/iconAddon_TapeEditingDeck.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_telephone.png",
+    "actual": "ItemAddons/Kepler/iconAddon_Telephone.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_vcr.png",
+    "actual": "ItemAddons/Kepler/iconAddon_VCR.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_vhscopy.png",
+    "actual": "ItemAddons/Kepler/iconAddon_VhsCopy.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_wellstone.png",
+    "actual": "ItemAddons/Kepler/iconAddon_WellStone.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_wellwater.png",
+    "actual": "ItemAddons/Kepler/iconAddon_WellWater.png"
+  },
+  {
+    "normalized": "itemaddons/kepler/iconaddon_yoichisfishingnet.png",
+    "actual": "ItemAddons/Kepler/iconAddon_YoichisFishingNet.png"
+  },
+  {
     "normalized": "itemaddons/mali/iconaddon_ashenapple.png",
     "actual": "ItemAddons/Mali/iconAddon_ashenApple.png"
   },
@@ -3924,6 +4016,10 @@
     "actual": "items/Limited/iconItems_LimitedRepairedMirror.png"
   },
   {
+    "normalized": "items/limited/iconitems_limitedvhstape.png",
+    "actual": "items/Limited/iconItems_LimitedVhsTape.png"
+  },
+  {
     "normalized": "items/lunarevent/iconitems_toolboxlunar.png",
     "actual": "items/LunarEvent/iconItems_toolboxLunar.png"
   },
@@ -4560,6 +4656,30 @@
     "actual": "Perks/Kenya/iconPerks_madGrit.png"
   },
   {
+    "normalized": "perks/kepler/iconperks_callofbrine.png",
+    "actual": "Perks/Kepler/iconPerks_callOfBrine.png"
+  },
+  {
+    "normalized": "perks/kepler/iconperks_darktheory.png",
+    "actual": "Perks/Kepler/iconPerks_darkTheory.png"
+  },
+  {
+    "normalized": "perks/kepler/iconperks_empathicconnection.png",
+    "actual": "Perks/Kepler/iconPerks_empathicConnection.png"
+  },
+  {
+    "normalized": "perks/kepler/iconperks_floodofrage.png",
+    "actual": "Perks/Kepler/iconPerks_floodOfRage.png"
+  },
+  {
+    "normalized": "perks/kepler/iconperks_mercilessstorm.png",
+    "actual": "Perks/Kepler/iconPerks_mercilessStorm.png"
+  },
+  {
+    "normalized": "perks/kepler/iconperks_parentalguidance.png",
+    "actual": "Perks/Kepler/iconPerks_parentalGuidance.png"
+  },
+  {
     "normalized": "perks/l4d/iconperks_borrowedtime.png",
     "actual": "Perks/L4D/iconPerks_borrowedTime.png"
   },
@@ -4990,6 +5110,14 @@
   {
     "normalized": "powers/kenya/iconpowers_feralfrenzy.png",
     "actual": "Powers/Kenya/iconPowers_feralFrenzy.png"
+  },
+  {
+    "normalized": "powers/kepler/iconpowers_delugeoffear.png",
+    "actual": "Powers/Kepler/iconPowers_delugeOfFear.png"
+  },
+  {
+    "normalized": "powers/kepler/iconpowers_delugeoffear2.png",
+    "actual": "Powers/Kepler/iconPowers_delugeOfFear2.png"
   },
   {
     "normalized": "powers/mali/iconpowers_vilepurge.png",

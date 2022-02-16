@@ -217,9 +217,15 @@ const languageMap: { [key: string]: string } = {
   "perks/ion/t_iconperks_grimembrace.png": "Killer / Grim Embrace",
   "perks/ion/t_iconperks_hexpentimento.png": "Killer / Hex: Pentimento",
   "perks/ion/t_iconperks_overcome.png": "Survivor / Overcome",
-  "perks/ion/t_iconperks_painresonance.png": "Killer / Pain Resonance"
+  "perks/ion/t_iconperks_painresonance.png": "Killer / Pain Resonance",
+  "perks/kepler/iconperks_callofbrine.png": "Killer / Call of Brine",
+  "perks/kepler/iconperks_darktheory.png": "Survivor / Boon : Dark Theory",
+  "perks/kepler/iconperks_empathicconnection.png": "Survivor / Empathic Connection",
+  "perks/kepler/iconperks_floodofrage.png": "Killer / Flood of Rage",
+  "perks/kepler/iconperks_mercilessstorm.png": "Killer / Merciless Storm",
+  "perks/kepler/iconperks_parentalguidance.png": "Survivor / Parental Guidance"
 };
 
-export default function getLanguage(tag) {
+export default function getLanguage(tag: string) {
   return languageMap[tag] || null;
 }

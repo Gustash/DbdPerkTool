@@ -59,7 +59,9 @@ const languageMap: { [key: string]: string } = {
   "powers/atl_hud_pb_ritesofjudgement.png": "HUD / Rites of Judgement",
   "powers/qatar/atl_hud_pb_demogorgondashmode.png": "HUD / Demo Dash",
   "powers/qatar/atl_hud_pb_shred.png": "HUD / Shred",
-  "powers/qatar/atl_hud_pb_traverseupdown.png": "HUD / Traverse Upside-Down"
+  "powers/qatar/atl_hud_pb_traverseupdown.png": "HUD / Traverse Upside-Down",
+  "powers/kepler/iconpowers_delugeoffear.png": "The Onryō / Deluge of Fear",
+  "powers/kepler/iconpowers_delugeoffear2.png" : "The Onryō / Deluge of Fear 2",
 };
 
 export default function getLanguage(tag) {

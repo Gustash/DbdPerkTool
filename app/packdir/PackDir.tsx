@@ -225,12 +225,14 @@ export default class PackDir {
         dirs.push(dir);
       }
     });
-    if (dirs.includes('ion')) {
-      return 'Chapter XXII: Portrait of a Murder'
+    if (dirs.includes('kepler')) {
+      return 'Chapter XXIII: Sadako Rising';
+    } else if (dirs.includes('ion')) {
+      return 'Chapter XXII: Portrait of a Murder';
     } else if (dirs.includes('hubble')) {
-      return 'Chapter XXII.5: Hour of the Witch'
+      return 'Chapter XXII.5: Hour of the Witch';
     } else if (dirs.includes('gemini')) {
-      return 'Chapter XXI: Hellraiser'
+      return 'Chapter XXI: Hellraiser';
     } else if (dirs.includes('eclipse')) {
       return 'Chapter XX: Resident Evil';
     } else if (dirs.includes('comet')) {

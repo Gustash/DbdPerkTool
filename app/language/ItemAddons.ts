@@ -938,6 +938,26 @@ const addons: { [key: string]: string } = {
     "itemaddons/ion/iconaddon_untitledagony.png": "Killer / The Artist / Untitled Agony",
     "itemaddons/ion/iconaddon_velvetfabric.png": "Killer / The Artist / Velvet Fabric",
     "itemaddons/ion/iconaddon_vibrantobituary.png": "Killer / The Artist / Vibrant Obituary",
+    "itemaddons/kepler/iconaddon_bloodyfingernail.png": "Killer / The Onryō / Bloody Fingernail",
+    "itemaddons/kepler/iconaddon_cabinsign.png": "Killer / The Onryō / Cabin Sign",
+    "itemaddons/kepler/iconaddon_clumpofhair.png": "Killer / The Onryō / Clump of Hair",
+    "itemaddons/kepler/iconaddon_disortedphoto.png": "Killer / The Onryō / Distorted Photo",
+    "itemaddons/kepler/iconaddon_iridescentvhstape.png": "Killer / The Onryō / Iridescent VHS Tape",
+    "itemaddons/kepler/iconaddon_motherscomb.png": "Killer / The Onryō / Mother\'s Comb",
+    "itemaddons/kepler/iconaddon_mothersmirror.png": "Killer / The Onryō / Mother\'s Mirror",
+    "itemaddons/kepler/iconaddon_oldnewspaper.png": "Killer / The Onryō / Old Newspaper",
+    "itemaddons/kepler/iconaddon_reikoswatch.png": "Killer / The Onryō / Reiko\'s Watch",
+    "itemaddons/kepler/iconaddon_remotecontrol.png": "Killer / The Onryō / Remote Control",
+    "itemaddons/kepler/iconaddon_ricketypinwheel.png": "Killer / The Onryō / Rickety Pinwheel",
+    "itemaddons/kepler/iconaddon_ringdrawing.png": "Killer / The Onryō / Ring Drawing",
+    "itemaddons/kepler/iconaddon_seasoakedcloth.png": "Killer / The Onryō / Sea Soaked Cloth",
+    "itemaddons/kepler/iconaddon_tapeeditingdeck.png": "Killer / The Onryō / Tape Editing Deck",
+    "itemaddons/kepler/iconaddon_telephone.png": "Killer / The Onryō / Telephone",
+    "itemaddons/kepler/iconaddon_vcr.png": "Killer / The Onryō / VCR",
+    "itemaddons/kepler/iconaddon_vhscopy.png": "Killer / The Onryō / VHS Copy",
+    "itemaddons/kepler/iconaddon_wellstone.png": "Killer / The Onryō / Well Stone",
+    "itemaddons/kepler/iconaddon_wellwater.png": "Killer / The Onryō / Well Water",
+    "itemaddons/kepler/iconaddon_yoichisfishingnet.png": "Killer / The Onryō / Yoichi\'s Fishing Net"
 };
 
 export default function getLanguage(filePath: string) {
