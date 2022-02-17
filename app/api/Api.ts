@@ -170,11 +170,12 @@ class Api {
   }
 
   async determineTargetServer(): Promise<string | null> {
-    const servers = ['https://dead-by-daylight-icon-toolbox.herokuapp.com', 'http://app.dbdicontoolbox.com'];
+    const servers = ['https://app.dbdicontoolbox.com', 'https://dead-by-daylight-icon-toolbox.herokuapp.com'];
     for (let i = 0; i < servers.length; i++) {
       logger.info(`Attempting to communicate with server ${servers[i]}`)
       const server = servers[i];
       try {
+        await axios.get(`${server}/spec`);
         logger.info(`Successfully communicated with server ${server}`)
         return server;
       } catch (e) {
