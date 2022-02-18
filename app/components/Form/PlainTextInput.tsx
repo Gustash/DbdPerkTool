@@ -54,6 +54,7 @@ export default function PlainTextInput(props: MyProps) {
   if (props.options) {
     input = (
       <Typeahead
+        id='typeahead_create'
         onChange={props.onChange}
         onInputChange={props.onInputChange}
         allowNew={true}

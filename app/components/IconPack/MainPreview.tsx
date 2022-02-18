@@ -43,7 +43,7 @@ function buildStaticPreview(props: MyProps, additionalImgClasses: string) {
   const imageClass = `perk-preview-img${additionalImgClasses}`;
   const images = props.images?.map<React.ReactNode>((image, index) => {
     return (
-      <Badge>
+      <Badge key={uuid()}>
       <Col key={uuid()} onClick={() => { props.onPickImage(index) }}>
         <Image key={Date.now()} className={imageClass} src={image} fluid />
         <i className="fas fa-upload" ></i>
