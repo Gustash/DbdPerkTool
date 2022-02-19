@@ -74,8 +74,11 @@ export abstract class IconPack {
    */
   private async extractZip(zipPath: string) {
     const tmpDir = { name: path.resolve(IconPack.tempDir, `${Date.now()}_${this.replaceWindowsChars(this.meta.id)}`) };
+    log.debug('Extracting zip from ' + zipPath);
     const d = await unzipper.Open.file(zipPath);
-    await d.extract({ path: tmpDir.name });
+    log.debug('Zip open');
+    await d.extract({ path: tmpDir.name, concurrency: 5 });
+    log.debug('Extract complete');
     return tmpDir;
   }
 

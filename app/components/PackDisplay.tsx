@@ -81,6 +81,9 @@ export default function PackDisplay(props: MyProps) {
     ipcRenderer.on('url-action', (_event, arg) => {
       setSearchFilter(arg);
     });
+    return () => {
+      ipcRenderer.removeAllListeners('url-action');
+    };
   });
 
   type CardOpts = {

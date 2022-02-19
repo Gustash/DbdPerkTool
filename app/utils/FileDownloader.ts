@@ -4,8 +4,8 @@ import log from 'electron-log';
 
 export class FileDownloader {
     constructor(private fsLocation: string, private url: string) { }
-    public async begin(onProgress: (progressPct: number) => void) {
-        const stream = fs.createWriteStream(this.fsLocation, { flags: 'a' });
+    public async begin(onProgress: (progressPct: number) => void): Promise<void> {
+        const stream = fs.createWriteStream(this.fsLocation, { flags: 'w' });
 
         if (!stream) {
             throw new Error('Unable to open write stream');
@@ -23,12 +23,11 @@ export class FileDownloader {
                     receivedLength += chunk.length;
                     stream.write(chunk);
                     const progress = (receivedLength * 100) / contentLength;
-                    if (progress - lastReportedProgressPct > 5) {
+                    if (progress - lastReportedProgressPct > 1) {
                         lastReportedProgressPct = progress;
                         onProgress(progress);
                         log.info(`Received ${receivedLength} of ${contentLength} (${progress})`);
                     }
-
                 }
             });
             resp.body.on('end', () => {

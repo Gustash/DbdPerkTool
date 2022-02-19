@@ -42,7 +42,11 @@ export default class AppUpdater {
     const currentUpdater = this;
     log.transports.file.level = 'info';
     log.catchErrors({
-      showDialog: false
+      showDialog: false,
+      onError: (error: Error) => {
+        log.error(`Unhandled Error: ${error}`);
+        log.info(error.stack);
+      }
     });
     if (process.env.NODE_ENV === 'production') {
       autoUpdater.logger = log;

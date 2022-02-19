@@ -50,6 +50,10 @@ mainWindow.webContents.session.clearCache(function() {
 document.addEventListener('DOMContentLoaded', async () => {
   logger.catchErrors({
     showDialog: false,
+    onError: (error: Error) => {
+      logger.error(`Unhandled Error: ${error}`);
+      logger.info(error.stack);
+    } 
   });
 
   try {

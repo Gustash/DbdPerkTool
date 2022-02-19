@@ -42,6 +42,7 @@ function defineAbilitiesFor(user: User) {
 
 class Api {
   private currentUser: User | null = null;
+  private currentRawUser: string;
   private executor: ApiExecutor | null = null;
   constructor() {
   }
@@ -102,11 +103,14 @@ class Api {
       }
 
       if (user.username) {
-        user.abilities = defineAbilitiesFor(user);
-        this.populateNotificationMethods(user);
-        user.numNotifications = await user.getNumNotifications();
-        this.currentUser = user;
-        log.info(`User logged in: ${user.username} - ${user.steamDisplayName}`);
+        if (JSON.stringify(user) !== this.currentRawUser) {
+          this.currentRawUser = JSON.stringify(user);
+          user.abilities = defineAbilitiesFor(user);
+          this.populateNotificationMethods(user);
+          user.numNotifications = await user.getNumNotifications();
+          this.currentUser = user;
+          log.info(`User logged in: ${user.username} - ${user.steamDisplayName}`);
+        }
         return this.currentUser;
       }
     } catch (e) {
