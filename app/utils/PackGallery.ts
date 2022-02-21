@@ -28,7 +28,7 @@ export default class PackGallery {
 	}
 
 	private async generateImageFor(type: IconType, files: CorrectedFile[]) {
-		const img = await ImageGrid.generate(files, this.onUpdate);
+		const img = await ImageGrid.generate(files, type, this.onUpdate);
 		return { type, data: img };
 	}
 

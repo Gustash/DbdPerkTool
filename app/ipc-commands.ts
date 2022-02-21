@@ -125,10 +125,10 @@ export class IpcCommandHandler {
             process.on('exit', code => {
                 log.info(`Process exiting with code ${code}`);
                 if (code !== 0) {
-                    reject(code);
-                } else {
-                    resolve(code);
+                    log.warn('Error building gallery. Process exited with code ' + code);
                 }
+
+                resolve(code);
             });
         });
     }

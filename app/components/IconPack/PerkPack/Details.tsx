@@ -8,6 +8,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import slugify from '@sindresorhus/slugify';
 import uuid from 'react-uuid';
+import styled from 'styled-components';
 import getLanguage from '../../../language/Language';
 import settingsUtil from '../../../settings/Settings';
 
@@ -18,6 +19,10 @@ type MyProps = {
   show: boolean;
   onHide: Function;
 };
+
+const ImageStyle = styled.div`
+max-width: 30;
+`
 
 function buildImgRow(
   images: Array<string>,
@@ -185,6 +190,8 @@ export default function PerkPackDetails(props: MyProps) {
     capabilities.push('storetabs');
   }
 
+  const galleryExtension = props.meta.hasJpgGallery ? 'jpg' : 'png';
+
   return (
     <Modal
       show={props.show}
@@ -222,7 +229,7 @@ export default function PerkPackDetails(props: MyProps) {
               title={getLanguage(capability)}
               className="text-center"
             >
-              <Image className={imgClass} src={`${baseUrl}gallery_${capability}.png`} fluid />
+              <Image className={imgClass} src={`${baseUrl}gallery_${capability}.${galleryExtension}`} fluid />
             </Tab>
           ))}
         </Tabs>

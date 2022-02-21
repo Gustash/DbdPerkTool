@@ -100,6 +100,7 @@ export default class PackGenerator {
         author: this.packAuthor,
         description: this.packDescription,
         isNsfw: false,
+        hasJpgGallery: false,
         parentPack: this.parentPack,
         hasCustomPreviews: true,
         hasPreviewBanner,

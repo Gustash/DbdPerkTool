@@ -102,9 +102,13 @@ export default function Create(props: MyProps) {
 
   };
 
-  const logUpdater = (logLine: string) => {
-    const lines = logLine.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-    appendToCreationLog(lines);
+  const logUpdater = (logLine?: string) => {
+    log.debug(logLine);
+    const lines = logLine?.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+    if(lines) {
+      appendToCreationLog(lines);
+    }
   }
 
   useEffect(() => {
@@ -147,9 +151,11 @@ export default function Create(props: MyProps) {
 
     try {
       appendToCreationLog('Generating output zip');
-      outputZip = await generator.generate(getPreviewImagesCombined(), hasPreviewBanner, (logLine: string) => {
-        const lines = logLine.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-        appendToCreationLog(lines);
+      outputZip = await generator.generate(getPreviewImagesCombined(), hasPreviewBanner, (logLine?: string) => {
+        const lines = logLine?.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+        if(lines) {
+          appendToCreationLog(lines);
+        }
       });
       // This is just a little hack to update the JWT if necessary before the upload
       // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
@@ -168,7 +174,7 @@ export default function Create(props: MyProps) {
       log.error(e);
       console.log(e);
       console.trace();
-      let message = 'Unknown error uploading pack';
+      let message = e?.toString() ?? 'Unknown error uploading pack';
       if (e.response?.data) {
         message = e.response.data;
       }
