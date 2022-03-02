@@ -1,21 +1,21 @@
-import React, { Component, useState, useContext, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-import Spinner from 'react-bootstrap/Spinner';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import styled from 'styled-components';
-import ReactPaginate from 'react-paginate';
-import ErrorModal from './ErrorModal';
-import SuccessModal from './SuccessModal';
-import AuthorModal from './AuthorModal';
-import PackDisplayHeader from './PackDisplayHeader';
-import PackDisplayFilters from './PackDisplayFilters';
-import api from '../api/Api';
 import { ipcRenderer } from 'electron';
-import Pack, { PackType } from './Pack';
-import { PackQueryParams, PackMeta } from '../api/ApiTypes';
 import log from 'electron-log';
+import React, { useEffect, useState } from 'react';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Spinner from 'react-bootstrap/Spinner';
+import ReactPaginate from 'react-paginate';
+import styled from 'styled-components';
+import { v4 as uuidv4 } from 'uuid';
+import api from '../api/Api';
+import { PackMeta, PackQueryParams } from '../api/ApiTypes';
+import AuthorModal from './AuthorModal';
+import ErrorModal from './ErrorModal';
+import Pack, { PackType } from './Pack';
+import PackDisplayFilters from './PackDisplayFilters';
+import PackDisplayHeader from './PackDisplayHeader';
+import SuccessModal from './SuccessModal';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 

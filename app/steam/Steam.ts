@@ -25,7 +25,7 @@ class Steam {
         if (isNumeric(folder)) {
           const steamPath = path.resolve(manifest[libFolderKey][folder].path ?? manifest[libFolderKey][folder]);
           if(steamPath && !folders.includes(steamPath.toLowerCase())) {
-            folders.push();
+            folders.push(steamPath.toLowerCase());
           }
         }
       });

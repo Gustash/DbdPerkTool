@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
 import ReactDOM from 'react-dom';
+import uuid from 'react-uuid';
 
 type MyProps = {
   onFiltersSet: Function;
@@ -102,7 +103,7 @@ export default function PackDisplayFilter(props: MyProps) {
 
   const checkBoxes = filters.map((category: FilterCategory, index) => {
     return (
-      <FilterCheckBox>
+      <FilterCheckBox key={uuid()}>
         <Form.Group className="mb-0">
           <input
             type="checkbox"
