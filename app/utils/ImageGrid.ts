@@ -9,21 +9,30 @@ import getLanguage from '../language/Language';
 import { IconPack } from '../models/IconPack';
 import { CorrectedFile } from '../packdir/PackDir';
 
+const QUANT_CODE_QUALITY_TOO_BAD = 99;
+
 const { remote, ipcRenderer } = (electron as any);
 
 const rm = promisify(rimraf)
 const magick = path.join(remote.app.getAppPath(), 'dist', 'DbdGalleryGenerator.exe');
 const quant = path.join(remote.app.getAppPath(), 'dist', 'pngquant.exe');
 
-async function execPromise(command: string, args: Array<string>, onOutput: (lines: string) => void): Promise<void> {
+async function execPromise(command: string, args: Array<string>, onOutput: (lines: string) => void): Promise<number> {
 	ipcRenderer.on('gallery-stdout', (_event: any, output: string) => {
 		onOutput(output);
 	});
 	try {
-		await ipcRenderer.invoke('buildGallery', { command, args });
+		const code = await ipcRenderer.invoke('buildGallery', { command, args });
+		return code;
 	} finally {
 		ipcRenderer.removeAllListeners('gallery-stdout');
 	}
+}
+
+async function checkFileExists(file: string): Promise<boolean> {
+	return fs.promises.access(file, fs.constants.F_OK)
+		.then(() => true)
+		.catch(() => false)
 }
 
 type NamedImage = {
@@ -76,24 +85,33 @@ export default class ImageGrid {
 		const tmpFile = path.resolve(IconPack.tempDir, `${dateNow}_gallery.png`);
 		const compressedTmpFile = path.resolve(IconPack.tempDir, `${dateNow}_gallery-new.png`);
 		const tmpSettingsFile = path.resolve(IconPack.tempDir, `${Date.now()}_settings.json`);
+		let finalGalleryImage: Buffer | null = null;
 		try {
 			await ImageGrid.writeSettings(tmpSettingsFile, tmpFile, gridName, imagesWithNames);
 			await execPromise(magick, [tmpSettingsFile], onUpdate);
 			onUpdate('Compressing stage 1...');
 			const baseQuantOpts = ['--force', '--ext=-new.png'];
-			await execPromise(quant, [...baseQuantOpts, '--quality=45-85', tmpFile], onUpdate);
+			await execPromise(quant, [...baseQuantOpts, '--quality=30-85', tmpFile], onUpdate);
+
+			if (await checkFileExists(compressedTmpFile)) {
+				onUpdate(`Using compressed gallery image`);
+				finalGalleryImage = await fs.promises.readFile(compressedTmpFile);
+			} else if (await checkFileExists(tmpFile)) {
+				onUpdate(`Using raw gallery image`);
+				finalGalleryImage = await fs.promises.readFile(tmpFile);
+			} else {
+				throw Error('Unable to find gallery image...');
+			}
 		} catch (e: any) {
 			logger.error(`Error executing promise: ${e}`);
 			onUpdate(e.message ?? e.toString());
-			await rm(compressedTmpFile);
 		} finally {
 			await rm(tmpFile);
 			await rm(tmpSettingsFile);
+			await rm(compressedTmpFile);
 		}
 
 		onUpdate('Generated');
-		const galleryImg = await fs.promises.readFile(compressedTmpFile);
-		await rm(compressedTmpFile);
-		return galleryImg;
+		return finalGalleryImage;
 	}
 }
