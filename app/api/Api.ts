@@ -125,6 +125,8 @@ class Api {
   }
 
   async setLoggedIn(jwtResp: any) {
+    this.currentRawUser = '';
+    this.currentUser = null;
     // @ts-ignore
     this.executor.setJwt(new Jwt(jwtResp), jwtResp.refreshToken);
     // @ts-ignore

@@ -115,13 +115,13 @@ export default function SideNav() {
   const userContext = useContext(UserContext);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showVote, setShowVote] = useState(false);
-  const [signedIn, setSignedIn] = useState(api.currentUser !== null);
+  const [signedIn, setSignedIn] = useState<boolean>(!!userContext.user);
 
   let userIcon = <Image src={UserImage} className="user-profile-placeholder" />;
   if (signedIn) {
     userIcon = (
       <Image
-        src={api.currentUser.steamAvatarUrl}
+        src={userContext.user.steamAvatarUrl}
         className="user-profile-placeholder"
         roundedCircle
       />
@@ -304,7 +304,12 @@ export default function SideNav() {
                 signIn(async jwt => {
                   if (jwt) {
                     await api.setLoggedIn(jwt);
-                    userContext.setUser(api.currentUser);
+                    const user = await api.getUser();
+                    if(!user) {
+                      console.log('Unable to log in');
+                      return;
+                    }
+                    userContext.setUser(user);
                     setSignedIn(true);
                   }
                 });
@@ -326,7 +331,7 @@ export default function SideNav() {
 
         <UserProfileWrapper>
           {userIcon}
-          {signedIn && <h5>{api.currentUser.steamDisplayName}</h5>}
+          {signedIn && <h5>{userContext.user.steamDisplayName}</h5>}
         </UserProfileWrapper>
       </BottomEntries>
       <ConfirmationModal
