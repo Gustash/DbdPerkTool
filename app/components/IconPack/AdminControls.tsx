@@ -10,6 +10,7 @@ import api from '../../api/Api';
 import EditPackModal from './EditPackModal';
 import { Link } from 'react-router-dom';
 import routes from '../../constants/routes.json';
+import PurchaseFeatureModal from './PurchaseFeatureModal';
 
 type MyProps = {
   id: string;
@@ -34,8 +35,11 @@ export default function AdminControls(props: MyProps) {
   const [editInProgress, setEditInProgress] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successText, setSuccessText] = useState('');
+  const [showFeature, setShowFeature] = useState(false);
 
-  const showAuthor: boolean = userContext?.user?.abilities?.can('manage', 'all');
+  const isAdmin: boolean = !!userContext?.user?.abilities?.can('manage', 'all');
+  const showAuthor: boolean = isAdmin;
+  const showFeatureEdit: boolean = isAdmin;
 
   const handleDeleteClose = async (doDelete = false) => {
     setDeleteInProgress(true);
@@ -87,6 +91,15 @@ export default function AdminControls(props: MyProps) {
       >
         Delete
       </Button>
+      <Button
+        className="w-100 mr-1"
+        variant="warning"
+        onClick={async () => {
+          setShowFeature(true);
+        }}
+      >
+        Feature
+      </Button>
       <Modal
         show={showConfirm}
         onHide={() => {
@@ -131,19 +144,26 @@ export default function AdminControls(props: MyProps) {
         onHide={() => setShowSuccess(false)}
         text={successText}
       ></SuccessModal>
+      <PurchaseFeatureModal show={showFeature} onHide={() => {setShowFeature(false)}} pack={props.meta}/>
       <EditPackModal
         operationInProgress={editInProgress}
         show={showEditPack}
         onHide={() => {
           setShowEditPack(false);
         }}
-        onConfirm={async (name: string, author: string, desc: string) => {
-          if (name !== props.meta.name || desc !== props.meta.description || author !== props.meta.author) {
+        onConfirm={async (name: string, author: string, desc: string, featured: boolean, featuredEndDate?: Date) => {
+          if (name !== props.meta.name || desc !== props.meta.description || author !== props.meta.author || featured != props.meta.featured) {
             setEditInProgress(true);
+            const reqBody: any = {name, description: desc, author, featured: featured};
+
+            if(featured) {
+              reqBody.featuredEnd = featuredEndDate.toISOString();
+            }
+
             try {
               await api.executor.apis.default.editPack(
                 { id: props.id },
-                { requestBody: { name, description: desc, author } }
+                { requestBody: reqBody }
               );
               props.onModifyComplete();
             } catch (e) {
@@ -159,7 +179,9 @@ export default function AdminControls(props: MyProps) {
           }
         }}
         packName={props.meta.name}
+        packFeatured={!!props.meta.featured}
         canEditAuthor={showAuthor}
+        canEditFeatured={showFeatureEdit}
         packAuthor={props.meta.author}
         packDescription={props.meta.description}
       ></EditPackModal>

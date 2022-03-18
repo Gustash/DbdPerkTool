@@ -111,6 +111,12 @@ class Api {
           this.currentUser = user;
           log.info(`User logged in: ${user.username} - ${user.steamDisplayName}`);
         }
+        if (this.currentUser) {
+          const notifs = await this.currentUser.getNumNotifications();
+          if (notifs !== this.currentUser.numNotifications) {
+            this.currentUser.numNotifications = notifs;
+          }
+        }
         return this.currentUser;
       }
     } catch (e) {

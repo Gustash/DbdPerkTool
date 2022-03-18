@@ -6,6 +6,7 @@ export type User = {
   steamId: string;
   abilities: Ability;
   hasAcceptedUploadAgreement: boolean
+  numNotifications?: number;
   author?: {
     name: string;
   }

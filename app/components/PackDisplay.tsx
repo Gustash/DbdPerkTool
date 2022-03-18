@@ -26,6 +26,7 @@ type MyProps = {
   mine?: boolean;
   defaultOnly?: boolean;
   unapprovedOnly?: boolean;
+  packsPerPage?: number;
 };
 
 const DeckWrapper = styled.div`
@@ -69,7 +70,7 @@ export default function PackDisplay(props: MyProps) {
   const [showAuthorPage, setShowAuthorPage] = useState(false);
   const [currentAuthor, setCurrentAuthor] = useState('');
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(props.packsPerPage ?? 12);
   const [successModalShow, setSuccessModalShow] = useState(false);
   const [successModalText, setSuccessModalText] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);

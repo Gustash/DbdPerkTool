@@ -1,7 +1,7 @@
 {
   "name": "electron-react-boilerplate",
   "productName": "Dead By Daylight Icon Toolbox",
-  "version": "2.7.5",
+  "version": "2.7.6",
   "description": "Dead By Daylight Icon Toolbox",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -217,6 +217,8 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@hot-loader/react-dom": "^16.13.0",
     "@sindresorhus/slugify": "^0.11.0",
+    "@stripe/react-stripe-js": "^1.7.0",
+    "@stripe/stripe-js": "^1.24.0",
     "archiver": "^4.0.1",
     "axios": "^0.21.1",
     "compare-versions": "^3.6.0",
@@ -253,6 +255,7 @@
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0",
     "react-bootstrap-typeahead": "^5.0.0-rc.1",
+    "react-datepicker": "^4.7.0",
     "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.19",
     "react-html-parser": "^2.0.2",

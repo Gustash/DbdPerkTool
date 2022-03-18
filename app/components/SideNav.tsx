@@ -121,7 +121,7 @@ export default function SideNav() {
   if (signedIn) {
     userIcon = (
       <Image
-        src={userContext.user.steamAvatarUrl}
+        src={userContext.user?.steamAvatarUrl}
         className="user-profile-placeholder"
         roundedCircle
       />

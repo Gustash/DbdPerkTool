@@ -1,16 +1,8 @@
-import React, { Component, useContext } from 'react';
-import { subject } from '@casl/ability';
-import PerkPack from './PerkPack';
-import PortraitPack from './PortraitPack';
+import React from 'react';
 import PackDisplay from './PackDisplay';
-import UserContext from '../context/UserContext';
-import NoAuthorProfile from './NoAuthorProfile';
-
-type MyProps = {};
-type MyState = {};
 
 export default function Featured() {
   return (
-    <PackDisplay featured={true} />
+    <PackDisplay featured={true} packsPerPage={48} />
   );
 }

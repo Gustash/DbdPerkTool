@@ -4,26 +4,32 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import PlainTextInput from '../Form/PlainTextInput';
 import Spinner from 'react-bootstrap/Spinner';
+import DatePicker from "react-datepicker";
 
 type MyProps = {
   show: any;
   onHide: any;
-  onConfirm: any;
+  onConfirm: (packName: string, packAuthor: string, packDesc: string, featured: boolean, featuredEndDate?: Date) => void;
   packName: string;
   packDescription: string;
+  packFeatured: boolean;
   operationInProgress: boolean;
   packAuthor: string;
   canEditAuthor: boolean;
+  canEditFeatured: boolean;
 };
 
 export default function EditPackModal(props: MyProps) {
   const [packName, setPackName] = useState(props.packName);
   const [packDesc, setPackDesc] = useState(props.packDescription);
   const [packAuthor, setPackAuthor] = useState(props.packAuthor);
+  const [featured, setFeatured] = useState(props.packFeatured);
+  const [isPermFeature, setIsPermFeature] = useState(false);
+  const [featureEndDate, setFeatureEndDate] = useState(new Date());
   return (
     <Modal
       show={props.show}
-      size="lg"
+      size="xl"
       onHide={() => {
         props.onHide();
       }}
@@ -49,14 +55,31 @@ export default function EditPackModal(props: MyProps) {
             label="Pack Author"
             value={packAuthor}
             onChange={e => setPackAuthor(e.target.value)}
-          />)}       
+          />)}
+          {props.canEditFeatured && (<Form.Check
+            type="checkbox"
+            label="Pack Featured"
+            checked={featured}
+            onChange={e => {
+              setFeatured(e.target.checked);
+            }}
+          />)}
+                    {props.canEditFeatured && (<Form.Check
+            type="checkbox"
+            label="Permanent Feature"
+            checked={isPermFeature}
+            onChange={e => {
+              setIsPermFeature(e.target.checked);
+            }}
+          />)}
+          {props.canEditFeatured && (<DatePicker showTimeSelect selected={featureEndDate} onChange={(date: Date) => setFeatureEndDate(date)} />)}
         </Form>
       </Modal.Body>
       <Modal.Footer>
         <Button
           variant="info"
           onClick={() => {
-            props.onConfirm(packName, packAuthor, packDesc);
+            props.onConfirm(packName, packAuthor, packDesc, featured, isPermFeature ? undefined : featureEndDate);
           }}
         >
           {' '}
