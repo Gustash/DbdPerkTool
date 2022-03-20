@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_nrcrast_dbd_icon_toolbox_web_app=self.webpackChunk_nrcrast_dbd_icon_toolbox_web_app||[]).push([[230],{11230:function(n,c,e){e.r(c),e.d(c,{MyPacksPage:function(){return t}});e(72791);var r=e(54151),a=e(80184);function t(){return(0,a.jsx)(a.Fragment,{children:(0,a.jsx)(r.PackDisplay,{mine:!0})})}}}]);
+//# sourceMappingURL=230.3055ab47.chunk.js.map
