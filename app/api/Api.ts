@@ -42,7 +42,7 @@ function defineAbilitiesFor(user: User) {
 
 class Api {
   private currentUser: User | null = null;
-  private currentRawUser: string;
+  private currentRawUser: string | null = null;
   private executor: ApiExecutor | null = null;
   constructor() {
   }
