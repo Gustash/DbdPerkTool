@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_nrcrast_dbd_icon_toolbox_web_app=self.webpackChunk_nrcrast_dbd_icon_toolbox_web_app||[]).push([[936],{45936:function(e,n,a){a.r(n),a.d(n,{FeaturedPage:function(){return c}});a(72791);var r=a(54151),t=a(80184);function c(){return(0,t.jsx)(t.Fragment,{children:(0,t.jsx)(r.PackDisplay,{featured:!0,defaultPageSize:48})})}}}]);
+//# sourceMappingURL=936.9b5b86e5.chunk.js.map
