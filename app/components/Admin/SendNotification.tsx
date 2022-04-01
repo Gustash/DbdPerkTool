@@ -50,16 +50,16 @@ export default function UpdatePackModal(props: MyProps) {
       </Modal.Header>
       <Modal.Body>
         <Form>
-		<PlainTextInput
-                label="Title"
-                value={notificationName}
-                onChange={e => setNotificationName(e.target.value)}
-              />
-              		<PlainTextInput
-                label="User"
-                value={notificationUser ?? ''}
-                onChange={e => setNotificationUser(e.target.value)}
-              />
+          <PlainTextInput
+            label="Title"
+            value={notificationName}
+            onChange={value => setNotificationName(value)}
+          />
+          <PlainTextInput
+            label="User"
+            value={notificationUser ?? ''}
+            onChange={value => setNotificationUser(value)}
+          />
           <Row>
             <Col sm="10">
               <Form.Control

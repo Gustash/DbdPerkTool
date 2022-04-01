@@ -1,16 +1,10 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import PlainTextInput from '../Form/PlainTextInput';
-import Spinner from 'react-bootstrap/Spinner';
-import DatePicker from "react-datepicker";
 import { PackMeta } from '../../api/ApiTypes';
-import path from 'path';
-import logger from 'electron-log';
 import settingsUtil from '../../settings/Settings';
 import electron from 'electron';
-import { Dropdown } from 'react-bootstrap';
 import uuid from 'react-uuid';
 
 const { BrowserWindow, app, shell } = electron.remote;

@@ -130,12 +130,12 @@ export default function MyProfile(props: MyProps) {
           <PlainTextInput
             label="About Me"
             value={blurb}
-            onChange={e => setBlurb(e.target.value)}
+            onChange={value => setBlurb(value)}
           />
           <PlainTextInput
             label="Donation Link"
             value={donateLink}
-            onChange={e => setDonateLink(e.target.value)}
+            onChange={value => setDonateLink(value)}
           />
           <DescriptionHeader>
             Other Links (Discord, Twitter, etc..)

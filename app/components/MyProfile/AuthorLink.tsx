@@ -52,12 +52,12 @@ export default function AuthorLink(props: MyProps) {
       <PlainTextInput
         label="Name"
         value={label}
-        onChange={e => updateLabel(e.target.value)}
+        onChange={value => updateLabel(value)}
       />
       <PlainTextInput
         label="Link"
         value={link}
-        onChange={e => updateLink(e.target.value)}
+        onChange={value => updateLink(value)}
       />
     </LinkWrapper>
   );

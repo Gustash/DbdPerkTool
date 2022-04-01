@@ -28,8 +28,8 @@ export default function ConnectAuthor(props: MyProps) {
 
   return (
     <div>
-        <PlainTextInput label="Steam Id" value={steamId} onChange={(text) => {setSteamId(text.target.value)}}></PlainTextInput>
-        <PlainTextInput label="Author" value={author} onChange={(text) => {setAuthor(text.target.value)}}></PlainTextInput>
+        <PlainTextInput label="Steam Id" value={steamId} onChange={(value) => {setSteamId(value)}}></PlainTextInput>
+        <PlainTextInput label="Author" value={author} onChange={(value) => {setAuthor(value)}}></PlainTextInput>
         <Button variant='secondary' onClick={() => {props.onConfirm(steamId, author)}}>Set</Button>
     </div>
   );

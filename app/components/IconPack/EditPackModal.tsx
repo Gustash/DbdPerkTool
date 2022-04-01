@@ -68,18 +68,18 @@ export default function EditPackModal(props: MyProps) {
           <PlainTextInput
             label="Pack Name"
             value={packName}
-            onChange={e => setPackName(e.target.value)}
+            onChange={value => setPackName(value)}
           />
           <PlainTextInput
             label="Pack Description"
             value={packDesc}
-            onChange={e => setPackDesc(e.target.value)}
+            onChange={value => setPackDesc(value)}
           />
           {/* <ParentSelector packs={packs} defaultSelected={packParent} onSetParent={(parent: any) => setPackParent(parent)} /> */}
           {props.canEditAuthor && (<PlainTextInput
             label="Pack Author"
             value={packAuthor}
-            onChange={e => setPackAuthor(e.target.value)}
+            onChange={value => setPackAuthor(value)}
           />)}
           {props.canEditFeatured && (<Form.Check
             type="checkbox"

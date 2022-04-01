@@ -347,26 +347,21 @@ export default function Create(props: MyProps) {
     value={title}
   />) : (<PlainTextInput
     label="Title"
-    onInputChange={(text: string, event: Event) => {
+    onChange={(text: string) => {
       setTitle(text);
     }}
-    onChange={async (selected: any) => {
-      if (selected && selected.length > 0) {
-        const targetPack = selected[0];
-        if (!targetPack.customOption) {
-          const fullPack = await api.getPack(targetPack.id);
-          setTitle(fullPack.name);
-          setDescription(fullPack.description);
-          setAuthor(fullPack.author);
-          if (fullPack.parent) {
-            setIsVariant(true);
-            setParent(labeledPacks.find(pack => pack.id === fullPack.parent.id));
-          }
-        } else {
-          setTitle(targetPack.name);
+    onSelect={async (targetPack: any) => {
+      if (!targetPack.customOption) {
+        const fullPack = await api.getPack(targetPack.id);
+        setTitle(fullPack.name);
+        setDescription(fullPack.description);
+        setAuthor(fullPack.author);
+        if (fullPack.parent) {
+          setIsVariant(true);
+          setParent(labeledPacks.find(pack => pack.id === fullPack.parent.id));
         }
-
-
+      } else {
+        setTitle(targetPack.name);
       }
     }}
     value={title}
@@ -395,8 +390,8 @@ export default function Create(props: MyProps) {
           {isVariant && <ParentSelector onSetParent={(parent: any) => setParent(parent)} packs={labeledPacks} defaultSelected={parentPack} />}
           <PlainTextInput
             label="Description"
-            onChange={e => {
-              setDescription(e.target.value);
+            onChange={value => {
+              setDescription(value);
             }}
             value={description}
             disabled={disableInputs}
@@ -404,8 +399,8 @@ export default function Create(props: MyProps) {
 
           <PlainTextInput
             label="Author"
-            onChange={e => {
-              setAuthor(e.target.value);
+            onChange={value => {
+              setAuthor(value);
             }}
             value={author}
             disabled={autoAuthor || disableInputs}
@@ -415,8 +410,8 @@ export default function Create(props: MyProps) {
               label="Pack Directory Location"
               value={packDir}
               pathPicker={true}
-              onChange={e => {
-                doSetPackDir(e.target.value)
+              onChange={value => {
+                doSetPackDir(value)
               }}
             />
           </Form.Group>

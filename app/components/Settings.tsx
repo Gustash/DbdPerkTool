@@ -109,9 +109,9 @@ export default function Settings(props: MyProps) {
           help={installPathHelp}
           value={installPath}
           pathPicker={true}
-          onChange={e => {
+          onChange={value => {
             settingsUtil.settings['overrideInstallPath'] = true;
-            setInstallPath(e.target.value)
+            setInstallPath(value)
           }}
         />
         <PlainTextInput
@@ -119,8 +119,8 @@ export default function Settings(props: MyProps) {
           help={downloadPackPathHelp}
           value={packDownloadPath}
           pathPicker={true}
-          onChange={e => {
-            setPackDownloadPath(e.target.value)
+          onChange={value => {
+            setPackDownloadPath(value)
           }}
         />
         <Form.Group>

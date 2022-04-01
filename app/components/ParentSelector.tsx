@@ -14,13 +14,8 @@ export async function buildPackLabel(pack: any) {
 export function ParentSelector(props: MyProps) {
     return (<PlainTextInput
         label="Parent"
-        onChange={(selected: any) => {
-            if (selected && selected.length > 0) {
-                const targetPack = selected[0];
-                props.onSetParent(targetPack);
-            } else {
-                props.onSetParent(undefined);
-            }
+        onSelect={(targetPack: any) => {
+            props.onSetParent(targetPack);
         }}
         defaultSelected={!!props.defaultSelected ? [props.defaultSelected] : undefined}
         options={props.packs}

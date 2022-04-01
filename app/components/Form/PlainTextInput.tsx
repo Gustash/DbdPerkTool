@@ -1,17 +1,17 @@
-import React, { Component, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 import Form from 'react-bootstrap/Form';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import styled from 'styled-components';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Badge from '../Badge';
-import { Button } from 'react-bootstrap';
+import { Button, FormControlProps } from 'react-bootstrap';
 
 const { dialog } = require('electron').remote;
 
 type MyProps = {
-  onChange?: Function;
-  onInputChange?: Function;
+  onChange?: (value: string) => void;
+  onSelect?: (value: any) => void;
   disabled?: boolean;
   options?: any;
   value?: string;
@@ -63,8 +63,12 @@ export default function PlainTextInput(props: MyProps) {
     input = (
       <Typeahead
         id='typeahead_create'
-        onChange={props.onChange}
-        onInputChange={props.onInputChange}
+        onChange={(selected?: Array<any>) => {
+          if(selected && selected?.length > 0) {
+            props.onSelect?.(selected[0]);
+          }
+        }}
+        onInputChange={props.onChange}
         allowNew={true}
         labelKey={labelKey}
         options={props.options}
@@ -79,7 +83,7 @@ export default function PlainTextInput(props: MyProps) {
         value={props.value}
         disabled={props.disabled}
         className="dbd-input-field"
-        onChange={props.onChange}
+        onChange={(e: ChangeEvent<any>) => props.onChange?.(e.target.value)}
       />
     );
 
@@ -89,7 +93,7 @@ export default function PlainTextInput(props: MyProps) {
       });
   
       if (!dir.canceled && dir.filePaths.length > 0) {
-        props.onChange?.({target: {value: dir.filePaths[0]}});
+        props.onChange?.(dir.filePaths[0]);
       }
     };
 
