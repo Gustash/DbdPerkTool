@@ -49,7 +49,7 @@ export default function UpdatePackModal(props: MyProps) {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Row>
+          <Row>
             <Col sm="10">
               <Form.Control
                 type="plaintext"
@@ -65,7 +65,7 @@ export default function UpdatePackModal(props: MyProps) {
                 Browse
               </Button>
             </Col>
-          </Form.Row>
+          </Row>
         </Form>
       </Modal.Body>
       <Modal.Footer>

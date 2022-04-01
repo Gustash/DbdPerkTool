@@ -299,6 +299,7 @@ export default function SideNav() {
             text={signedIn ? 'Sign Out' : 'Sign In'}
             image={signedIn ? MenuSignOut : MenuSignIn}
             currentActive={userContext.page}
+            to="/"
             onClick={async (target: string) => {
               if (!signedIn) {
                 signIn(async jwt => {

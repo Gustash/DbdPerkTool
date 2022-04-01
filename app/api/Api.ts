@@ -165,6 +165,10 @@ class Api {
     }
   }
 
+  async getPack(id: string) {
+    return this.executor.apis.default.getPack({id});
+  }
+
   async getPacks(queryParams: PackQueryParams) {
     if (this.isLoggedIn()) {
       // @ts-ignore

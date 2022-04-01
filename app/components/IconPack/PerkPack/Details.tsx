@@ -11,6 +11,7 @@ import uuid from 'react-uuid';
 import styled from 'styled-components';
 import getLanguage from '../../../language/Language';
 import settingsUtil from '../../../settings/Settings';
+import { CloseButton } from 'react-bootstrap';
 
 
 type MyProps = {

@@ -41,7 +41,7 @@ export default class PackGenerator {
       author: this.packAuthor,
       description: this.packDescription,
       isNsfw: false,
-      parentPack: this.parentPack,
+      parent: this.parentPack,
       ...(await this.packDir.getMeta())
     }
 
@@ -101,7 +101,7 @@ export default class PackGenerator {
         description: this.packDescription,
         isNsfw: false,
         hasJpgGallery: false,
-        parentPack: this.parentPack,
+        parent: this.parentPack,
         hasCustomPreviews: true,
         hasPreviewBanner,
         ...(await this.packDir.getMeta())

@@ -60,7 +60,7 @@ export default function UpdatePackModal(props: MyProps) {
                 value={notificationUser ?? ''}
                 onChange={e => setNotificationUser(e.target.value)}
               />
-          <Form.Row>
+          <Row>
             <Col sm="10">
               <Form.Control
                 type="plaintext"
@@ -76,7 +76,7 @@ export default function UpdatePackModal(props: MyProps) {
                 Browse
               </Button>
             </Col>
-          </Form.Row>
+          </Row>
         </Form>
       </Modal.Body>
       <Modal.Footer>

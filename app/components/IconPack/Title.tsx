@@ -23,6 +23,7 @@ type MyProps = {
   isApproved?: boolean;
   isFeatured?: boolean;
   preview?: boolean;
+  variantOf?: string;
 };
 
 export default function Title(props: MyProps) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { hot } from 'react-hot-loader/root';
-import { History } from 'history';
+import { createMemoryHistory, History } from 'history';
 import { Store } from '../reducers/types';
 import Routes from '../Routes';
 import SideNav from '../components/SideNav';
@@ -21,6 +21,7 @@ import api from '../api/Api';
 import routes from '../constants/routes.json';
 import { ApiNotification } from '../api/ApiTypes';
 import Api from '../api/Api';
+import { Router } from 'react-router-dom';
 
 type Props = {
   store: Store;
@@ -41,7 +42,9 @@ const MainContainer = styled.div`
 
 type NotificationState = { show: boolean } & Pick<ApiNotification, 'name' | 'text' | '_id'>;
 
-const Root = ({ store, history }: Props) => {
+const history = createMemoryHistory();
+
+const Root = ({ store }: Props) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [latestVersion, setLatestVersion] = useState('');
   const [releaseNotes, setReleaseNotes] = useState('');
@@ -53,6 +56,7 @@ const Root = ({ store, history }: Props) => {
   const [page, setCurrentPage] = useState(routes.PERKS);
   const [notification, setNotification] = useState<NotificationState | null>(null);
   const [currentUser, setCurrentUser] = useState(api.currentUser);
+  const [labeledPacks, setLabeledPacks] = useState([]);
 
   const onUpdateModalClose = (doUpdate: boolean) => {
     log.info('Do Update: ', doUpdate);
@@ -142,7 +146,7 @@ const Root = ({ store, history }: Props) => {
 
   return (
     <Provider store={store}>
-      <ConnectedRouter history={history}>
+      <Router location={history.location} navigator={history}>
         <UserContext.Provider
           value={{
             user: currentUser,
@@ -186,7 +190,7 @@ const Root = ({ store, history }: Props) => {
             />)}
           </MainContainer>
         </UserContext.Provider>
-      </ConnectedRouter>
+      </Router>
     </Provider>
   );
 };

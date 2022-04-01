@@ -25,6 +25,9 @@ import { DefaultContainer } from './DefaultContainer';
 import PreviewSelector from './PreviewSelector';
 import { ISizeCalculationResult } from 'image-size/dist/types/interface';
 import CreationLog from './CreationLog';
+import { Row } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
+import { buildPackLabel, ParentSelector } from './ParentSelector';
 
 axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 
@@ -62,13 +65,16 @@ export default function Create(props: MyProps) {
   const [hasPreviewBanner, setHasPreviewBanner] = useState(false);
   const userContext = useContext(UserContext);
   const [creationLogLines, setCreationLogLines] = useState<Array<string>>([]);
+  const [isVariant, setIsVariant] = useState<boolean>(false);
+  const [labeledPacks, setLabeledPacks] = useState([]);
+  const {state} = useLocation();
 
   if (!userContext?.user?.author) {
     return <NoAuthorProfile />;
   }
 
   const appendToCreationLog = (lines: string | Array<string>) => {
-    if(!Array.isArray(lines)) {
+    if (!Array.isArray(lines)) {
       lines = [lines];
     }
     const linesWithDate = lines.map(line => `${new Date().toISOString()}: ${line}`);
@@ -78,25 +84,28 @@ export default function Create(props: MyProps) {
 
   const autoAuthor = userContext.user.abilities.cannot('manage', 'all');
 
-  const initialId = props.location?.state?.id;
+  console.log(JSON.stringify(props));
+  const initialId = state?.id;
   const disableInputs: boolean = !!initialId;
 
   const loadPacks = async () => {
     const packs = await api.getPacks({ light: true, mine: true });
     const defaultPack = await api.getPacks({ light: true, defaultOnly: true });
-    const allPacks = [...packs.data, ...defaultPack.data].sort((a,b) => {
+    const allPacks = [...packs.data, ...defaultPack.data].sort((a, b) => {
       return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
     });
     setPacks(allPacks);
 
-    if (initialId) {
-      const pack = packs.data.find(pack => pack.id === initialId);
-      if (pack) {
-        setTitle(pack.name);
-        setDescription(pack.description);
-        setAuthor(pack.author);
-      }
-    } else {
+
+    const packsWithLabels = allPacks.map(pack => {
+      return buildPackLabel(pack);
+    }).sort((a, b) => {
+      return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
+    });
+
+    setLabeledPacks(packsWithLabels)
+
+    if (!initialId) {
       setAuthor(userContext.user.author.name);
     }
 
@@ -106,10 +115,33 @@ export default function Create(props: MyProps) {
     log.debug(logLine);
     const lines = logLine?.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
-    if(lines) {
+    if (lines) {
       appendToCreationLog(lines);
     }
   }
+
+  const handleInitialId = async () => {
+    const pack = await api.getPack(initialId);
+    if (pack) {
+      setTitle(pack.name);
+      setDescription(pack.description);
+      setAuthor(pack.author);
+      if(pack.parent) {
+        setIsVariant(true);
+        const parent = labeledPacks.find(p => p.id === pack.parent.id);
+
+        if(parent) {
+          setParent(parent);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if(initialId) {
+      handleInitialId();
+    }
+  }, [labeledPacks])
 
   useEffect(() => {
     loadPacks();
@@ -153,7 +185,7 @@ export default function Create(props: MyProps) {
       appendToCreationLog('Generating output zip');
       outputZip = await generator.generate(getPreviewImagesCombined(), hasPreviewBanner, (logLine?: string) => {
         const lines = logLine?.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-        if(lines) {
+        if (lines) {
           appendToCreationLog(lines);
         }
       });
@@ -318,13 +350,18 @@ export default function Create(props: MyProps) {
     onInputChange={(text: string, event: Event) => {
       setTitle(text);
     }}
-    onChange={(selected: any) => {
+    onChange={async (selected: any) => {
       if (selected && selected.length > 0) {
         const targetPack = selected[0];
         if (!targetPack.customOption) {
-          setTitle(targetPack.name);
-          setDescription(targetPack.description);
-          setAuthor(targetPack.author);
+          const fullPack = await api.getPack(targetPack.id);
+          setTitle(fullPack.name);
+          setDescription(fullPack.description);
+          setAuthor(fullPack.author);
+          if(fullPack.parent) {
+            setIsVariant(true);
+            setParent(labeledPacks.find(pack => pack.id === fullPack.parent.id));
+          }
         } else {
           setTitle(targetPack.name);
         }
@@ -333,7 +370,7 @@ export default function Create(props: MyProps) {
       }
     }}
     value={title}
-    options={packs.sort()}
+    options={packs}
   />)
 
   return (
@@ -345,19 +382,17 @@ export default function Create(props: MyProps) {
           onChange={handleFormChanged}
         >
           {packTitleInput}
-          {/* <PlainTextInput
-            label="Parent"
-            onChange={(selected: any) => {
-              if (selected && selected.length > 0) {
-                const targetPack = selected[0];
-                setParent(targetPack);
-              } else {
-                setParent(undefined);
-              }
-            }}
-            value={parentPack?.name}
-            options={allPacks.sort()}
-          /> */}
+          <Form.Group>
+            <Form.Check
+              type="checkbox"
+              label="Is Variant"
+              checked={isVariant}
+              onChange={e => {
+                setIsVariant(e.target.checked);
+              }}
+            />
+          </Form.Group>
+          {isVariant && <ParentSelector onSetParent={(parent: any) => setParent(parent)} packs={labeledPacks} defaultSelected={parentPack}/>}
           <PlainTextInput
             label="Description"
             onChange={e => {
@@ -378,12 +413,12 @@ export default function Create(props: MyProps) {
 
 
           <Form.Group>
-            <Form.Row>
+            <Row>
               <Form.Label column sm="5" className="field-label-text">
                 Pack Directory Location
               </Form.Label>
-            </Form.Row>
-            <Form.Row>
+            </Row>
+            <Row>
               <Col sm="10">
                 <Form.Control
                   type="plaintext"
@@ -399,7 +434,7 @@ export default function Create(props: MyProps) {
                   Browse
                 </Button>
               </Col>
-            </Form.Row>
+            </Row>
           </Form.Group>
 
           <PreviewSelectorWrapper>
@@ -423,7 +458,7 @@ export default function Create(props: MyProps) {
             {saving && (
               <ProgressBar now={saveProgress} label={`${saveProgress}%`} />
             )}
-            <CreationLog lines={creationLogLines}/>
+            <CreationLog lines={creationLogLines} />
           </CreateButtonWrapper>
         </Form>
       </DefaultContainer>

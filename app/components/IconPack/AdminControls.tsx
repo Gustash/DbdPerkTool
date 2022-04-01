@@ -8,7 +8,7 @@ import ErrorModal from '../ErrorModal';
 import SuccessModal from '../SuccessModal';
 import api from '../../api/Api';
 import EditPackModal from './EditPackModal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import routes from '../../constants/routes.json';
 import PurchaseFeatureModal from './PurchaseFeatureModal';
 
@@ -36,6 +36,7 @@ export default function AdminControls(props: MyProps) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [successText, setSuccessText] = useState('');
   const [showFeature, setShowFeature] = useState(false);
+  const navigate = useNavigate();
 
   const isAdmin: boolean = !!userContext?.user?.abilities?.can('manage', 'all');
   const showAuthor: boolean = isAdmin;
@@ -69,18 +70,16 @@ export default function AdminControls(props: MyProps) {
       >
         Edit
       </Button>
-      <Link to={{
-        pathname: routes.CREATE,
-        state: { id: props.id }
-      }} className="w-100 mr-1">
-        <Button
-          className="w-100"
-          variant="info"
-          onClick={() => userContext.setPage(routes.CREATE)}
-        >
-          Update
-        </Button>
-      </Link>
+      <Button
+        className="w-100 mr-1"
+        variant="info"
+        onClick={() => {
+          navigate(routes.CREATE, { state: { id: props.id } });
+          userContext.setPage(routes.CREATE);
+        }}
+      >
+        Update
+      </Button>
 
       <Button
         className="w-100 mr-1"
@@ -144,7 +143,7 @@ export default function AdminControls(props: MyProps) {
         onHide={() => setShowSuccess(false)}
         text={successText}
       ></SuccessModal>
-      <PurchaseFeatureModal show={showFeature} onHide={() => {setShowFeature(false)}} pack={props.meta}/>
+      <PurchaseFeatureModal show={showFeature} onHide={() => { setShowFeature(false) }} pack={props.meta} />
       <EditPackModal
         operationInProgress={editInProgress}
         show={showEditPack}
@@ -154,9 +153,9 @@ export default function AdminControls(props: MyProps) {
         onConfirm={async (name: string, author: string, desc: string, featured: boolean, featuredEndDate?: Date) => {
           if (name !== props.meta.name || desc !== props.meta.description || author !== props.meta.author || featured != props.meta.featured) {
             setEditInProgress(true);
-            const reqBody: any = {name, description: desc, author, featured: featured};
+            const reqBody: any = { name, description: desc, author, featured: featured };
 
-            if(featured) {
+            if (featured) {
               reqBody.featuredEnd = featuredEndDate.toISOString();
             }
 

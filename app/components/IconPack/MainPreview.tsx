@@ -19,7 +19,10 @@ const ImageContainer = styled.div`
   display: flex;
   position: relative;
   text-align: center;
+  min-height: 150px;
+  align-items: center;
 `;
+
 
 function buildNormalPreview(props: MyProps, additionalImgClasses: string) {
   const imageClass = `perk-preview-img${additionalImgClasses}`;
@@ -44,19 +47,19 @@ function buildStaticPreview(props: MyProps, additionalImgClasses: string) {
   const images = props.images?.map<React.ReactNode>((image, index) => {
     return (
       <Badge key={uuid()}>
-      <Col key={uuid()} onClick={() => { props.onPickImage(index) }}>
-        <Image key={Date.now()} className={imageClass} src={image} fluid />
-        <i className="fas fa-upload" ></i>
-      </Col>
+        <Col key={uuid()} onClick={() => { props.onPickImage(index) }}>
+          <Image key={Date.now()} className={imageClass} src={image} fluid />
+          <i className="fas fa-upload" ></i>
+        </Col>
       </Badge>
     );
   });
   return (
-    <Row className="flex-nowrap">
-      <ImageContainer>
-        {images}{' '}
-      </ImageContainer>
-    </Row>
+      <Row className="flex-nowrap">
+        <ImageContainer>
+          {images}{' '}
+        </ImageContainer>
+      </Row>
   );
 }
 

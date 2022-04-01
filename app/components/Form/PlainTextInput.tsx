@@ -11,9 +11,10 @@ type MyProps = {
   onInputChange?: Function;
   disabled?: boolean;
   options?: any;
-  value: string;
+  value?: string;
   label: string;
   help?: any;
+  defaultSelected?: any;
 };
 
 const InputWrapper = styled.div`
@@ -52,15 +53,17 @@ export default function PlainTextInput(props: MyProps) {
   }
 
   if (props.options) {
+    const labelKey = props.options?.[0]?.label ? 'label' : 'name';
     input = (
       <Typeahead
         id='typeahead_create'
         onChange={props.onChange}
         onInputChange={props.onInputChange}
         allowNew={true}
-        labelKey='name'
+        labelKey={labelKey}
         options={props.options}
         value={props.value}
+        selected={props.defaultSelected}
       />
     );
   } else {

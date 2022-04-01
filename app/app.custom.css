@@ -41,9 +41,9 @@ html {
   background: rgba(0, 0, 0, 0.5);
   max-width: 500px;
   min-width: 500px;
-  max-height: 500px;
   margin-bottom: 1em;
 }
+
 
 .nav-tabs .nav-link {
   border-top-left-radius: 0;
@@ -60,10 +60,17 @@ html {
   background-color: rgba(var(--main-color-rgb), 0.4);
 }
 
-.nav-tabs .nav-link.active {
+.nav-tabs .nav-link {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   background-color: rgba(var(--main-color-rgb), 0.2);
+  border: 0;
+}
+
+.nav-tabs .nav-link.active {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  background-color: rgba(var(--main-color-rgb), 0.4);
   border: 0;
 }
 

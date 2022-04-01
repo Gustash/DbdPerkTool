@@ -1,17 +1,20 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import PlainTextInput from '../Form/PlainTextInput';
 import Spinner from 'react-bootstrap/Spinner';
 import DatePicker from "react-datepicker";
+import api from '../../api/Api';
+import { buildPackLabel, ParentSelector } from '../ParentSelector';
 
 type MyProps = {
   show: any;
   onHide: any;
-  onConfirm: (packName: string, packAuthor: string, packDesc: string, featured: boolean, featuredEndDate?: Date) => void;
+  onConfirm: (packName: string, packAuthor: string, packDesc: string, featured: boolean, packParent?: string, featuredEndDate?: Date) => void;
   packName: string;
   packDescription: string;
+  packParent: any;
   packFeatured: boolean;
   operationInProgress: boolean;
   packAuthor: string;
@@ -24,8 +27,29 @@ export default function EditPackModal(props: MyProps) {
   const [packDesc, setPackDesc] = useState(props.packDescription);
   const [packAuthor, setPackAuthor] = useState(props.packAuthor);
   const [featured, setFeatured] = useState(props.packFeatured);
+  const [packParent, setPackParent] = useState(props.packParent ? buildPackLabel(props.packParent) : undefined);
+  const [packs, setPacks] = useState([]);
   const [isPermFeature, setIsPermFeature] = useState(false);
   const [featureEndDate, setFeatureEndDate] = useState(new Date());
+
+
+  // const loadPacks = async () => {
+  //   const packData = await api.getPacks({ light: true, mine: true });
+  //   const defaultPack = await api.getPacks({ light: true, defaultOnly: true });
+  //   const allPacks = [...packData.data, ...defaultPack.data].map(pack => {
+  //     return buildPackLabel(pack);
+  //   }).sort((a, b) => {
+  //     console.log(a);
+  //     console.log(b);
+  //     return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
+  //   });
+  //   setPacks(allPacks);
+  // };
+
+  // useEffect(() => {
+  //   loadPacks();
+  // }, []);
+
   return (
     <Modal
       show={props.show}
@@ -51,6 +75,7 @@ export default function EditPackModal(props: MyProps) {
             value={packDesc}
             onChange={e => setPackDesc(e.target.value)}
           />
+          {/* <ParentSelector packs={packs} defaultSelected={packParent} onSetParent={(parent: any) => setPackParent(parent)} /> */}
           {props.canEditAuthor && (<PlainTextInput
             label="Pack Author"
             value={packAuthor}
@@ -64,7 +89,7 @@ export default function EditPackModal(props: MyProps) {
               setFeatured(e.target.checked);
             }}
           />)}
-                    {props.canEditFeatured && (<Form.Check
+          {props.canEditFeatured && (<Form.Check
             type="checkbox"
             label="Permanent Feature"
             checked={isPermFeature}
