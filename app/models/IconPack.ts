@@ -25,16 +25,16 @@ export class InstallPathNotFoundError extends Error {
 
 export abstract class IconPack {
   meta: PackMeta;
-  static tempDir = path.resolve((electron.app || electron.remote.app).getPath('temp'));
+  static getTempDir = () => settingsUtil.get('packDownloadDir');
   constructor(meta: PackMeta) {
     this.meta = meta;
   }
 
   static async cleanTemp() {
     const rm = promisify(rimraf);
-    logger.info(`Cleaning up temp directory ${IconPack.tempDir}`);
-    await rm(IconPack.tempDir);
-    await fs.promises.mkdir(IconPack.tempDir);
+    logger.info(`Cleaning up temp directory ${IconPack.getTempDir()}`);
+    await rm(IconPack.getTempDir());
+    await fs.promises.mkdir(IconPack.getTempDir());
   }
 
   /**
@@ -73,7 +73,7 @@ export abstract class IconPack {
    * @returns temporary directory. Must be removed manually!
    */
   private async extractZip(zipPath: string) {
-    const tmpDir = { name: path.resolve(IconPack.tempDir, `${Date.now()}_${this.replaceWindowsChars(this.meta.id)}`) };
+    const tmpDir = { name: path.resolve(IconPack.getTempDir(), `${Date.now()}_${this.replaceWindowsChars(this.meta.id)}`) };
     log.debug('Extracting zip from ' + zipPath);
     const d = await unzipper.Open.file(zipPath);
     log.debug('Zip open');
@@ -93,7 +93,7 @@ export abstract class IconPack {
    */
   private async downloadZip(onProgress?: Function): Promise<{ name: string }> {
     const url = await this.getZipUrl();
-    const zip = { name: path.resolve(IconPack.tempDir, `${Date.now()}_${this.replaceWindowsChars(this.meta.id)}.zip`) };
+    const zip = { name: path.resolve(IconPack.getTempDir(), `${Date.now()}_${this.replaceWindowsChars(this.meta.id)}.zip`) };
 
     ipcRenderer.on('downloadProgress', (event, progress) => {
       log.info(`Progress: ${progress}%`);

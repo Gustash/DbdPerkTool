@@ -17,6 +17,7 @@ type SettingSchema = {
   uploadServer: any;
   deleteAfterUpload: boolean;
   overrideInstallPath: boolean;
+  packDownloadDir: string;
   targetServerOverride?: string;
 };
 
@@ -41,6 +42,7 @@ class Settings {
       writeToTxt: false,
       targetServer: 'https://dead-by-daylight-icon-toolbox.herokuapp.com',
       uploadServer: null,
+      packDownloadDir: path.resolve((electron.app || electron.remote.app).getPath('temp')),
       overrideInstallPath: false
     };
     this.settings = { ...this.defaultSettings };

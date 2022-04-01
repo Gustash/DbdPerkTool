@@ -82,9 +82,9 @@ export default class ImageGrid {
 	static async generate(images: CorrectedFile[], gridName: string, onUpdate: (line: string) => void) {
 		const imagesWithNames = ImageGrid.addNamesToImages(images);
 		const dateNow = Date.now();
-		const tmpFile = path.resolve(IconPack.tempDir, `${dateNow}_gallery.png`);
-		const compressedTmpFile = path.resolve(IconPack.tempDir, `${dateNow}_gallery-new.png`);
-		const tmpSettingsFile = path.resolve(IconPack.tempDir, `${Date.now()}_settings.json`);
+		const tmpFile = path.resolve(IconPack.getTempDir(), `${dateNow}_gallery.png`);
+		const compressedTmpFile = path.resolve(IconPack.getTempDir(), `${dateNow}_gallery-new.png`);
+		const tmpSettingsFile = path.resolve(IconPack.getTempDir(), `${Date.now()}_settings.json`);
 		let finalGalleryImage: Buffer | null = null;
 		try {
 			await ImageGrid.writeSettings(tmpSettingsFile, tmpFile, gridName, imagesWithNames);

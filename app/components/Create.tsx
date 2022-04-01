@@ -67,7 +67,7 @@ export default function Create(props: MyProps) {
   const [creationLogLines, setCreationLogLines] = useState<Array<string>>([]);
   const [isVariant, setIsVariant] = useState<boolean>(false);
   const [labeledPacks, setLabeledPacks] = useState([]);
-  const {state} = useLocation();
+  const { state } = useLocation();
 
   if (!userContext?.user?.author) {
     return <NoAuthorProfile />;
@@ -126,11 +126,11 @@ export default function Create(props: MyProps) {
       setTitle(pack.name);
       setDescription(pack.description);
       setAuthor(pack.author);
-      if(pack.parent) {
+      if (pack.parent) {
         setIsVariant(true);
         const parent = labeledPacks.find(p => p.id === pack.parent.id);
 
-        if(parent) {
+        if (parent) {
           setParent(parent);
         }
       }
@@ -138,7 +138,7 @@ export default function Create(props: MyProps) {
   };
 
   useEffect(() => {
-    if(initialId) {
+    if (initialId) {
       handleInitialId();
     }
   }, [labeledPacks])
@@ -358,7 +358,7 @@ export default function Create(props: MyProps) {
           setTitle(fullPack.name);
           setDescription(fullPack.description);
           setAuthor(fullPack.author);
-          if(fullPack.parent) {
+          if (fullPack.parent) {
             setIsVariant(true);
             setParent(labeledPacks.find(pack => pack.id === fullPack.parent.id));
           }
@@ -392,7 +392,7 @@ export default function Create(props: MyProps) {
               }}
             />
           </Form.Group>
-          {isVariant && <ParentSelector onSetParent={(parent: any) => setParent(parent)} packs={labeledPacks} defaultSelected={parentPack}/>}
+          {isVariant && <ParentSelector onSetParent={(parent: any) => setParent(parent)} packs={labeledPacks} defaultSelected={parentPack} />}
           <PlainTextInput
             label="Description"
             onChange={e => {
@@ -410,31 +410,15 @@ export default function Create(props: MyProps) {
             value={author}
             disabled={autoAuthor || disableInputs}
           />
-
-
           <Form.Group>
-            <Row>
-              <Form.Label column sm="5" className="field-label-text">
-                Pack Directory Location
-              </Form.Label>
-            </Row>
-            <Row>
-              <Col sm="10">
-                <Form.Control
-                  type="plaintext"
-                  value={packDir}
-                  className="dbd-input-field"
-                  onChange={async (e) => {
-                    doSetPackDir(e.target.value);
-                  }}
-                />
-              </Col>
-              <Col>
-                <Button variant="secondary" onClick={pickPackDir}>
-                  Browse
-                </Button>
-              </Col>
-            </Row>
+            <PlainTextInput
+              label="Pack Directory Location"
+              value={packDir}
+              pathPicker={true}
+              onChange={e => {
+                doSetPackDir(e.target.value)
+              }}
+            />
           </Form.Group>
 
           <PreviewSelectorWrapper>

@@ -26,13 +26,6 @@ const TooltipWrapper = styled.div`
   align-items: center;
 `;
 
-async function doSave(installPath, autoUpdate, writeToTxt, deleteAfterUpload) {
-  settingsUtil.settings.dbdInstallPath = installPath;
-  settingsUtil.settings.autoUpdate = autoUpdate;
-  settingsUtil.settings.writeToTxt = writeToTxt;
-  settingsUtil.settings.deleteAfterUpload = deleteAfterUpload;
-  await settingsUtil.save();
-}
 
 function openLogs() {
   const logPath = path.resolve((app || remote.app).getPath('userData'), 'logs');
@@ -45,6 +38,16 @@ export default function Settings(props: MyProps) {
   const [unsaved, setUnsaved] = useState(false);
   const [writePackToTxt, setWritePackToTxt] = useState(false);
   const [deleteZipAfterUpload, setDeleteZipAfterUpload] = useState(true);
+  const [packDownloadPath, setPackDownloadPath] = useState('');
+
+  const doSave = async () => {
+    settingsUtil.settings.dbdInstallPath = installPath;
+    settingsUtil.settings.autoUpdate = autoUpdate;
+    settingsUtil.settings.writeToTxt = writePackToTxt;
+    settingsUtil.settings.deleteAfterUpload = deleteZipAfterUpload;
+    settingsUtil.settings.packDownloadDir = packDownloadPath;
+    await settingsUtil.save();
+  }
 
   const writePackTxtPath = path.resolve(
     (app || remote.app).getPath('userData'),
@@ -65,6 +68,7 @@ export default function Settings(props: MyProps) {
     setAutoUpdate(settingsUtil.get('autoUpdate'));
     setWritePackToTxt(settingsUtil.get('writeToTxt'));
     setDeleteZipAfterUpload(settingsUtil.get('deleteAfterUpload'));
+    setPackDownloadPath(settingsUtil.get('packDownloadDir'));
   };
 
   useEffect(() => {
@@ -82,6 +86,11 @@ export default function Settings(props: MyProps) {
   </span>
   )
 
+  const downloadPackPathHelp = (<span>
+    <p>This is the path that packs are temporarily downloaded to on your computer for extraction. You likely do not need to change this. </p>
+  </span>
+  )
+
   const saveButtonValue = 'Save' + (unsaved ? '*' : '');
   return (
     <DefaultContainer>
@@ -90,7 +99,7 @@ export default function Settings(props: MyProps) {
         onSubmit={async e => {
           e.preventDefault();
           log.info('Saving...');
-          await doSave(installPath, autoUpdate, writePackToTxt, deleteZipAfterUpload);
+          await doSave();
           setUnsaved(false);
         }}
         onChange={() => setUnsaved(true)}
@@ -99,9 +108,19 @@ export default function Settings(props: MyProps) {
           label="Dead By Daylight Install Path"
           help={installPathHelp}
           value={installPath}
+          pathPicker={true}
           onChange={e => {
             settingsUtil.settings['overrideInstallPath'] = true;
             setInstallPath(e.target.value)
+          }}
+        />
+        <PlainTextInput
+          label="Pack Download Path"
+          help={downloadPackPathHelp}
+          value={packDownloadPath}
+          pathPicker={true}
+          onChange={e => {
+            setPackDownloadPath(e.target.value)
           }}
         />
         <Form.Group>

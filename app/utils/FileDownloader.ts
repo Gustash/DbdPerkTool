@@ -11,7 +11,7 @@ export class FileDownloader {
             throw new Error('Unable to open write stream');
         }
 
-        const resp = await fetch(this.url);
+        const resp = await fetch(this.url, {compress: true});
 
         return new Promise<void>((res, reject) => {
             const contentLength = parseInt(resp.headers.get('Content-Length') ?? '0', 10);

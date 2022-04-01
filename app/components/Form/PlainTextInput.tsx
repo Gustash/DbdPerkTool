@@ -5,6 +5,9 @@ import styled from 'styled-components';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Badge from '../Badge';
+import { Button } from 'react-bootstrap';
+
+const { dialog } = require('electron').remote;
 
 type MyProps = {
   onChange?: Function;
@@ -15,6 +18,7 @@ type MyProps = {
   label: string;
   help?: any;
   defaultSelected?: any;
+  pathPicker?: boolean;
 };
 
 const InputWrapper = styled.div`
@@ -34,7 +38,7 @@ export default function PlainTextInput(props: MyProps) {
 
   const helpTxt = props.help;
 
-  if(props.help) {
+  if (props.help) {
     const renderTooltip = props => (
       <Tooltip id="pti-tooltip" {...props}>
         {helpTxt}
@@ -42,15 +46,17 @@ export default function PlainTextInput(props: MyProps) {
     );
     tooltip = (
       <OverlayTrigger
-      placement="right"
-      delay={{ show: 250, hide: 1000 }}
-      overlay={renderTooltip}
-      trigger={['click']}
-    >
-      <Badge className="fas fa-question-circle ml-2"></Badge>
-    </OverlayTrigger>
+        placement="right"
+        delay={{ show: 250, hide: 1000 }}
+        overlay={renderTooltip}
+        trigger={['click']}
+      >
+        <Badge className="fas fa-question-circle ml-2"></Badge>
+      </OverlayTrigger>
     )
   }
+
+  let button = null;
 
   if (props.options) {
     const labelKey = props.options?.[0]?.label ? 'label' : 'name';
@@ -76,6 +82,22 @@ export default function PlainTextInput(props: MyProps) {
         onChange={props.onChange}
       />
     );
+
+    const pickDir = async () => {
+      const dir = await dialog.showOpenDialog({
+        properties: ['openDirectory']
+      });
+  
+      if (!dir.canceled && dir.filePaths.length > 0) {
+        props.onChange?.({target: {value: dir.filePaths[0]}});
+      }
+    };
+
+    if (props.pathPicker) {
+      button = (<Button variant="secondary" className="ml-2" onClick={pickDir}>
+        Browse
+      </Button>)
+    }
   }
   return (
     <Form.Group>
@@ -83,6 +105,7 @@ export default function PlainTextInput(props: MyProps) {
         <Form.Label className="field-label-text">{props.label}</Form.Label>
         {tooltip}
         <InputValueWrapper>{input}</InputValueWrapper>
+        {button}
       </InputWrapper>
     </Form.Group>
   );
