@@ -151,7 +151,7 @@ export default function AdminControls(props: MyProps) {
           setShowEditPack(false);
         }}
         onConfirm={async (name: string, author: string, desc: string, featured: boolean, parent: any, featuredEndDate?: Date) => {
-          if (name !== props.meta.name || desc !== props.meta.description || author !== props.meta.author || featured != props.meta.featured || parent?.id !== props.meta.parent?.id) {
+          if (name !== props.meta.name || desc !== props.meta.description || author !== props.meta.author || featured != props.meta.featured || parent !== props.meta.parent?.id) {
             setEditInProgress(true);
             const reqBody: any = { name, description: desc, author, featured: featured };
 

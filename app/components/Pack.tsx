@@ -28,16 +28,32 @@ import ApprovalControls from './IconPack/ApprovalControls';
 import { InstallPathNotFoundError } from '../models/IconPack';
 import { Accordion } from 'react-bootstrap';
 import { PackVariants } from './PackVariants';
+import { PackMeta } from '../api/ApiTypes';
+import styled from 'styled-components';
+
+export function getPackType(pack: PackMeta) {
+  return pack.hasPerks ? PackType.Perks : PackType.Portraits;
+}
 
 export enum PackType {
   Portraits,
   Perks
 };
 
-const IMAGE_TAG_FROM_TYPE: { [key in PackType]: string; } = {
+export const IMAGE_TAG_FROM_TYPE: { [key in PackType]: string; } = {
   [PackType.Portraits]: 'portraits',
   [PackType.Perks]: 'perks'
 }
+
+export function getImageTagFromPack(pack: PackMeta) {
+  return IMAGE_TAG_FROM_TYPE[getPackType(pack)];
+}
+
+const PackVariantWrapper = styled.div`
+  overflow-y: scroll;
+  overflow-x: hidden;
+  max-height: 500px;
+`
 
 type MyProps = {
   id: string;
@@ -142,7 +158,7 @@ export default function Pack(props: MyProps) {
     <Card.Body className="mb-0">
       {props.meta.parent && <Row className="mb-2">
         <Col>
-        <b>Variant Of: </b><a
+          <b>Variant Of: </b><a
             href="#"
             onClick={e => {
               e.preventDefault();
@@ -255,22 +271,26 @@ export default function Pack(props: MyProps) {
             Variants ({props.meta.children.length})
           </ContextAwareToggle>}
           <Accordion.Collapse eventKey="0">
-            <Card.Body><PackVariants
-              variants={props.meta.children}
-              onVariantDetails={(id: string) => {
-                setDetailsId(id);
-                setDetailsMeta(props.meta.children.find((child: any) => child.id === id));
-                setShowDetails(true);
-              }}
-              onVariantNameClick={(id: string) => {
-                props.setFilter(id);
-              }}
-              onVariantInstall={(id: string) => {
-                setInstallId(id);
-                setInstallMeta(props.meta.children.find((child: any) => child.id === id));
-                setShowInstallOpts(true);
-              }}
-            /></Card.Body>
+            <Card.Body>
+              <PackVariantWrapper>
+                <PackVariants
+                  variants={props.meta.children}
+                  onVariantDetails={(id: string) => {
+                    setDetailsId(id);
+                    setDetailsMeta(props.meta.children.find((child: any) => child.id === id));
+                    setShowDetails(true);
+                  }}
+                  onVariantNameClick={(id: string) => {
+                    props.setFilter(id);
+                  }}
+                  onVariantInstall={(id: string) => {
+                    setInstallId(id);
+                    setInstallMeta(props.meta.children.find((child: any) => child.id === id));
+                    setShowInstallOpts(true);
+                  }}
+                />
+              </PackVariantWrapper>
+            </Card.Body>
           </Accordion.Collapse>
           {adminButtons}
           {approvalButtons}

@@ -12,7 +12,7 @@ import api from '../api/Api';
 import { PackMeta, PackQueryParams } from '../api/ApiTypes';
 import AuthorModal from './AuthorModal';
 import ErrorModal from './ErrorModal';
-import Pack, { PackType } from './Pack';
+import Pack, { getPackType, PackType } from './Pack';
 import PackDisplayFilters from './PackDisplayFilters';
 import PackDisplayHeader from './PackDisplayHeader';
 import SuccessModal from './SuccessModal';
@@ -98,7 +98,7 @@ export default function PackDisplay(props: MyProps) {
   const fromPacksBuildCards = (opts: CardOpts) => {
     const myPacks = packs.data;
     return myPacks.map(pack => {
-      const primaryType = pack.hasPerks ? PackType.Perks : PackType.Portraits;
+      const primaryType = getPackType(pack);
       return (
         <Pack
           onError={opts.onError}

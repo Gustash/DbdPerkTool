@@ -3,6 +3,8 @@ import { Button, Row } from 'react-bootstrap';
 import MainPreview from './IconPack/MainPreview';
 import styled from 'styled-components';
 import UserContext from '../context/UserContext';
+import { getImageTagFromPack } from './Pack';
+import {sort} from 'fast-sort';
 
 const PackVariantWrapper = styled.div`
     display: flex;
@@ -17,8 +19,9 @@ flex-direction: row;
 `
 
 function PackVariant(props: { pack: any, onDetails: (id: string) => void, onInstall: (id: string) => void, onNameClick: (id: string) => void }) {
+  const tag = getImageTagFromPack(props.pack);
   const urls = [...Array(4).keys()].map(index => {
-    return `preview_${index}.png`;
+    return `${tag}_${index}.png`;
   });
   return <PackVariantWrapper>
     <a
@@ -43,5 +46,7 @@ export function PackVariants(props: { variants?: Array<any>, onVariantDetails?: 
     return null;
   }
 
-  return <div>{props.variants.map(variant => <PackVariant pack={variant} onDetails={id => props.onVariantDetails?.(id)} onInstall={id => props.onVariantInstall?.(id)} onNameClick={id => props.onVariantNameClick?.(id)} />)}</div>
+  const sortedVariants = sort(props.variants).asc(variant => variant.name);
+
+  return <div>{sortedVariants.map(variant => <PackVariant pack={variant} onDetails={id => props.onVariantDetails?.(id)} onInstall={id => props.onVariantInstall?.(id)} onNameClick={id => props.onVariantNameClick?.(id)} />)}</div>
 }
