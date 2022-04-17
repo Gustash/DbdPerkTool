@@ -12,7 +12,7 @@ const UserContext = React.createContext<UserContextType>({
   user: null,
   page: '',
   setUser: () => { },
-  setPage: () => { },
+  setPage: () => { }
 });
 
 export default UserContext;

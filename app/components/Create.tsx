@@ -89,15 +89,8 @@ export default function Create(props: MyProps) {
   const disableInputs: boolean = !!initialId;
 
   const loadPacks = async () => {
-    const packs = await api.getPacks({ light: true, mine: true });
-    const defaultPack = await api.getPacks({ light: true, defaultOnly: true });
-    const allPacks = [...packs.data, ...defaultPack.data].sort((a, b) => {
-      return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-    });
-    setPacks(allPacks);
-
-
-    const packsWithLabels = allPacks.map(pack => {
+    await api.updateLightPacks();
+    const packsWithLabels = api.lightPacks.map(pack => {
       return buildPackLabel(pack);
     }).sort((a, b) => {
       return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
@@ -108,7 +101,6 @@ export default function Create(props: MyProps) {
     if (!initialId) {
       setAuthor(userContext.user.author.name);
     }
-
   };
 
   const logUpdater = (logLine?: string) => {
@@ -357,15 +349,16 @@ export default function Create(props: MyProps) {
         setDescription(fullPack.description);
         setAuthor(fullPack.author);
         if (fullPack.parent) {
+          const parent = labeledPacks.find(pack => pack.id === fullPack.parent.id);
+          setParent(parent);
           setIsVariant(true);
-          setParent(labeledPacks.find(pack => pack.id === fullPack.parent.id));
         }
       } else {
         setTitle(targetPack.name);
       }
     }}
     value={title}
-    options={packs}
+    options={labeledPacks}
   />)
 
   return (

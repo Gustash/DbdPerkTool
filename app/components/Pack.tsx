@@ -262,6 +262,9 @@ export default function Pack(props: MyProps) {
                 setDetailsMeta(props.meta.children.find((child: any) => child.id === id));
                 setShowDetails(true);
               }}
+              onVariantNameClick={(id: string) => {
+                props.setFilter(id);
+              }}
               onVariantInstall={(id: string) => {
                 setInstallId(id);
                 setInstallMeta(props.meta.children.find((child: any) => child.id === id));

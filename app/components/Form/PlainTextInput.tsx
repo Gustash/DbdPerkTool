@@ -19,15 +19,16 @@ type MyProps = {
   help?: any;
   defaultSelected?: any;
   pathPicker?: boolean;
+  allowNew?: boolean;
 };
 
-const InputWrapper = styled.div`
+export const InputWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
 `;
 
-const InputValueWrapper = styled.div`
+export const InputValueWrapper = styled.div`
   flex: 1;
   margin-left: 10px;
 `;

@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useContext, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -7,6 +7,8 @@ import Spinner from 'react-bootstrap/Spinner';
 import DatePicker from "react-datepicker";
 import api from '../../api/Api';
 import { buildPackLabel, ParentSelector } from '../ParentSelector';
+import UserContext from '../../context/UserContext';
+import Api from '../../api/Api';
 
 type MyProps = {
   show: any;
@@ -23,14 +25,21 @@ type MyProps = {
 };
 
 export default function EditPackModal(props: MyProps) {
+  const appContext = useContext(UserContext);
   const [packName, setPackName] = useState(props.packName);
   const [packDesc, setPackDesc] = useState(props.packDescription);
   const [packAuthor, setPackAuthor] = useState(props.packAuthor);
   const [featured, setFeatured] = useState(props.packFeatured);
   const [packParent, setPackParent] = useState(props.packParent ? buildPackLabel(props.packParent) : undefined);
-  const [packs, setPacks] = useState([]);
   const [isPermFeature, setIsPermFeature] = useState(false);
   const [featureEndDate, setFeatureEndDate] = useState(new Date());
+
+
+  const labeledPacks = Api.lightPacks.map(pack => {
+    return buildPackLabel(pack);
+  }).sort((a, b) => {
+    return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
+  });
 
 
   // const loadPacks = async () => {
@@ -75,7 +84,7 @@ export default function EditPackModal(props: MyProps) {
             value={packDesc}
             onChange={value => setPackDesc(value)}
           />
-          {/* <ParentSelector packs={packs} defaultSelected={packParent} onSetParent={(parent: any) => setPackParent(parent)} /> */}
+          <ParentSelector packs={labeledPacks} defaultSelected={packParent} onSetParent={(parent: any) => setPackParent(parent)} />
           {props.canEditAuthor && (<PlainTextInput
             label="Pack Author"
             value={packAuthor}
@@ -104,7 +113,7 @@ export default function EditPackModal(props: MyProps) {
         <Button
           variant="info"
           onClick={() => {
-            props.onConfirm(packName, packAuthor, packDesc, featured, isPermFeature ? undefined : featureEndDate);
+            props.onConfirm(packName, packAuthor, packDesc, featured, packParent?.id, isPermFeature ? undefined : featureEndDate);
           }}
         >
           {' '}

@@ -8,7 +8,7 @@ import fs from 'fs-extra';
 import logger from 'electron-log';
 import axios from 'axios';
 import ApiExecutor from './ApiExecutor';
-import { ApiNotification, PackQueryParams, User } from './ApiTypes';
+import { ApiNotification, LightPack, PackQueryParams, User } from './ApiTypes';
 import { ipcRenderer } from 'electron';
 
 const mainWindow = remote.getCurrentWindow();
@@ -44,6 +44,8 @@ class Api {
   private currentUser: User | null = null;
   private currentRawUser: string | null = null;
   private executor: ApiExecutor | null = null;
+  public lightPacks: Array<LightPack> = [];
+  private lastUpdate = Date.now();
   constructor() {
   }
 
@@ -166,7 +168,29 @@ class Api {
   }
 
   async getPack(id: string) {
-    return this.executor.apis.default.getPack({id});
+    // @ts-ignore
+    return this.executor.apis.default.getPack({ id });
+  }
+
+  async getLastUpdate(): Promise<Date> {
+    // @ts-ignore
+    const lastUpdate = await this.executor.apis.default.getLastUpdate();
+    return new Date(lastUpdate);
+  }
+
+  async updateLightPacks() {
+    const update = await this.getLastUpdate();
+
+    if (update.getTime() !== this.lastUpdate) {
+      const packs = await this.getPacks({ light: true, mine: true });
+      const defaultPack = await this.getPacks({ light: true, defaultOnly: true });
+      const allPacks = [...packs.data, ...defaultPack.data].sort((a, b) => {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      });
+      log.info('Updating packs');
+      this.lastUpdate = update.getTime();
+      this.lightPacks = allPacks;
+    }
   }
 
   async getPacks(queryParams: PackQueryParams) {

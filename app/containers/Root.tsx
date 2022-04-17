@@ -19,7 +19,7 @@ import Notification, { NotificationType } from '../components/Notification';
 import electron from 'electron';
 import api from '../api/Api';
 import routes from '../constants/routes.json';
-import { ApiNotification } from '../api/ApiTypes';
+import { ApiNotification, LightPack } from '../api/ApiTypes';
 import Api from '../api/Api';
 import { Router } from 'react-router-dom';
 
@@ -57,6 +57,7 @@ const Root = ({ store }: Props) => {
   const [notification, setNotification] = useState<NotificationState | null>(null);
   const [currentUser, setCurrentUser] = useState(api.currentUser);
   const [labeledPacks, setLabeledPacks] = useState([]);
+  const [lightPacks, setLightPacks] = useState<Array<LightPack>>([]);
 
   const onUpdateModalClose = (doUpdate: boolean) => {
     log.info('Do Update: ', doUpdate);
@@ -110,6 +111,15 @@ const Root = ({ store }: Props) => {
   };
 
   useEffect(() => {
+    api.updateLightPacks();
+    const interval = setInterval(api.updateLightPacks.bind(api), 30000);
+    
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
     log.info(`Starting Toolbox v${(
       electron.app || electron.remote.app
     ).getVersion()}`);
@@ -131,12 +141,14 @@ const Root = ({ store }: Props) => {
     popNotification();
 
     const interval = setInterval(async () => {
-      if(currentUser) {
+      if (currentUser) {
         setCurrentUser(await Api.getUser());
       }
+
     }, 30000);
 
     return () => {
+      log.info('Removing listeners from root');
       ipcRenderer.removeAllListeners('update-available');
       ipcRenderer.removeAllListeners('update-progress');
       clearInterval(interval);
@@ -154,7 +166,8 @@ const Root = ({ store }: Props) => {
               setCurrentUser(user);
             },
             page,
-            setPage: newPage => setCurrentPage(newPage)
+            setPage: newPage => setCurrentPage(newPage),
+            lightPacks,
           }}
         >
           <MainContainer>

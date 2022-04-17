@@ -150,13 +150,17 @@ export default function AdminControls(props: MyProps) {
         onHide={() => {
           setShowEditPack(false);
         }}
-        onConfirm={async (name: string, author: string, desc: string, featured: boolean, featuredEndDate?: Date) => {
-          if (name !== props.meta.name || desc !== props.meta.description || author !== props.meta.author || featured != props.meta.featured) {
+        onConfirm={async (name: string, author: string, desc: string, featured: boolean, parent: any, featuredEndDate?: Date) => {
+          if (name !== props.meta.name || desc !== props.meta.description || author !== props.meta.author || featured != props.meta.featured || parent?.id !== props.meta.parent?.id) {
             setEditInProgress(true);
             const reqBody: any = { name, description: desc, author, featured: featured };
 
             if (featured) {
-              reqBody.featuredEnd = featuredEndDate.toISOString();
+              reqBody.featuredEnd = featuredEndDate?.toISOString();
+            }
+
+            if(parent) {
+              reqBody.parent = parent;
             }
 
             try {
@@ -179,6 +183,7 @@ export default function AdminControls(props: MyProps) {
         }}
         packName={props.meta.name}
         packFeatured={!!props.meta.featured}
+        packParent={props.meta.parent}
         canEditAuthor={showAuthor}
         canEditFeatured={showFeatureEdit}
         packAuthor={props.meta.author}

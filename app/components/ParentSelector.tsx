@@ -1,5 +1,7 @@
 import React from "react";
-import PlainTextInput from "./Form/PlainTextInput";
+import PlainTextInput, { InputValueWrapper, InputWrapper } from "./Form/PlainTextInput";
+import { Typeahead } from 'react-bootstrap-typeahead';
+import { Form } from "react-bootstrap";
 
 type MyProps = {
     onSetParent: (pack: any) => void;
@@ -7,18 +9,33 @@ type MyProps = {
     defaultSelected?: any;
 }
 
-export async function buildPackLabel(pack: any) {
-    return {...pack, label: `${pack.author} - ${pack.name}`};
+export function buildPackLabel(pack: any) {
+    return { ...pack, label: `${pack.author} - ${pack.name}` };
 }
 
 export function ParentSelector(props: MyProps) {
-    return (<PlainTextInput
-        label="Parent"
-        onSelect={(targetPack: any) => {
-            props.onSetParent(targetPack);
+    const input = <Typeahead
+        id='typeahead_create'
+        onChange={(selected?: Array<any>) => {
+            if (selected && selected?.length > 0) {
+                const targetPack = selected[0];
+                props.onSetParent(targetPack);
+            }
         }}
-        defaultSelected={!!props.defaultSelected ? [props.defaultSelected] : undefined}
+        allowNew={false}
+        labelKey={'label'}
         options={props.packs}
-    />)
+        defaultSelected={props.defaultSelected ? [props.defaultSelected] : undefined}
+    />
+
+    return (
+        <Form.Group>
+            <InputWrapper>
+                <Form.Label className="field-label-text">Parent</Form.Label>
+                <InputValueWrapper>
+                    {input}
+                </InputValueWrapper>
+            </InputWrapper>
+        </Form.Group>)
 
 }

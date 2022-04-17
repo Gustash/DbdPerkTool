@@ -40,6 +40,7 @@ export type ApiList<T> = {
 export type PackQueryParams = {
   page?: number;
   limit?: number;
+  light?: boolean;
   capabilities?: string;
   unapproved?: boolean;
   search?: string;
@@ -60,6 +61,8 @@ export type PackCapabilities = {
   hasAddons: boolean;
   hasFavors: boolean;
 }
+
+export type LightPack = Pick<PackMeta, 'id' | 'author' | 'name' | 'description'>;
 
 export type PackMeta = {
   latestChapter: string;
