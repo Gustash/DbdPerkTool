@@ -9,9 +9,9 @@ import Tab from 'react-bootstrap/Tab';
 import slugify from '@sindresorhus/slugify';
 import uuid from 'react-uuid';
 import styled from 'styled-components';
-import getLanguage from '../../../language/Language';
 import settingsUtil from '../../../settings/Settings';
 import { CloseButton } from 'react-bootstrap';
+import { uiLanguage } from '../../../language/Language';
 
 
 type MyProps = {
@@ -225,9 +225,9 @@ export default function PerkPackDetails(props: MyProps) {
           </Tab>
           {capabilities.map(capability => (
             <Tab
-              key={slugify(getLanguage(capability).toLowerCase())}
-              eventKey={slugify(getLanguage(capability).toLowerCase())}
-              title={getLanguage(capability)}
+              key={slugify(uiLanguage.getLanguage(capability).toLowerCase())}
+              eventKey={slugify(uiLanguage.getLanguage(capability).toLowerCase())}
+              title={uiLanguage.getLanguage(capability)}
               className="text-center"
             >
               <Image className={imgClass} src={`${baseUrl}gallery_${capability}.${galleryExtension}`} fluid />

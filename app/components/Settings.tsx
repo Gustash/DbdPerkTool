@@ -37,6 +37,8 @@ export default function Settings(props: MyProps) {
   const [autoUpdate, setAutoUpdate] = useState(false);
   const [unsaved, setUnsaved] = useState(false);
   const [writePackToTxt, setWritePackToTxt] = useState(false);
+  const [useLocalServers, setUseLocalServers] = useState(false);
+  const [uploadDryRun, setUploadDryRun] = useState(false);
   const [deleteZipAfterUpload, setDeleteZipAfterUpload] = useState(true);
   const [packDownloadPath, setPackDownloadPath] = useState('');
 
@@ -46,6 +48,8 @@ export default function Settings(props: MyProps) {
     settingsUtil.settings.writeToTxt = writePackToTxt;
     settingsUtil.settings.deleteAfterUpload = deleteZipAfterUpload;
     settingsUtil.settings.packDownloadDir = packDownloadPath;
+    settingsUtil.settings.useLocalServers = useLocalServers;
+    settingsUtil.settings.uploadDryRun = uploadDryRun;
     await settingsUtil.save();
   }
 
@@ -150,6 +154,26 @@ export default function Settings(props: MyProps) {
             checked={deleteZipAfterUpload}
             onChange={e => {
               setDeleteZipAfterUpload(e.target.checked);
+            }}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Check
+            type="checkbox"
+            label="Use Local Dev Servers"
+            checked={useLocalServers}
+            onChange={e => {
+              setUseLocalServers(e.target.checked);
+            }}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Check
+            type="checkbox"
+            label="Upload Dry Run"
+            checked={uploadDryRun}
+            onChange={e => {
+              setUploadDryRun(e.target.checked);
             }}
           />
         </Form.Group>

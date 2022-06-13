@@ -5,7 +5,7 @@ import path from 'path';
 import rimraf from 'rimraf';
 import slash from 'slash';
 import { promisify } from 'util';
-import getLanguage from '../language/Language';
+import { uiLanguage } from '../language/Language';
 import { IconPack } from '../models/IconPack';
 import { CorrectedFile } from '../packdir/PackDir';
 
@@ -46,7 +46,7 @@ export default class ImageGrid {
 		};
 
 		const addNameToImage = (image: CorrectedFile): NamedImage => {
-			const name = getLanguage(slash(image.newPath.toLowerCase()));
+			const name = uiLanguage.getLanguage(slash(image.newPath.toLowerCase()));
 			return {
 				path: image.originalPath,
 				name

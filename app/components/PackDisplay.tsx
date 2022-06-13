@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import api from '../api/Api';
 import { PackMeta, PackQueryParams } from '../api/ApiTypes';
+import { uiLanguage } from '../language/Language';
 import AuthorModal from './AuthorModal';
 import ErrorModal from './ErrorModal';
 import Pack, { getPackType, PackType } from './Pack';
@@ -119,6 +120,7 @@ export default function PackDisplay(props: MyProps) {
   };
 
   const loadPacks = async () => {
+    await uiLanguage.initialize();
     if (props.defaultOnly) {
       const packs = await api.getPacks({ defaultOnly: true });
       setPacks(packs);

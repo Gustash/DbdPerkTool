@@ -74,8 +74,8 @@ export class IpcCommandHandler {
         log.info(`Upload URL: ${uploadUrl}`);
         const fileDetails = fs.statSync(sourceFile);
 
-        if (fileDetails.size / 1000000.0 > 150) {
-            throw Error('File is too large. Must be less than 150MB!');
+        if (fileDetails.size / 1000000.0 > 200) {
+            throw Error('File is too large. Must be less than 200MB!');
         }
 
         const fileStream = fs.createReadStream(sourceFile);
@@ -85,24 +85,30 @@ export class IpcCommandHandler {
         formData.append('file', fileStream, 'pack');
 
         let lastUploadProgress = -1;
+        try {
+            await got.post(`${uploadUrl}/v2/packsmultipart`, {
+                body: formData,
+                https: {
+                    certificateAuthority: ISRGCAs
+                },
+                headers: {
+                    ...formData.getHeaders(),
+                    Authorization: `Bearer ${token}`
+                }
+            }).on('uploadProgress', progress => {
+                const progressInt = Math.round(progress.percent * 100);
+    
+                if(progressInt !== lastUploadProgress) {
+                    onProgress(progressInt);
+                }
+                lastUploadProgress = progressInt;
+            });
+        } catch(e: any) {
+            log.error('Upload error: ' + e.message);
+            log.error(e.response.body);
+            throw Error(`${e.message} (${e?.response?.body ?? 'No additional details available'})`);
+        }
 
-        await got.post(`${uploadUrl}/v2/packsmultipart`, {
-            body: formData,
-            https: {
-                certificateAuthority: ISRGCAs
-            },
-            headers: {
-                ...formData.getHeaders(),
-                Authorization: `Bearer ${token}`
-            }
-        }).on('uploadProgress', progress => {
-            const progressInt = Math.round(progress.percent * 100);
-
-            if(progressInt !== lastUploadProgress) {
-                onProgress(progressInt);
-            }
-            lastUploadProgress = progressInt;
-        });
     }
 
     private async buildGallery(_event: any, cmdArgs: { command: string, args: Array<string> }) {

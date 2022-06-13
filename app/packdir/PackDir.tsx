@@ -1,20 +1,8 @@
 import path from 'path';
 import slash from 'slash';
 import recursiveRead from 'recursive-readdir';
-import expectedFiles from '../constants/expectedfiles.json';
 import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises;
-
-type metaSchema = {
-  latestChapter: string;
-  hasPortraits: boolean;
-  hasPowers: boolean;
-  hasItems: boolean;
-  hasStatusEffects: boolean;
-  hasPerks: boolean;
-  hasAddons: boolean;
-  hasFavors: boolean;
-};
 
 type ExpectedFile = {
   normalized: string;
@@ -26,8 +14,6 @@ export type CorrectedFile = {
   newPath: string; // This is the relative path inside the zip
 };
 export default class PackDir {
-  private meta: metaSchema;
-  private metaFilled: boolean;
   private normalizedFiles: Array<string> = []; // Local paths relative to pack directory, lowercase and unixified
   private correctedPathFiles: Array<CorrectedFile> = [];
   private excludedFiles: Array<string> = [
@@ -54,18 +40,8 @@ export default class PackDir {
     'iconpowers_detention.png',
   ]
 
-  constructor(private dir: string, private onUpdate: (line: string) => void) {
-    this.meta = {
-      latestChapter: 'Unknown',
-      hasPortraits: false,
-      hasPowers: false,
-      hasItems: false,
-      hasStatusEffects: false,
-      hasPerks: false,
-      hasAddons: false,
-      hasFavors: false
-    };
-    this.metaFilled = false;
+  constructor(public dir: string, private onUpdate: (line: string) => void, private expectedFiles: any) {
+  
   }
 
   async populateNormalizedFiles() {
@@ -79,13 +55,13 @@ export default class PackDir {
   }
 
   getExpectedFileByFilename(fileName: string): ExpectedFile | undefined {
-    return expectedFiles.find((file: { normalized: string, actual: string }) => {
+    return this.expectedFiles.find((file: { normalized: string, actual: string }) => {
       return path.basename(file.normalized) === path.basename(fileName);
     });
   }
 
   getExpectedFileByFilePath(fileName: string): ExpectedFile | undefined {
-    return expectedFiles.find((file: { normalized: string, actual: string }) => {
+    return this.expectedFiles.find((file: { normalized: string, actual: string }) => {
       return slash(fileName).toLowerCase().includes(slash(file.normalized).toLowerCase()) ||
         slash(file.normalized).toLowerCase().includes(slash(fileName).toLowerCase());
     });
@@ -187,15 +163,8 @@ export default class PackDir {
     const perksDirExists = await this.hasPerks();
     const portraitsDirExists = await this.hasPortraits();
     if (perksDirExists || portraitsDirExists) {
+      // TODO -- not sure if this is actually needed since the pack meta stuff has moved to server side
       await this.correctFilePaths();
-      this.meta.latestChapter = await this.getLatestChapter();
-      this.meta.hasPortraits = portraitsDirExists;
-      this.meta.hasPerks = perksDirExists;
-      this.meta.hasPowers = await this.hasPowers();
-      this.meta.hasItems = await this.hasItems();
-      this.meta.hasStatusEffects = await this.hasStatusEffects();
-      this.meta.hasAddons = await this.hasAddons();
-      this.meta.hasFavors = await this.hasFavors();
     }
 
     if (!perksDirExists && !portraitsDirExists) {
@@ -210,48 +179,6 @@ export default class PackDir {
       isValid: true,
       skipFiles: []
     };
-  }
-
-  async getLatestChapter() {
-    const correctedPaths = (await this.getCorrectedFilePaths()).map(correctedPath => correctedPath.newPath);
-
-
-    const dirs: Array<string> = [];
-
-    correctedPaths.forEach((file: string) => {
-      const filename = '/' + path.basename(file);
-      const dir = file.split(filename)[0].split('/').pop()?.toLowerCase();
-      if (dir && !dirs.includes(dir)) {
-        dirs.push(dir);
-      }
-    });
-    if (dirs.includes('kepler')) {
-      return 'Chapter XXIII: Sadako Rising';
-    } else if (dirs.includes('ion')) {
-      return 'Chapter XXII: Portrait of a Murder';
-    } else if (dirs.includes('hubble')) {
-      return 'Chapter XXII.5: Hour of the Witch';
-    } else if (dirs.includes('gemini')) {
-      return 'Chapter XXI: Hellraiser';
-    } else if (dirs.includes('eclipse')) {
-      return 'Chapter XX: Resident Evil';
-    } else if (dirs.includes('comet')) {
-      return 'Chapter XIX: All-Kill';
-    } else if (dirs.includes('aurora')) {
-      return 'Chapter XVIII: A Binding of Kin';
-    } else if (dirs.includes('yemen')) {
-      return 'Chapter XVII: Descend Beyond';
-    } else if (dirs.includes('wales')) {
-      return 'Chapter XVI: Silent Hill';
-    } else if (dirs.includes('ukraine')) {
-      return 'Chapter XV: Chains of Hate';
-    } else if (dirs.includes('sweden')) {
-      return 'Chapter XIV: Cursed Legacy';
-    } else if (dirs.includes('qatar')) {
-      return 'Chapter XIII: Stranger Things';
-    } else {
-      return 'Unknown';
-    }
   }
 
   async hasItems() {
@@ -287,13 +214,5 @@ export default class PackDir {
     return normalizedFiles.some(file => {
       return path.basename(file).startsWith('iconfavors_');
     });
-  }
-
-  async getMeta() {
-    if (!this.metaFilled) {
-      await this.validate();
-      this.metaFilled = true;
-    }
-    return this.meta;
   }
 }

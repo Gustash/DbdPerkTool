@@ -22,6 +22,7 @@ import routes from '../constants/routes.json';
 import { ApiNotification, LightPack } from '../api/ApiTypes';
 import Api from '../api/Api';
 import { Router } from 'react-router-dom';
+import { uiLanguage } from '../language/Language';
 
 type Props = {
   store: Store;
@@ -94,6 +95,7 @@ const Root = ({ store }: Props) => {
   const checkDbdPath = async () => {
 
     try {
+      await uiLanguage.initialize();
       const dbd = new DeadByDaylight();
       const dbdPath = await dbd.getInstallPath();
       log.info(`Detected DBD Path: ${dbdPath}`);
@@ -105,6 +107,7 @@ const Root = ({ store }: Props) => {
       } else {
         log.info('Not saving DBD path');
       }
+
     } catch (err) {
       log.error('Error saving DBD Path: ', err);
     }

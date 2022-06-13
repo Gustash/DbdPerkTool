@@ -83,8 +83,6 @@ export default function Create(props: MyProps) {
   };
 
   const autoAuthor = userContext.user.abilities.cannot('manage', 'all');
-
-  console.log(JSON.stringify(props));
   const initialId = state?.id;
   const disableInputs: boolean = !!initialId;
 
@@ -148,7 +146,7 @@ export default function Create(props: MyProps) {
 
     e?.preventDefault();
 
-    const packDirModel = new PackDir(packDir, logUpdater);
+    const packDirModel = new PackDir(packDir, logUpdater, await api.getExpectedFiles());
 
     appendToCreationLog(`Validating directory '${packDirModel.dir}'`);
     const validationStatus = await packDirModel.validate();
@@ -220,7 +218,7 @@ export default function Create(props: MyProps) {
   const handleFormChanged = async () => { };
 
   const doSetPackDir = async (newDir: string) => {
-    const packDirModel = new PackDir(newDir, logUpdater);
+    const packDirModel = new PackDir(newDir, logUpdater, await api.getExpectedFiles());
 
     const validationStatus = await packDirModel.validate();
 

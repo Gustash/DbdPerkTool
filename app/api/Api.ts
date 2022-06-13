@@ -8,7 +8,13 @@ import fs from 'fs-extra';
 import logger from 'electron-log';
 import axios from 'axios';
 import ApiExecutor from './ApiExecutor';
-import { ApiNotification, LightPack, PackQueryParams, User } from './ApiTypes';
+import {
+  ApiNotification,
+  ExpectedFile,
+  LightPack,
+  PackQueryParams,
+  User
+} from './ApiTypes';
 import { ipcRenderer } from 'electron';
 
 const mainWindow = remote.getCurrentWindow();
@@ -46,8 +52,7 @@ class Api {
   private executor: ApiExecutor | null = null;
   public lightPacks: Array<LightPack> = [];
   private lastUpdate = Date.now();
-  constructor() {
-  }
+  constructor() {}
 
   async initialize() {
     const targetServer = settingsUtil.get('targetServer');
@@ -83,16 +88,22 @@ class Api {
 
     user.markAllNotificationsRead = async () => {
       return apiInstance.clearUserNotifications();
-    }
-
-    user.markNotification = async (notification: ApiNotification, read: boolean) => {
-      return apiInstance.markNotification({ id: notification._id }, {
-        requestBody: {
-          read
-        }
-      });
     };
-  };
+
+    user.markNotification = async (
+      notification: ApiNotification,
+      read: boolean
+    ) => {
+      return apiInstance.markNotification(
+        { id: notification._id },
+        {
+          requestBody: {
+            read
+          }
+        }
+      );
+    };
+  }
 
   async getUser(): Promise<User | null> {
     try {
@@ -111,7 +122,9 @@ class Api {
           this.populateNotificationMethods(user);
           user.numNotifications = await user.getNumNotifications();
           this.currentUser = user;
-          log.info(`User logged in: ${user.username} - ${user.steamDisplayName}`);
+          log.info(
+            `User logged in: ${user.username} - ${user.steamDisplayName}`
+          );
         }
         if (this.currentUser) {
           const notifs = await this.currentUser.getNumNotifications();
@@ -126,6 +139,20 @@ class Api {
       return null;
     }
     return null;
+  }
+
+  async getExpectedFiles(): Promise<Array<ExpectedFile>> {
+    const { data } = await axios.get(
+      'https://packs.dbdicontoolbox.com/expectedFiles.json'
+    );
+    return data;
+  }
+
+  async getLanguageMap(): Promise<Record<string, string>> {
+    const { data } = await axios.get(
+      'https://packs.dbdicontoolbox.com/languages.json'
+    );
+    return data;
   }
 
   isLoggedIn(): boolean {
@@ -143,14 +170,19 @@ class Api {
   }
 
   async exchangeCodeForJwt(code: string) {
-    const url = `${settingsUtil.get('targetServer')}/auth/steam/finalize/${code}`;
+    const url = `${settingsUtil.get(
+      'targetServer'
+    )}/auth/steam/finalize/${code}`;
     const resp = await axios.get(url);
     return resp.data;
   }
 
   async connectAuthor(steamId: string, authorName: string) {
     // @ts-ignore
-    await this.executor.apis.default.connectProfile({}, { requestBody: { steamId, author: authorName } });
+    await this.executor.apis.default.connectProfile(
+      {},
+      { requestBody: { steamId, author: authorName } }
+    );
   }
 
   async updateFavorite(packId: string, newValue: boolean) {
@@ -183,7 +215,10 @@ class Api {
 
     if (update.getTime() !== this.lastUpdate) {
       const packs = await this.getPacks({ light: true, mine: true });
-      const defaultPack = await this.getPacks({ light: true, defaultOnly: true });
+      const defaultPack = await this.getPacks({
+        light: true,
+        defaultOnly: true
+      });
       const allPacks = [...packs.data, ...defaultPack.data].sort((a, b) => {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       });
@@ -210,16 +245,24 @@ class Api {
   }
 
   async determineTargetServer(): Promise<string | null> {
-    const servers = ['https://app.dbdicontoolbox.com', 'https://dead-by-daylight-icon-toolbox.herokuapp.com'];
+    let servers = [
+      'https://app.dbdicontoolbox.com',
+      'https://dead-by-daylight-icon-toolbox.herokuapp.com'
+    ];
+
+    if (settingsUtil.get('useLocalServers')) {
+      servers = ['http://127.0.0.1:5000', ...servers];
+    }
+
     for (let i = 0; i < servers.length; i++) {
-      logger.info(`Attempting to communicate with server ${servers[i]}`)
+      logger.info(`Attempting to communicate with server ${servers[i]}`);
       const server = servers[i];
       try {
         await axios.get(`${server}/spec`);
-        logger.info(`Successfully communicated with server ${server}`)
+        logger.info(`Successfully communicated with server ${server}`);
         return server;
       } catch (e) {
-        logger.info(`Error communicating with server ${server}`)
+        logger.info(`Error communicating with server ${server}`);
       }
     }
     return null;
@@ -239,7 +282,11 @@ class Api {
   async popNotification() {
     logger.debug('Popping notification');
     // @ts-ignore
-    const notif = await this.executor.apis.default.popNotification(settingsUtil.settings.lastNotificationRead ? { since: settingsUtil.settings.lastNotificationRead } : {});
+    const notif = await this.executor.apis.default.popNotification(
+      settingsUtil.settings.lastNotificationRead
+        ? { since: settingsUtil.settings.lastNotificationRead }
+        : {}
+    );
     // Global notification
     if (notif) {
       return notif;
@@ -316,10 +363,16 @@ class Api {
   async approvePack(packId: string, all = false) {
     if (all) {
       // @ts-ignore
-      return this.executor.apis.default.approvePack({}, { requestBody: { all: true } });
+      return this.executor.apis.default.approvePack(
+        {},
+        { requestBody: { all: true } }
+      );
     } else {
       // @ts-ignore
-      return this.executor.apis.default.approvePack({}, { requestBody: { id: packId } });
+      return this.executor.apis.default.approvePack(
+        {},
+        { requestBody: { id: packId } }
+      );
     }
   }
 
@@ -329,19 +382,30 @@ class Api {
     });
 
     await this.getUser();
+
+    let uploadServer =
+      settingsUtil.settings.uploadServer ??
+      // @ts-ignore
+      (await this.executor.apis.default.getUploadServer());
+
+    if (settingsUtil.get('useLocalServers')) {
+      uploadServer = 'http://127.0.0.1:5000';
+    }
+
+    logger.info('Uploading to ' + uploadServer);
+
     try {
       const args = {
         sourceFile,
         // @ts-ignore
         token: this.executor.jwt.token,
         // @ts-ignore
-        uploadUrl: settingsUtil.settings.uploadServer || await this.executor.apis.default.getUploadServer()
+        uploadUrl: uploadServer
       };
       await ipcRenderer.invoke('upload-zip', args);
     } finally {
       ipcRenderer.removeAllListeners('upload-progress');
     }
-
   }
 }
 

@@ -62,6 +62,11 @@ export type PackCapabilities = {
   hasFavors: boolean;
 }
 
+export type ExpectedFile = {
+  actual: string;
+  normalized: string;
+}
+
 export type LightPack = Pick<PackMeta, 'id' | 'author' | 'name' | 'description'>;
 
 export type PackMeta = {
@@ -72,4 +77,9 @@ export type PackMeta = {
   id: string;
   author: string;
   name: string;
+  dryRun?: boolean;
+  hasCustomPreviews?: boolean;
+  hasPreviewBanner?: boolean;
 } & PackCapabilities;
+
+export type UploadPackMeta = Pick<PackMeta, 'name' | 'description' | 'dryRun' | 'author' | 'hasCustomPreviews' | 'hasPreviewBanner'>;

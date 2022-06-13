@@ -7,6 +7,8 @@ import fs from 'fs';
 import log from 'electron-log';
 import { DEFAULT_PERK_ICONS, DEFAULT_PORTRAIT_ICONS, PreviewGenerator } from './PreviewGenerator';
 import {IconType, PerkPackArchive} from '../models/PerkPackArchive';
+import { UploadPackMeta } from '../api/ApiTypes';
+import Settings from '../settings/Settings';
 
 export default class PackGenerator {
   packZipFile: string;
@@ -36,21 +38,14 @@ export default class PackGenerator {
   }
 
   async getPreviewImages() {
-    const packMeta = {
-      name: this.packName,
-      author: this.packAuthor,
-      description: this.packDescription,
-      isNsfw: false,
-      parent: this.parentPack,
-      ...(await this.packDir.getMeta())
-    }
-
     const files = await this.packDir.getCorrectedFilePaths();
 
     const packArchive = new PerkPackArchive(files);
 
-    const defaults = packMeta.hasPerks ? DEFAULT_PERK_ICONS : DEFAULT_PORTRAIT_ICONS;
-    const getter = packMeta.hasPerks ? packArchive.getPerk.bind(packArchive) : packArchive.getPortrait.bind(packArchive);
+    const hasPerks = await this.packDir.hasPerks();
+
+    const defaults = hasPerks ? DEFAULT_PERK_ICONS : DEFAULT_PORTRAIT_ICONS;
+    const getter = hasPerks ? packArchive.getPerk.bind(packArchive) : packArchive.getPortrait.bind(packArchive);
 
     let images = [];
     try {
@@ -58,7 +53,7 @@ export default class PackGenerator {
         return getter(name);
       }));
     } catch (e) {
-      images = await packArchive.getRandomIcons(packMeta.hasPerks ? IconType.PERKS : IconType.PORTRAITS, 4);
+      images = await packArchive.getRandomIcons(hasPerks ? IconType.PERKS : IconType.PORTRAITS, 4);
     }
 
 
@@ -95,16 +90,13 @@ export default class PackGenerator {
 
       onUpdate('Making dir...');
 
-      const packMeta = {
+      const packMeta: UploadPackMeta = {
         name: this.packName,
         author: this.packAuthor,
         description: this.packDescription,
-        isNsfw: false,
-        hasJpgGallery: false,
-        parent: this.parentPack,
         hasCustomPreviews: true,
         hasPreviewBanner,
-        ...(await this.packDir.getMeta())
+        dryRun: !!Settings.get('uploadDryRun')
       }
 
       onUpdate('Pack Meta: ' + JSON.stringify(packMeta));
@@ -122,7 +114,7 @@ export default class PackGenerator {
 
       try {
         onUpdate('Building preview images');
-        const previewGenerator = new PreviewGenerator(archive, files, packMeta, onUpdate);
+        const previewGenerator = new PreviewGenerator(archive, files, this.packDir, onUpdate);
         await previewGenerator.generate();
       } catch (e) {
         reject(e);
@@ -138,6 +130,10 @@ export default class PackGenerator {
 
       archive.append(JSON.stringify(packMeta, null, 2), {
         name: 'meta.json'
+      });
+
+      archive.append('some bad file', {
+        name: 'test.json'
       });
 
       log.info('Finalizing');

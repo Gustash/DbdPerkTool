@@ -1,15 +1,14 @@
 import { PerkPackArchive } from '../models/PerkPackArchive'
 import PackGallery from '../utils/PackGallery';
 import logger from 'electron-log';
-import { CorrectedFile } from '../packdir/PackDir';
-import { PackCapabilities } from '../api/ApiTypes';
+import PackDir, { CorrectedFile } from '../packdir/PackDir';
 
 export const DEFAULT_PERK_ICONS = ['smallgame', 'soulguard', 'trailoftorment', 'coupdegrace'];
 export const DEFAULT_PORTRAIT_ICONS = ['s23', 'mk', 'gs', 'be'];
 
 export class PreviewGenerator {
     private pack: any;
-    constructor(private archive: any, files: Array<CorrectedFile>, private meta: PackCapabilities, private onUpdate: (line: string) => void) {
+    constructor(private archive: any, files: Array<CorrectedFile>, private packDir: PackDir, private onUpdate: (line: string) => void) {
         this.pack = new PerkPackArchive(files);
     }
 
@@ -69,25 +68,25 @@ export class PreviewGenerator {
     }
 
     async generate() {
-        if (this.meta.hasPerks === true) {
+        if (await this.packDir.hasPerks() === true) {
             await this.doPerks();
         }
-        if (this.meta.hasPortraits === true) {
+        if (await this.packDir.hasPortraits() === true) {
             await this.doPortraits();
         }
-        if (this.meta.hasItems === true) {
+        if (await this.packDir.hasItems() === true) {
             await this.doItems();
         }
-        if (this.meta.hasPowers === true) {
+        if (await this.packDir.hasPowers() === true) {
             await this.doPowers();
         }
-        if (this.meta.hasAddons === true) {
+        if (await this.packDir.hasAddons() === true) {
             await this.doAddons();
         }
-        if (this.meta.hasStatusEffects === true) {
+        if (await this.packDir.hasStatusEffects() === true) {
             await this.doStatusEffects();
         }
-        if (this.meta.hasFavors === true) {
+        if (await this.packDir.hasFavors() === true) {
             await this.doFavors();
         }
         const gallery = new PackGallery(this.pack, this.onUpdate);

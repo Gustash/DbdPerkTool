@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Tree from 'rc-tree';
 import axios from 'axios';
-import getLanguage from '../../../language/Language';
+import {uiLanguage} from '../../../language/Language';
 import settingsUtil from '../../../settings/Settings';
 
 type FileTreeNode = {
@@ -99,7 +99,7 @@ export default class PerkPackInstallOptionsModal extends Component<
       if (!parentNode) {
         tree.push({
           key: parent,
-          title: getLanguage(parent) || parent,
+          title: uiLanguage.getLanguage(parent) || parent,
           children: []
         });
         parentNode = tree[tree.length - 1];
@@ -108,7 +108,7 @@ export default class PerkPackInstallOptionsModal extends Component<
 
       parentNode.children.push({
         key: file,
-        title: getLanguage(file) || icon,
+        title: uiLanguage.getLanguage(file) || icon,
         children: []
       });
       checkedKeys.push(file);
