@@ -33,9 +33,9 @@ let downloadInProgress = false;
 const protocolLauncherArg = '--protocol-launcher';
 const possibleProtocols = ['dbdicontoolbox'];
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', function(err) {
   log.error(err);
-})
+});
 
 export default class AppUpdater {
   constructor(win) {
@@ -51,18 +51,21 @@ export default class AppUpdater {
     if (process.env.NODE_ENV === 'production') {
       autoUpdater.logger = log;
       autoUpdater.autoDownload = false;
-      autoUpdater.checkForUpdates();
-      autoUpdater.on('checking-for-update', () => { });
+      autoUpdater.on('checking-for-update', () => {});
       autoUpdater.on('update-available', info => {
         ipcMain.on('update-available-resp', (event, doUpdate) => {
           if (doUpdate === true) {
             autoUpdater.downloadUpdate();
           }
         });
+        log.info('Update available', info);
         win.webContents.send('update-available', info);
       });
-      autoUpdater.on('update-not-available', info => { });
-      autoUpdater.on('error', err => { });
+      autoUpdater.on('update-not-available', info => {
+        log.info('No update available!');
+        win.webContents.send('no-update-available', info);
+      });
+      autoUpdater.on('error', err => {});
       autoUpdater.signals.progress(progressObj => {
         log.info('Progress: ', progressObj);
         win.webContents.send('update-progress', progressObj);
@@ -70,7 +73,12 @@ export default class AppUpdater {
       autoUpdater.on('update-downloaded', info => {
         autoUpdater.quitAndInstall(false, true);
       });
+      this.doUpdateCheck();
     }
+  }
+
+  public doUpdateCheck() {
+    autoUpdater.checkForUpdates();
   }
 }
 
@@ -118,7 +126,6 @@ function handleAppURL(url: string) {
   }
 }
 
-
 /**
  * Attempt to detect and handle any protocol handler arguments passed
  * either via the command line directly to the current process or through
@@ -147,13 +154,13 @@ function handlePossibleProtocolLauncherArgs(args: ReadonlyArray<string>) {
     // args.forEach((v, i) => log.info(`argv[${i}] ${v}`));
 
     // find the argv index for protocolLauncherArg
-    const flagI: number = args.findIndex((v) => v === protocolLauncherArg);
+    const flagI: number = args.findIndex(v => v === protocolLauncherArg);
     if (flagI === -1) {
       // log.error(`Ignoring unexpected launch arguments: ${args}`);
       return;
     }
     // find the arg that starts with one of our desired protocols
-    const url: string | undefined = args.find((arg) => {
+    const url: string | undefined = args.find(arg => {
       // eslint-disable-next-line no-plusplus
       for (let index = 0; index < possibleProtocols.length; index++) {
         const protocol = possibleProtocols[index];
@@ -202,12 +209,12 @@ function setAsDefaultProtocolClient(protocol: string | undefined) {
       process.argv[1], // -r
       path.resolve(process.argv[2]), // ./.erb/scripts/BabelRegister
       path.resolve(process.argv[3]), // ./src/main.dev.ts
-      protocolLauncherArg,
+      protocolLauncherArg
     ]);
   } else if (WIN32) {
     app.removeAsDefaultProtocolClient(protocol);
     app.setAsDefaultProtocolClient(protocol, process.execPath, [
-      protocolLauncherArg,
+      protocolLauncherArg
     ]);
   } else {
     app.removeAsDefaultProtocolClient(protocol);
@@ -230,14 +237,14 @@ const createWindow = async () => {
     webPreferences:
       process.env.NODE_ENV === 'development' || process.env.E2E_BUILD === 'true'
         ? {
-          nodeIntegration: true
-        }
+            nodeIntegration: true
+          }
         : {
-          preload: path.join(__dirname, 'dist/renderer.prod.js')
-        }
+            preload: path.join(__dirname, 'dist/renderer.prod.js')
+          }
   });
 
-  app.on('open-url', function (event, url) {
+  app.on('open-url', function(event, url) {
     event.preventDefault();
     handleAppURL(url);
   });
@@ -263,7 +270,6 @@ const createWindow = async () => {
     // Remove this if your app does not use auto updates
     // eslint-disable-next-line
     new AppUpdater(mainWindow);
-    
   });
 
   mainWindow.on('closed', () => {
@@ -307,11 +313,13 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('ready', () => possibleProtocols.forEach((protocol) => setAsDefaultProtocolClient(protocol)));
+app.on('ready', () =>
+  possibleProtocols.forEach(protocol => setAsDefaultProtocolClient(protocol))
+);
 
 app
   .whenReady()
   .then(createWindow)
-  .catch((error) => {
+  .catch(error => {
     log.error(`error creating window: ${error}`);
   });

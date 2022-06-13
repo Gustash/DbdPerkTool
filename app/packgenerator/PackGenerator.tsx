@@ -132,10 +132,6 @@ export default class PackGenerator {
         name: 'meta.json'
       });
 
-      archive.append('some bad file', {
-        name: 'test.json'
-      });
-
       log.info('Finalizing');
       archive.finalize();
     });

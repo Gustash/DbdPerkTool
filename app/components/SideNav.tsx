@@ -73,6 +73,25 @@ const LogoLabel = styled.p`
   text-align: center;
 `;
 
+const RefreshWrapper = styled.div`
+  padding-left: 8px;
+  padding-right: 8px;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom:10px;
+`;
+
+const RefreshIconWrapper = styled.span`
+  color: #d4af37;
+  margin-right: 4px;
+
+  &:hover {
+    color: yellow;
+    cursor: pointer;
+  }
+`;
+
 const AccessoryWrapper = styled.div`
   position: relative;
   top: 0;
@@ -158,6 +177,16 @@ export default function SideNav() {
         <LogoLabel>{`Dead By Daylight Icon Toolbox v${(
           electron.app || electron.remote.app
         ).getVersion()}`}</LogoLabel>
+        <RefreshWrapper>
+          <RefreshIconWrapper
+            onClick={() => {
+              userContext.checkForUpdates()
+            }}
+          >
+            <i className="fas fa-sync" />
+          </RefreshIconWrapper>
+          Check For Update
+        </RefreshWrapper>
         <Social />
       </LogoWrapper>
 
@@ -306,7 +335,7 @@ export default function SideNav() {
                   if (jwt) {
                     await api.setLoggedIn(jwt);
                     const user = await api.getUser();
-                    if(!user) {
+                    if (!user) {
                       console.log('Unable to log in');
                       return;
                     }

@@ -6,6 +6,7 @@ import axios from 'axios';
 import fs from 'fs-extra';
 import FormData from 'form-data';
 import got from 'got';
+import { autoUpdater } from 'electron-updater';
 
 const ISRGCAs = [`-----BEGIN CERTIFICATE-----
 MIIFazCCA1OgAwIBAgIRAIIQz7DSQONZRGPgu2OCiwAwDQYJKoZIhvcNAQELBQAw
@@ -53,6 +54,9 @@ export class IpcCommandHandler {
         ipcMain.handle('downloadFile', this.onDownloadFile.bind(this));
         ipcMain.handle('buildGallery', this.buildGallery.bind(this));
         ipcMain.handle('upload-zip', this.uploadZip.bind(this));
+        ipcMain.handle('check-for-updates', () => {
+            autoUpdater.checkForUpdates();
+        });
     }
 
     private async onDownloadFile(_event: any, args: { outputLocation: string, url: string }) {

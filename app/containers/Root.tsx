@@ -23,6 +23,7 @@ import { ApiNotification, LightPack } from '../api/ApiTypes';
 import Api from '../api/Api';
 import { Router } from 'react-router-dom';
 import { uiLanguage } from '../language/Language';
+import ErrorModal from '../components/ErrorModal';
 
 type Props = {
   store: Store;
@@ -51,14 +52,12 @@ const Root = ({ store }: Props) => {
   const [releaseNotes, setReleaseNotes] = useState('');
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [updateProgress, setUpdateProgress] = useState(0);
-  const [showUpdateDbdPath, setShowUpdateDbdPath] = useState(false);
-  const [detectedDbdPath, setDetectedDbdPath] = useState('');
+  const [showUpdateNotAvailable, setShowUpdateNotAvailable] = useState(false);
   const [userNotificationPopupDismissed, setUserNotificationPopupDismissed] = useState(false);
   const [page, setCurrentPage] = useState(routes.PERKS);
   const [notification, setNotification] = useState<NotificationState | null>(null);
   const [currentUser, setCurrentUser] = useState(api.currentUser);
-  const [labeledPacks, setLabeledPacks] = useState([]);
-  const [lightPacks, setLightPacks] = useState<Array<LightPack>>([]);
+  const [manualUpdateCheckInvoked, setManualUpdateCheckInvoked] = useState(false);
 
   const onUpdateModalClose = (doUpdate: boolean) => {
     log.info('Do Update: ', doUpdate);
@@ -127,19 +126,6 @@ const Root = ({ store }: Props) => {
       electron.app || electron.remote.app
     ).getVersion()}`);
 
-    ipcRenderer.on('update-available', (event, arg) => {
-      log.info(`Update available: ${JSON.stringify(arg)}`);
-      setShowUpdateModal(true);
-      log.info(`Release notes: ${arg.releaseNotes}`);
-      setReleaseNotes(arg.releaseNotes);
-      setLatestVersion(arg.version);
-    });
-
-    ipcRenderer.on('update-progress', (event, arg) => {
-      log.info('Update: ', arg);
-      setShowProgressModal(true);
-      setUpdateProgress(parseInt(arg.percent));
-    });
     checkDbdPath();
     popNotification();
 
@@ -158,6 +144,37 @@ const Root = ({ store }: Props) => {
     };
   }, []);
 
+  useEffect(() => {
+    ipcRenderer.on('update-available', (event, arg) => {
+      log.info(`Update available: ${JSON.stringify(arg)}`);
+      setShowUpdateModal(true);
+      log.info(`Release notes: ${arg.releaseNotes}`);
+      setReleaseNotes(arg.releaseNotes);
+      setLatestVersion(arg.version);
+    });
+
+    ipcRenderer.on('no-update-available', () => {
+      log.info('No update available');
+      log.info(`Manual check invoked: ${manualUpdateCheckInvoked}`);
+      if(manualUpdateCheckInvoked) {
+        log.info('Showing modal');
+        setShowUpdateNotAvailable(true);
+      }
+    });
+
+    ipcRenderer.on('update-progress', (event, arg) => {
+      log.info('Update: ', arg);
+      setShowProgressModal(true);
+      setUpdateProgress(parseInt(arg.percent));
+    });
+
+    return () => {
+      ipcRenderer.removeAllListeners('update-available');
+      ipcRenderer.removeAllListeners('update-progress');
+      ipcRenderer.removeAllListeners('no-update-available');
+    };
+  }, [manualUpdateCheckInvoked, showUpdateNotAvailable, showUpdateModal]);
+
 
   return (
     <Provider store={store}>
@@ -170,7 +187,10 @@ const Root = ({ store }: Props) => {
             },
             page,
             setPage: newPage => setCurrentPage(newPage),
-            lightPacks,
+            checkForUpdates: () => {
+              setManualUpdateCheckInvoked(true);
+              ipcRenderer.invoke('check-for-updates');
+            }
           }}
         >
           <MainContainer>
@@ -186,6 +206,7 @@ const Root = ({ store }: Props) => {
               show={showUpdateModal}
               onClose={onUpdateModalClose}
             />
+            <ErrorModal show={showUpdateNotAvailable} title={"Updater"} onHide={() => setShowUpdateNotAvailable(false)} text={"No update available"}/>
             <UpdateProgress
               progress={updateProgress}
               show={showProgressModal}

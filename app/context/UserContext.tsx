@@ -6,13 +6,15 @@ export type UserContextType = {
   page: string;
   setUser: (user: User) => void;
   setPage: (page: string) => void;
+  checkForUpdates: () => void;
 }
 
 const UserContext = React.createContext<UserContextType>({
   user: null,
   page: '',
   setUser: () => { },
-  setPage: () => { }
+  setPage: () => { },
+  checkForUpdates: () => { }
 });
 
 export default UserContext;
