@@ -73,6 +73,8 @@ export default function Settings(props: MyProps) {
     setWritePackToTxt(settingsUtil.get('writeToTxt'));
     setDeleteZipAfterUpload(settingsUtil.get('deleteAfterUpload'));
     setPackDownloadPath(settingsUtil.get('packDownloadDir'));
+    setUploadDryRun(settingsUtil.get('uploadDryRun'));
+    setUseLocalServers(settingsUtil.get('useLocalServers'));
   };
 
   useEffect(() => {

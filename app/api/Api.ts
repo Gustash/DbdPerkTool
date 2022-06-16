@@ -211,7 +211,13 @@ class Api {
   }
 
   async updateLightPacks() {
-    const update = await this.getLastUpdate();
+    let update = null;
+    try {
+      update = await this.getLastUpdate();
+    } catch (e) {
+      log.warn('Error getting last update');
+      return;
+    }
 
     if (update.getTime() !== this.lastUpdate) {
       const packs = await this.getPacks({ light: true, mine: true });

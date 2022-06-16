@@ -89,10 +89,10 @@ export class PreviewGenerator {
         if (await this.packDir.hasFavors() === true) {
             await this.doFavors();
         }
-        const gallery = new PackGallery(this.pack, this.onUpdate);
-        const images = await gallery.create();
-        await Promise.all(images.map(image => {
-            return this.addImageToArchive(image.data, `previews/gallery_${image.type}.png`);
-        }));
+        // const gallery = new PackGallery(this.pack, this.onUpdate);
+        // const images = await gallery.create();
+        // await Promise.all(images.map(image => {
+        //     return this.addImageToArchive(image.data, `previews/gallery_${image.type}.png`);
+        // }));
     }
 }

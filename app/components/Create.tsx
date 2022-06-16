@@ -346,11 +346,11 @@ export default function Create(props: MyProps) {
         setTitle(fullPack.name);
         setDescription(fullPack.description);
         setAuthor(fullPack.author);
-        if (fullPack.parent) {
-          const parent = labeledPacks.find(pack => pack.id === fullPack.parent.id);
-          setParent(parent);
-          setIsVariant(true);
-        }
+        // if (fullPack.parent) {
+        //   const parent = labeledPacks.find(pack => pack.id === fullPack.parent.id);
+        //   setParent(parent);
+        //   setIsVariant(true);
+        // }
       } else {
         setTitle(targetPack.name);
       }
@@ -368,7 +368,7 @@ export default function Create(props: MyProps) {
           onChange={handleFormChanged}
         >
           {packTitleInput}
-          <Form.Group>
+          {/* <Form.Group>
             <Form.Check
               type="checkbox"
               label="Is Variant"
@@ -378,7 +378,7 @@ export default function Create(props: MyProps) {
               }}
             />
           </Form.Group>
-          {isVariant && <ParentSelector onSetParent={(parent: any) => setParent(parent)} packs={labeledPacks} defaultSelected={parentPack} />}
+          {isVariant && <ParentSelector onSetParent={(parent: any) => setParent(parent)} packs={labeledPacks} defaultSelected={parentPack} />} */}
           <PlainTextInput
             label="Description"
             onChange={value => {

@@ -77,6 +77,7 @@ class Settings {
     try {
       const settings = await fs.readFile(this.settingsPath, 'utf8');
       this.settings = JSON.parse(settings);
+      log.info(`Read settings: ${settings}`);
     } catch (e) {
       console.log(e);
       await this.setDefaultSettings();
