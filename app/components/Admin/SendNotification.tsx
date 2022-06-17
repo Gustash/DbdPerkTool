@@ -8,6 +8,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import PlainTextInput from '../Form/PlainTextInput';
 import Spinner from 'react-bootstrap/Spinner';
 import UserContext from '../../context/UserContext';
+import { Row } from 'react-bootstrap';
 
 const { dialog } = remote;
 

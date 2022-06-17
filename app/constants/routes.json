@@ -10,5 +10,6 @@
   "APPROVALS": "/approvals",
   "VOTE": "/vote",
   "FEATURED": "/featured",
-  "USERS": "/users"
+  "USERS": "/users",
+  "NOTIFICATIONS": "/notifications"
 }

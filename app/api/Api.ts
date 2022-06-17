@@ -35,6 +35,7 @@ function defineAbilitiesFor(user: User) {
   if (user.role === 'Moderator') {
     can('update', 'UnmoderatedPacks');
     can('update', 'Users');
+    can('manage', 'PerkPack');
   }
 
   if (user.author && user.author.name) {

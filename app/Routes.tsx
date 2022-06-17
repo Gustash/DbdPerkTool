@@ -14,6 +14,7 @@ import ApprovalPage from './components/Admin/Approvals';
 import VotePage from './components/Vote/Vote';
 import FeaturedPage from './components/Featured';
 import UsersPage from './components/Users';
+import NotificationsPage from './components/NotificationsPage';
 
 export default function Routes() {
   return (
@@ -31,6 +32,7 @@ export default function Routes() {
         <Route exact path={routes.VOTE} element={<VotePage/>}/>
         <Route exact path={routes.FEATURED} element={<FeaturedPage/>}/>
         <Route exact path={routes.USERS} element={<UsersPage/>}/>
+        <Route exact path={routes.NOTIFICATIONS} element={<NotificationsPage/>}/>
       </ReactRoutes>
     </App>
   );

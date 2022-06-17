@@ -25,6 +25,7 @@ import MenuMyPacks from '../img/menu_mypacks.png';
 import MenuSettings from '../img/menu_settings.png';
 import MenuSignOut from '../img/menu_sign_out.png';
 import MenuSignIn from '../img/menu_sign_in.png';
+import MenuNotifications from '../img/menu_notifications.png';
 import MenuAdmin from '../img/menu_admin.png';
 import MenuVote from '../img/menu_vote.png';
 import MenuFeatured from '../img/menu_featured.png';
@@ -314,7 +315,18 @@ export default function SideNav() {
         />
         {signedIn && (
           <MenuEntry
-            text={`My Profile (${userContext.user.numNotifications})`}
+            text={`Notifications (${userContext.user.numNotifications})`}
+            image={MenuNotifications}
+            currentActive={userContext.page}
+            to={routes.NOTIFICATIONS}
+            onClick={(target: string) => {
+              userContext.setPage(target);
+            }}
+          />
+        )}
+        {signedIn && (
+          <MenuEntry
+            text={`My Profile`}
             image={MenuProfile}
             currentActive={userContext.page}
             to={routes.MY_PROFILE}

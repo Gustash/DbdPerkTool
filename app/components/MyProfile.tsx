@@ -1,10 +1,9 @@
-import React, { Component, useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import routes from '../constants/routes.json';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import styled from 'styled-components';
-import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import PlainTextInput from './Form/PlainTextInput';
 import UserContext from '../context/UserContext';
@@ -12,10 +11,7 @@ import AuthorLink from './MyProfile/AuthorLink';
 import uuid from 'react-uuid';
 import SuccessModal from './SuccessModal';
 import api from '../api/Api';
-import NoAuthorProfile from './NoAuthorProfile';
 import { DefaultContainer } from './DefaultContainer';
-import { ApiNotifications } from '../api/ApiTypes';
-import Notifications from './Notifications';
 
 type MyProps = {};
 
@@ -34,16 +30,6 @@ const UserImageWrapper = styled.div`
 display: flex;
 justify-content: center;
 `;
-
-const NotificationContainer = styled.div`
-    display: flex;
-    background: rgba(0, 0, 0, .5);
-    flex-direction: column;
-    min-width: 800px;
-    height: 100%;
-    overflow-y: scroll;
-    padding: 10px;
-`
 
 const ProfileContainer = styled.div`
     display: flex;
@@ -160,10 +146,6 @@ export default function MyProfile(props: MyProps) {
         text="Author profile updated successfully!"
         show={showSuccess}
       ></SuccessModal>
-      <br/>
-      <NotificationContainer>
-        <Notifications></Notifications>
-      </NotificationContainer>
     </ProfileContainer>
   );
 }

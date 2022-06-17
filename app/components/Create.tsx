@@ -82,7 +82,7 @@ export default function Create(props: MyProps) {
     log.debug(lines);
   };
 
-  const autoAuthor = userContext.user.abilities.cannot('manage', 'all');
+  const autoAuthor = userContext.user.abilities.cannot('manage', 'PerkPack');
   const initialId = state?.id;
   const disableInputs: boolean = !!initialId;
 
@@ -188,7 +188,7 @@ export default function Create(props: MyProps) {
         setSaveProgress(progress);
       });
       setSuccessText(
-        `Your pack has been uploaded. If you're not a TrustedCreator, your pack will be visible once it's approved by a moderator. Zip has also been generated at ${outputZip}`
+        `Your pack has been uploaded and is now processing. You will be notified when it's finished. If you're not a TrustedCreator, your pack will be visible once it's approved by a moderator. Zip has also been generated at ${outputZip}`
       );
       setSaving(false);
       setSuccessModalShow(true);
