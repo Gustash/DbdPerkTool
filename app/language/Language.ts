@@ -25,7 +25,6 @@ class UiLanguage {
   }
 
   public async initialize() {
-    log.info('Initializing UI Language module');
     this.languages = await Api.getLanguageMap();
   }
 
