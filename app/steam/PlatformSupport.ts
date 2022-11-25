@@ -2,7 +2,8 @@ import os from 'os';
 
 export default class PlatformSupport {
   /**
-   * While Windows and DOS systems use case-insensitive file systems, Unix systems like Linux are case-sensitive.
+   * While Windows and DOS systems use case-insensitive file systems,
+   * Unix systems like Linux are case-sensitive.
    * This function will normalize folder paths so they're only lowercased on Windows systems.
    */
   static normalizePath(path: string) {
