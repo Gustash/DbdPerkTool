@@ -4,7 +4,6 @@ import fs from 'fs';
 import vdf from 'node-vdf';
 import path from 'path';
 import { remote } from 'electron';
-import os from 'os';
 import PlatformSupport from './PlatformSupport';
 
 const readFileAsync = promisify(fs.readFile);
