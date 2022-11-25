@@ -16,15 +16,15 @@ import MenuBuilder from './menu';
 import axios from 'axios';
 import { FileDownloader } from './utils/FileDownloader';
 import { IpcCommandHandler, registerIpcCommands } from './ipc-commands';
-import os from 'os';
 const { ipcMain: ipc } = require('electron-better-ipc');
 const WIN32 = process.platform === 'win32';
+const LINUX = process.platform === 'linux';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
 const gotTheLock = app.requestSingleInstanceLock();
 app.allowRendererProcessReuse = false;
-if (os.platform() === 'linux') {
+if (LINUX) {
   // Avoid GPU not usable error in linux
   app.commandLine.appendSwitch('in-process-gpu');
 }

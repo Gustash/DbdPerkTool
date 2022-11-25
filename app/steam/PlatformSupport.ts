@@ -1,5 +1,3 @@
-import os from 'os';
-
 export default class PlatformSupport {
   /**
    * While Windows and DOS systems use case-insensitive file systems,
@@ -7,7 +5,7 @@ export default class PlatformSupport {
    * This function will normalize folder paths so they're only lowercased on Windows systems.
    */
   static normalizePath(path: string) {
-    switch (os.platform()) {
+    switch (process.platform) {
       case 'win32':
         return path.toLowerCase();
       default:

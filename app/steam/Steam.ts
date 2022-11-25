@@ -38,7 +38,7 @@ class Steam {
   }
 
   static async getInstallPath() {
-    if (os.platform() === 'linux') {
+    if (process.platform === 'linux') {
       return Steam._getInstallPathLinux();
     }
 
