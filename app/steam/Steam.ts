@@ -3,6 +3,8 @@ import Registry from 'winreg';
 import fs from 'fs';
 import vdf from 'node-vdf';
 import path from 'path';
+import { remote } from 'electron';
+import os from 'os';
 import PlatformSupport from './PlatformSupport';
 
 const readFileAsync = promisify(fs.readFile);
@@ -36,6 +38,10 @@ class Steam {
   }
 
   static async getInstallPath() {
+    if (os.platform() === 'linux') {
+      return Steam._getInstallPathLinux();
+    }
+
     let regKey = new Registry({
       hive: Registry.HKCU,
       key: '\\Software\\Valve\\Steam\\'
@@ -56,6 +62,12 @@ class Steam {
       const keyValue = await getKeyValue('SteamPath');
       return keyValue.value;
     }
+  }
+
+  static _getInstallPathLinux() {
+    // TODO: Support Flatpak
+    const homeFolder = remote.app.getPath('home');
+    return `${homeFolder}/.steam/steam`;
   }
 }
 
