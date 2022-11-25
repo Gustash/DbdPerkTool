@@ -2,6 +2,7 @@ import SteamApp from './SteamApp';
 import fs from 'fs-extra';
 import logger from 'electron-log';
 import path from 'path';
+import PlatformSupport from './PlatformSupport';
 
 const DEFAULT_DBD_DIRS = ['C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dead by Daylight', 'C:\\Program Files\\Steam\\steamapps\\common\\Dead by Daylight']
 
@@ -62,6 +63,10 @@ export default class DeadByDaylight {
       logger.info('DBD installation found in registry: ' + dbdPath);
     }
 
-    return dbdPath?.toLowerCase();
+    if (dbdPath) {
+      return PlatformSupport.normalizePath(dbdPath);
+    }
+
+    return null;
   }
 }

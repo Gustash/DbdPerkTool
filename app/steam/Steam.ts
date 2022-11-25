@@ -3,6 +3,7 @@ import Registry from 'winreg';
 import fs from 'fs';
 import vdf from 'node-vdf';
 import path from 'path';
+import PlatformSupport from './PlatformSupport';
 
 const readFileAsync = promisify(fs.readFile);
 
@@ -24,8 +25,8 @@ class Steam {
       Object.keys(manifest[libFolderKey]).forEach(folder => {
         if (isNumeric(folder)) {
           const steamPath = path.resolve(manifest[libFolderKey][folder].path ?? manifest[libFolderKey][folder]);
-          if(steamPath && !folders.includes(steamPath.toLowerCase())) {
-            folders.push(steamPath.toLowerCase());
+          if(steamPath && !folders.includes(PlatformSupport.normalizePath(steamPath))) {
+            folders.push(PlatformSupport.normalizePath(steamPath));
           }
         }
       });
