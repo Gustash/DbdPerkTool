@@ -77,6 +77,16 @@
         "msi"
       ]
     },
+    "linux": {
+      "category": "Utility",
+      "icon": "resources/256x256.png",
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm",
+        "tar.gz"
+      ]
+    },
     "directories": {
       "buildResources": "resources",
       "output": "release"
