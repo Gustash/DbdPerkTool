@@ -66,7 +66,7 @@ class Steam {
   static _getInstallPathLinux() {
     // TODO: Support Flatpak
     const homeFolder = remote.app.getPath('home');
-    return `${homeFolder}/.steam/steam`;
+    return path.join(homeFolder, '.steam/steam');
   }
 }
 
