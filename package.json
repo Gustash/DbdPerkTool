@@ -79,7 +79,7 @@
     },
     "linux": {
       "category": "Utility",
-      "icon": "resources/256x256.png",
+      "icon": "resources",
       "target": [
         "AppImage",
         "deb",
